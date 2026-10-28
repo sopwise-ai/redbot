@@ -25,12 +25,12 @@ jobs:
     steps:
       # action 用 major tag 而非 commit SHA：SHA 更严格，但人工维护容易过期；
       # 依赖 Dependabot 的 github-actions 生态持续跟进（见 .github/dependabot.yml）。
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # 后续步骤不需要带着 token 执行 git 命令
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".nvmrc"
           cache: npm
