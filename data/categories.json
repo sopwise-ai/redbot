@@ -1,0 +1,19 @@
+[
+  { "slug": "news", "label": "新闻", "blurb": "今天发生了什么" },
+  { "slug": "tech", "label": "科技", "blurb": "技术与产品的新动向" },
+  { "slug": "ai", "label": "AI", "blurb": "模型、论文与新工具" },
+  { "slug": "finance", "label": "财经", "blurb": "钱在哪里流动" },
+  { "slug": "dev", "label": "开发", "blurb": "写代码的人在看什么" },
+  { "slug": "design", "label": "产品设计", "blurb": "做东西的灵感来源" },
+  { "slug": "science", "label": "科学", "blurb": "解释世界的知识" },
+  { "slug": "fun", "label": "娱乐", "blurb": "打发时间的正确方式" },
+  { "slug": "film", "label": "影视", "blurb": "看什么，先看榜单" },
+  { "slug": "game", "label": "游戏", "blurb": "玩什么与为什么玩" },
+  { "slug": "music", "label": "音乐", "blurb": "耳朵的内容，含播客" },
+  { "slug": "reading", "label": "阅读", "blurb": "书与长文字" },
+  { "slug": "sports", "label": "体育", "blurb": "比分与赛场" },
+  { "slug": "auto", "label": "汽车", "blurb": "车与出行" },
+  { "slug": "community", "label": "社区", "blurb": "人和人讨论的地方" },
+  { "slug": "learn", "label": "学习", "blurb": "系统性地变强" },
+  { "slug": "tools", "label": "工具", "blurb": "搜索与软件发现" }
+]

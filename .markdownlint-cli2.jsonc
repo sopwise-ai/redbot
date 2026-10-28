@@ -1,0 +1,16 @@
+{
+  // 取舍原则：只禁用「有明确理由、且仓库当前确实会触发」的规则；每条都写原因，
+  // 不把 lint 报错当噪音关掉。未列出的规则一律按默认（启用）处理。
+  // 注意：markdownlint 的值是「规则参数」而非「严重级」，启用规则用 true，不要写 2。
+  "config": {
+    "MD003": { "style": "atx" },
+    "MD004": { "style": "dash" },
+    "MD007": { "indent": 2 },
+    "MD013": false, // 中文长行不可避免；行宽已由 .prettierrc 的 printWidth 表达，双标准必冲突
+    "MD041": false, // .github/PULL_REQUEST_TEMPLATE.md 首行刻意是二级标题，不是 H1
+    "MD029": false, // 部分文档用「1. 1. 1.」步骤式有序列表
+    "MD035": { "style": "---" },
+    "MD046": { "style": "fenced" },
+  },
+  "ignores": ["node_modules/**", ".next/**", "out/**", "**/*.tsbuildinfo"],
+}

@@ -1,0 +1,24 @@
+# 依赖
+node_modules/
+
+# 构建产物
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# 环境变量（本项目当前不需要任何环境变量，保留规则以防后续引入）
+.env
+.env.*
+!.env.example
+
+# 部署平台
+.vercel
+
+# 编辑器与系统
+.DS_Store
+.idea/
+*.swp
+
+# 本地缓存
+.eslintcache

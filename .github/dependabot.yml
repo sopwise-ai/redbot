@@ -1,0 +1,56 @@
+version: 2
+
+# 配置取舍
+#
+# 分组：minor/patch 合并成一个 PR，major 一律单独出 PR（需要逐个审，例如 Next.js 大版本）。
+#   GitHub Actions 全量合并——引用的是 major tag，坏引用会让 CI 直接报红，风险低而噪音收益大。
+# 冷静期：放在 7 天（恶意/缺陷版本通常一周内被发现并撤下）；major 再拉长到 14 天。
+#   安全更新不受 cooldown 影响，仍会立刻开 PR。
+# 不配 reviewers：官方文档已标注该属性「closing down and will be removed」，审阅人改用 CODEOWNERS。
+# 安全更新刻意不分组：保持单个 PR、走最快路径。
+# commit-message 的 prefix + include: scope 会产出 chore(deps) / chore(deps-dev) / chore(ci)。
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+    groups:
+      runtime:
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
+      tooling:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 3
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "ci"

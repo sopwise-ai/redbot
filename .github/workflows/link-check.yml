@@ -1,0 +1,35 @@
+name: Link Check
+
+# 链接失效是这类目录站的头号质量杀手，但探测很慢且依赖外网，
+# 因此不进每次 PR 的检查，而是每周跑一次 + 手动触发。
+on:
+  schedule:
+    - cron: "0 1 * * 1" # 每周一 09:00 (UTC+8)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+
+      - run: npm ci
+
+      # 退出码非 0 时 Actions 会把这个 job 标红，从而在 Actions 列表里留下可追踪的失败记录
+      - name: Probe every link
+        run: npm run check:links

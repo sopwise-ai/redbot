@@ -1,0 +1,26 @@
+# 由 GitHub 在打 tag 时自动生成的 Release Notes 分组规则。
+# 标签体系见 CONTRIBUTING.md 的「维护者清单」。
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+  categories:
+    - title: 新功能
+      labels:
+        - enhancement
+    - title: 缺陷修复
+      labels:
+        - bug
+    - title: 数据变更（新增 / 更正 / 下架信息源）
+      labels:
+        - links
+    - title: 工程与 CI
+      labels:
+        - ci
+        - dependencies
+    - title: 文档
+      labels:
+        - documentation
+    - title: 其他变更
+      labels:
+        - "*"

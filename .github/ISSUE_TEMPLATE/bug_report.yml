@@ -1,0 +1,55 @@
+name: 缺陷报告
+description: 站点或工程中的问题（显示错乱、交互异常、构建失败等）
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        如果是**某个链接打不开**，请改用「链接失效或指错页」模板，那条路径更快。
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 发生了什么
+      description: 问题现象、复现步骤、期望行为
+      placeholder: |
+        1. 打开 https://redbot.cc/?tag=dev
+        2. 点击 …
+        3. 期望 …，实际 …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 影响范围
+      options:
+        - 页面显示 / 布局
+        - 搜索与筛选
+        - 数据校验 / 构建
+        - CI 与部署
+        - 文档
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 相关页面 URL（如适用）
+      placeholder: https://redbot.cc/?q=播客
+
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境信息（可选）
+      description: 浏览器与版本、操作系统、是否深色模式、是否开启减弱动效
+      placeholder: Chrome 141 / macOS 15 / 深色模式 / 1440×900
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关输出（可选）
+      description: 构建或校验报错请贴 `npm run verify` 的尾部输出
+      render: shell

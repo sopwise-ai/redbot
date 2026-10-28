@@ -1,0 +1,82 @@
+name: 新增或更正信息源
+description: 推荐一个值得收录的信息源，或修正现有条目的名称 / 分类 / 描述
+title: "link: "
+labels: ["links"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        只想加一个链接？**直接提 Pull Request 更快** —— 流程见 [贡献指南](https://github.com/sopwise-ai/redbot/blob/main/CONTRIBUTING.md)。
+        本模板适合「我不确定该怎么改数据」的情况，维护者会代为提交。
+
+  - type: input
+    id: name
+    attributes:
+      label: 按钮文案
+      description: 就是按钮上显示的字，尽量不超过 6 个汉字
+      placeholder: 知乎热榜
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 链接地址
+      description: 必须指向榜单 / 快讯 / 列表页，不能是站点首页；必须 https 且未登录可见
+      placeholder: https://www.zhihu.com/hot
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 主分类
+      description: 决定它出现在哪个分区；分类已满 20 条时请先说明建议下架谁
+      options:
+        - 新闻
+        - 科技
+        - AI
+        - 财经
+        - 开发
+        - 产品设计
+        - 科学
+        - 娱乐
+        - 影视
+        - 游戏
+        - 音乐
+        - 阅读
+        - 体育
+        - 汽车
+        - 社区
+        - 学习
+        - 工具
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么值得收录
+      description: 一句话说清它比同类源好在哪里（更新频率、独家性、是否该领域的事实标准）
+      placeholder: 讨论质量最高的中文热榜，未登录可看前 50 条。
+    validations:
+      required: true
+
+  - type: input
+    id: desc
+    attributes:
+      label: 一句话推荐语（可选）
+      description: 不超过 28 字，会用于按钮悬停提示与 SEO。不写也可以，维护者会补
+      placeholder: 讨论质量最高的热榜
+
+  - type: checkboxes
+    id: self-check
+    attributes:
+      label: 自查
+      options:
+        - label: 该链接在**未登录**状态下可以直接看到内容
+          required: true
+        - label: 它指向具体的榜单 / 列表页，而不是站点首页
+          required: true
+        - label: 它是**信息源**，不是电商或办公工具
+          required: true

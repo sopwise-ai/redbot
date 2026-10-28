@@ -1,0 +1,52 @@
+name: 链接失效或指错页
+description: 某个按钮打不开、跳到了首页、或者指向了错误的页面
+title: "broken link: "
+labels: ["links", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这类问题通常改一行 `data/links.json` 就能修好，也欢迎直接提 Pull Request。
+
+  - type: input
+    id: entry
+    attributes:
+      label: 哪个按钮
+      description: 按钮上显示的名字，或它的 `id`
+      placeholder: 抽屉新热榜
+    validations:
+      required: true
+
+  - type: input
+    id: current
+    attributes:
+      label: 当前链接
+      placeholder: https://www.chouti.com/
+    validations:
+      required: true
+
+  - type: dropdown
+    id: symptom
+    attributes:
+      label: 问题类型
+      options:
+        - 打不开（404 / 域名失效）
+        - 跳到了站点首页，不是榜单页
+        - 需要登录才能看
+        - 内容已经变质（广告、停更、站点易主）
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: suggested
+    attributes:
+      label: 建议改成（可选）
+      description: 如果你知道正确的地址，填在这里
+      placeholder: https://example.com/hot
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: 补充说明（可选）
+      description: 复现方式、截图、最近一次还能打开的时间等

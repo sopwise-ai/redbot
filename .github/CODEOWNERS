@@ -1,0 +1,6 @@
+# 默认由维护者审阅全部改动。
+# 细分负责人可以在这里按目录追加，例如：
+#   /data/            @someone
+#   /src/app/         @someone-else
+# 注意：CODEOWNERS 只决定「谁被自动请求审阅」，不授予写权限。
+* @sopwise-ai

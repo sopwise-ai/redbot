@@ -1,0 +1,1345 @@
+{
+  "version": 2,
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "weibo-hot",
+      "name": "微博热搜",
+      "url": "https://s.weibo.com/top/summary",
+      "tags": ["新闻", "热榜"],
+      "desc": "十分钟前的全网议题"
+    },
+    {
+      "id": "zhihu-hot",
+      "name": "知乎热榜",
+      "url": "https://www.zhihu.com/hot",
+      "tags": ["新闻", "热榜"],
+      "desc": "讨论质量最高的热榜"
+    },
+    {
+      "id": "baidu-hot",
+      "name": "百度热搜",
+      "url": "https://top.baidu.com/board?tab=realtime",
+      "tags": ["新闻", "热榜"],
+      "desc": "搜索引擎里的集体注意力"
+    },
+    {
+      "id": "thepaper",
+      "name": "澎湃新闻",
+      "url": "https://www.thepaper.cn/",
+      "tags": ["新闻", "深度"],
+      "desc": "时政原创新闻第一现场"
+    },
+    {
+      "id": "jiemian",
+      "name": "界面新闻",
+      "url": "https://www.jiemian.com/",
+      "tags": ["新闻", "深度"],
+      "desc": "商业与资本的清醒视角"
+    },
+    {
+      "id": "bjnews",
+      "name": "新京报",
+      "url": "https://www.bjnews.com.cn/",
+      "tags": ["新闻", "深度"],
+      "desc": "调查报道仍有锋芒"
+    },
+    {
+      "id": "qq-news",
+      "name": "腾讯新闻",
+      "url": "https://news.qq.com/",
+      "tags": ["新闻"],
+      "desc": "门户时代的新闻聚合"
+    },
+    {
+      "id": "netease-news",
+      "name": "网易新闻",
+      "url": "https://news.163.com/",
+      "tags": ["新闻"],
+      "desc": "跟贴往往比新闻好看"
+    },
+    {
+      "id": "ifeng-news",
+      "name": "凤凰新闻",
+      "url": "https://news.ifeng.com/",
+      "tags": ["新闻"],
+      "desc": "带一点国际视野的报道"
+    },
+    {
+      "id": "huanqiu",
+      "name": "环球网",
+      "url": "https://www.huanqiu.com/",
+      "tags": ["新闻", "国际"],
+      "desc": "国际新闻的快节奏输出"
+    },
+    {
+      "id": "xinhua",
+      "name": "新华网",
+      "url": "https://www.xinhuanet.com/",
+      "tags": ["新闻"],
+      "desc": "权威发布的原始出处"
+    },
+    {
+      "id": "cctv",
+      "name": "央视网",
+      "url": "https://www.cctv.com/",
+      "tags": ["新闻"],
+      "desc": "电视端的新闻与专题"
+    },
+    {
+      "id": "chinanews",
+      "name": "中国新闻网",
+      "url": "https://www.chinanews.com.cn/",
+      "tags": ["新闻"],
+      "desc": "面向海外华人的中文通讯社"
+    },
+    {
+      "id": "guancha",
+      "name": "观察者网",
+      "url": "https://www.guancha.cn/",
+      "tags": ["新闻", "国际"],
+      "desc": "立场鲜明的国际时评"
+    },
+    {
+      "id": "zaobao",
+      "name": "联合早报",
+      "url": "https://www.zaobao.com.sg/",
+      "tags": ["新闻", "国际"],
+      "desc": "东南亚视角的中文报道"
+    },
+    {
+      "id": "bbc-zh",
+      "name": "BBC中文",
+      "url": "https://www.bbc.com/zhongwen/simp",
+      "tags": ["新闻", "国际"],
+      "desc": "外部视角看中国"
+    },
+    {
+      "id": "initium",
+      "name": "端传媒",
+      "url": "https://theinitium.com/",
+      "tags": ["新闻", "深度"],
+      "desc": "付费墙内的深度报道"
+    },
+
+    {
+      "id": "ithome",
+      "name": "IT之家",
+      "url": "https://www.ithome.com/",
+      "tags": ["科技", "数码"],
+      "desc": "科技数码的快讯流水线"
+    },
+    {
+      "id": "sspai",
+      "name": "少数派",
+      "url": "https://sspai.com/",
+      "tags": ["科技", "效率"],
+      "desc": "值得花时间的生活方式"
+    },
+    {
+      "id": "ifanr",
+      "name": "爱范儿",
+      "url": "https://www.ifanr.com/",
+      "tags": ["科技"],
+      "desc": "科技与商业的交叉口"
+    },
+    {
+      "id": "latepost",
+      "name": "晚点LatePost",
+      "url": "https://www.latepost.com/",
+      "tags": ["科技", "深度"],
+      "desc": "科技商业的长报道"
+    },
+    {
+      "id": "huxiu",
+      "name": "虎嗅",
+      "url": "https://www.huxiu.com/",
+      "tags": ["科技", "商业"],
+      "desc": "商业科技的观点场"
+    },
+    {
+      "id": "geekpark",
+      "name": "极客公园",
+      "url": "https://www.geekpark.net/",
+      "tags": ["科技", "创业"],
+      "desc": "创新产品的早期信号"
+    },
+    {
+      "id": "pingwest",
+      "name": "品玩",
+      "url": "https://www.pingwest.com/",
+      "tags": ["科技"],
+      "desc": "科技消费的长期观察者"
+    },
+    {
+      "id": "solidot",
+      "name": "Solidot",
+      "url": "https://www.solidot.org/",
+      "tags": ["科技", "开源"],
+      "desc": "极客视角的科技简讯"
+    },
+    {
+      "id": "readhub",
+      "name": "Readhub",
+      "url": "https://readhub.cn/",
+      "tags": ["科技", "快讯"],
+      "desc": "一天科技新闻的浓缩"
+    },
+    {
+      "id": "dgtle",
+      "name": "数字尾巴",
+      "url": "https://www.dgtle.com/",
+      "tags": ["科技", "数码"],
+      "desc": "数码生活的内容社区"
+    },
+    {
+      "id": "feng",
+      "name": "威锋",
+      "url": "https://www.feng.com/",
+      "tags": ["科技", "数码"],
+      "desc": "苹果生态的第一现场"
+    },
+    {
+      "id": "mydrivers",
+      "name": "快科技",
+      "url": "https://www.mydrivers.com/",
+      "tags": ["科技", "硬件"],
+      "desc": "硬件资讯的快枪手"
+    },
+    {
+      "id": "pconline",
+      "name": "太平洋电脑网",
+      "url": "https://www.pconline.com.cn/",
+      "tags": ["科技", "硬件"],
+      "desc": "装机与硬件的老牌参考"
+    },
+    {
+      "id": "zol",
+      "name": "中关村在线",
+      "url": "https://www.zol.com.cn/",
+      "tags": ["科技", "硬件"],
+      "desc": "硬件参数与报价大全"
+    },
+    {
+      "id": "cnbeta",
+      "name": "cnBeta",
+      "url": "https://www.cnbeta.com.tw/",
+      "tags": ["科技", "快讯"],
+      "desc": "老牌科技新闻聚合"
+    },
+    {
+      "id": "chaping",
+      "name": "差评",
+      "url": "https://chaping.cn/",
+      "tags": ["科技", "评测"],
+      "desc": "数码评测与互联网吐槽"
+    },
+
+    {
+      "id": "qbitai",
+      "name": "量子位",
+      "url": "https://www.qbitai.com/",
+      "tags": ["AI", "资讯"],
+      "desc": "AI 进展的日常追踪"
+    },
+    {
+      "id": "jiqizhixin",
+      "name": "机器之心",
+      "url": "https://www.jiqizhixin.com/",
+      "tags": ["AI", "深度"],
+      "desc": "AI 技术与产业解读"
+    },
+    {
+      "id": "aibase",
+      "name": "AIBase",
+      "url": "https://www.aibase.com/",
+      "tags": ["AI", "产品"],
+      "desc": "AI 工具与产品的索引"
+    },
+    {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "url": "https://huggingface.co/",
+      "tags": ["AI", "模型"],
+      "desc": "模型与数据集的仓库"
+    },
+    {
+      "id": "arxiv-ai",
+      "name": "arXiv cs.AI",
+      "url": "https://arxiv.org/list/cs.AI/recent",
+      "tags": ["AI", "论文"],
+      "desc": "每天的最新预印本"
+    },
+    {
+      "id": "paperswithcode",
+      "name": "Papers with Code",
+      "url": "https://paperswithcode.com/",
+      "tags": ["AI", "论文"],
+      "desc": "论文与代码的配对索引"
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "url": "https://openai.com/news/",
+      "tags": ["AI", "资讯"],
+      "desc": "第一手的模型发布"
+    },
+    {
+      "id": "deepmind",
+      "name": "Google DeepMind",
+      "url": "https://deepmind.google/discover/blog/",
+      "tags": ["AI", "论文"],
+      "desc": "前沿研究的一手博客"
+    },
+    {
+      "id": "the-batch",
+      "name": "The Batch",
+      "url": "https://www.deeplearning.ai/the-batch/",
+      "tags": ["AI", "资讯"],
+      "desc": "吴恩达团队的每周综述"
+    },
+    {
+      "id": "simonwillison",
+      "name": "Simon Willison",
+      "url": "https://simonwillison.net/",
+      "tags": ["AI", "深度"],
+      "desc": "最诚实的一线实践笔记"
+    },
+
+    {
+      "id": "36kr",
+      "name": "36氪快讯",
+      "url": "https://36kr.com/newsflashes",
+      "tags": ["财经", "快讯"],
+      "desc": "创投圈的实时快讯"
+    },
+    {
+      "id": "wallstreetcn",
+      "name": "华尔街见闻",
+      "url": "https://wallstreetcn.com/live/global",
+      "tags": ["财经", "快讯"],
+      "desc": "全球市场的分钟级快讯"
+    },
+    {
+      "id": "cls",
+      "name": "财联社",
+      "url": "https://www.cls.cn/telegraph",
+      "tags": ["财经", "快讯"],
+      "desc": "A 股盘中的电报流"
+    },
+    {
+      "id": "yicai",
+      "name": "第一财经",
+      "url": "https://www.yicai.com/",
+      "tags": ["财经", "深度"],
+      "desc": "专业财经媒体的日常"
+    },
+    {
+      "id": "caixin",
+      "name": "财新网",
+      "url": "https://www.caixin.com/",
+      "tags": ["财经", "深度"],
+      "desc": "严肃财经调查的标杆"
+    },
+    {
+      "id": "eeo",
+      "name": "经济观察网",
+      "url": "https://www.eeo.com.cn/",
+      "tags": ["财经", "深度"],
+      "desc": "宏观经济与产业观察"
+    },
+    {
+      "id": "tmtpost",
+      "name": "钛媒体",
+      "url": "https://www.tmtpost.com/",
+      "tags": ["财经", "商业"],
+      "desc": "科技商业的产业视角"
+    },
+    {
+      "id": "lieyunwang",
+      "name": "猎云网",
+      "url": "https://www.lieyunwang.com/",
+      "tags": ["财经", "创业"],
+      "desc": "创业与融资的一手消息"
+    },
+    {
+      "id": "jin10",
+      "name": "金十数据",
+      "url": "https://www.jin10.com/",
+      "tags": ["财经", "市场"],
+      "desc": "全球财经数据快讯"
+    },
+    {
+      "id": "xueqiu",
+      "name": "雪球",
+      "url": "https://xueqiu.com/today",
+      "tags": ["财经", "投资"],
+      "desc": "投资者的今日话题"
+    },
+    {
+      "id": "eastmoney",
+      "name": "东方财富",
+      "url": "https://www.eastmoney.com/",
+      "tags": ["财经", "市场"],
+      "desc": "行情与资讯的合流处"
+    },
+    {
+      "id": "10jqka",
+      "name": "同花顺",
+      "url": "https://www.10jqka.com.cn/",
+      "tags": ["财经", "市场"],
+      "desc": "看盘工具与财经资讯"
+    },
+    {
+      "id": "gelonghui",
+      "name": "格隆汇",
+      "url": "https://www.gelonghui.com/",
+      "tags": ["财经", "市场"],
+      "desc": "港股与全球市场视角"
+    },
+    {
+      "id": "stcn",
+      "name": "证券时报",
+      "url": "https://www.stcn.com/",
+      "tags": ["财经", "市场"],
+      "desc": "监管与上市公司的一手消息"
+    },
+    {
+      "id": "nbd",
+      "name": "每日经济新闻",
+      "url": "https://www.nbd.com.cn/",
+      "tags": ["财经", "市场"],
+      "desc": "政策与产业的快讯"
+    },
+    {
+      "id": "chinaventure",
+      "name": "投中网",
+      "url": "https://www.chinaventure.com.cn/",
+      "tags": ["财经", "创业"],
+      "desc": "一级市场的交易情报"
+    },
+
+    {
+      "id": "github-trending",
+      "name": "GitHub Trending",
+      "url": "https://github.com/trending",
+      "tags": ["开发", "开源"],
+      "desc": "每天值得看的开源项目"
+    },
+    {
+      "id": "juejin",
+      "name": "掘金热榜",
+      "url": "https://juejin.cn/hot",
+      "tags": ["开发"],
+      "desc": "中文开发者的当日热榜"
+    },
+    {
+      "id": "v2ex",
+      "name": "V2EX",
+      "url": "https://www.v2ex.com/?tab=hot",
+      "tags": ["开发"],
+      "desc": "技术人的闲聊与真话"
+    },
+    {
+      "id": "hackernews",
+      "name": "Hacker News",
+      "url": "https://news.ycombinator.com/",
+      "tags": ["开发"],
+      "desc": "全球技术圈的头条"
+    },
+    {
+      "id": "ruanyf-weekly",
+      "name": "阮一峰周刊",
+      "url": "https://github.com/ruanyf/weekly",
+      "tags": ["开发", "周刊"],
+      "desc": "每周五的技术与人文精选"
+    },
+    {
+      "id": "oschina",
+      "name": "开源中国",
+      "url": "https://www.oschina.net/",
+      "tags": ["开发", "开源"],
+      "desc": "国内开源项目集散地"
+    },
+    {
+      "id": "infoq",
+      "name": "InfoQ",
+      "url": "https://www.infoq.cn/",
+      "tags": ["开发", "深度"],
+      "desc": "架构与工程实践"
+    },
+    {
+      "id": "stackoverflow",
+      "name": "Stack Overflow",
+      "url": "https://stackoverflow.com/",
+      "tags": ["开发", "问答"],
+      "desc": "问题的标准答案在这里"
+    },
+    {
+      "id": "segmentfault",
+      "name": "SegmentFault",
+      "url": "https://segmentfault.com/",
+      "tags": ["开发", "问答"],
+      "desc": "中文技术问答社区"
+    },
+    {
+      "id": "cnblogs",
+      "name": "博客园",
+      "url": "https://www.cnblogs.com/",
+      "tags": ["开发"],
+      "desc": "老派程序员的博客地盘"
+    },
+    {
+      "id": "csdn",
+      "name": "CSDN",
+      "url": "https://www.csdn.net/",
+      "tags": ["开发"],
+      "desc": "中文技术内容的最大池子"
+    },
+    {
+      "id": "linuxdo",
+      "name": "Linux.do",
+      "url": "https://linux.do/",
+      "tags": ["开发"],
+      "desc": "新一代技术社区"
+    },
+    {
+      "id": "hellogithub",
+      "name": "HelloGitHub",
+      "url": "https://hellogithub.com/",
+      "tags": ["开发", "开源"],
+      "desc": "每月精选有趣的开源项目"
+    },
+    {
+      "id": "aliyun-dev",
+      "name": "阿里云开发者社区",
+      "url": "https://developer.aliyun.com/",
+      "tags": ["开发", "云原生"],
+      "desc": "云与后端的一线实践"
+    },
+    {
+      "id": "tencent-cloud-dev",
+      "name": "腾讯云开发者社区",
+      "url": "https://cloud.tencent.com/developer",
+      "tags": ["开发", "云原生"],
+      "desc": "云原生与架构干货"
+    },
+    {
+      "id": "meituan-tech",
+      "name": "美团技术团队",
+      "url": "https://tech.meituan.com/",
+      "tags": ["开发", "深度"],
+      "desc": "中文互联网最好的工程博客之一"
+    },
+    {
+      "id": "lobsters",
+      "name": "Lobsters",
+      "url": "https://lobste.rs/",
+      "tags": ["开发", "开源"],
+      "desc": "HN 之外的技术社区"
+    },
+    {
+      "id": "mdn",
+      "name": "MDN",
+      "url": "https://developer.mozilla.org/zh-CN/",
+      "tags": ["开发", "前端"],
+      "desc": "前端文档的事实标准"
+    },
+
+    {
+      "id": "producthunt",
+      "name": "Product Hunt",
+      "url": "https://www.producthunt.com/",
+      "tags": ["产品设计", "产品"],
+      "desc": "每天一个新产品"
+    },
+    {
+      "id": "awwwards",
+      "name": "Awwwards",
+      "url": "https://www.awwwards.com/",
+      "tags": ["产品设计", "灵感"],
+      "desc": "网页设计的年度标杆"
+    },
+    {
+      "id": "dribbble",
+      "name": "Dribbble",
+      "url": "https://dribbble.com/",
+      "tags": ["产品设计", "作品集"],
+      "desc": "设计师的作品橱窗"
+    },
+    {
+      "id": "behance",
+      "name": "Behance",
+      "url": "https://www.behance.net/",
+      "tags": ["产品设计", "作品集"],
+      "desc": "完整的创意作品集"
+    },
+    {
+      "id": "zcool",
+      "name": "站酷",
+      "url": "https://www.zcool.com.cn/",
+      "tags": ["产品设计", "作品集"],
+      "desc": "国内设计师的主场"
+    },
+    {
+      "id": "ui-cn",
+      "name": "UI中国",
+      "url": "https://www.ui.cn/",
+      "tags": ["产品设计", "资源"],
+      "desc": "UI 与交互的资源库"
+    },
+    {
+      "id": "huaban",
+      "name": "花瓣",
+      "url": "https://huaban.com/",
+      "tags": ["产品设计", "灵感"],
+      "desc": "灵感采集的老牌图库"
+    },
+    {
+      "id": "uisdc",
+      "name": "优设",
+      "url": "https://www.uisdc.com/",
+      "tags": ["产品设计", "资源"],
+      "desc": "设计教程与素材"
+    },
+    {
+      "id": "woshipm",
+      "name": "人人都是产品经理",
+      "url": "https://www.woshipm.com/",
+      "tags": ["产品设计", "产品"],
+      "desc": "产品经理的方法论集散地"
+    },
+    {
+      "id": "figma-community",
+      "name": "Figma Community",
+      "url": "https://www.figma.com/community",
+      "tags": ["产品设计", "资源"],
+      "desc": "可直接复用的设计文件"
+    },
+    {
+      "id": "godly",
+      "name": "Godly",
+      "url": "https://godly.website/",
+      "tags": ["产品设计", "灵感"],
+      "desc": "顶级网页设计案例集"
+    },
+    {
+      "id": "land-book",
+      "name": "Land-book",
+      "url": "https://land-book.com/",
+      "tags": ["产品设计", "灵感"],
+      "desc": "按风格分类的落地页图库"
+    },
+
+    {
+      "id": "guokr",
+      "name": "果壳",
+      "url": "https://www.guokr.com/",
+      "tags": ["科学", "科普"],
+      "desc": "把科学讲成人话"
+    },
+    {
+      "id": "huanqiukexue",
+      "name": "环球科学",
+      "url": "https://www.huanqiukexue.com/",
+      "tags": ["科学", "科普"],
+      "desc": "科学美国人中文版"
+    },
+    {
+      "id": "arxiv",
+      "name": "arXiv",
+      "url": "https://arxiv.org/",
+      "tags": ["科学", "论文"],
+      "desc": "预印本的第一站"
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "url": "https://www.nature.com/",
+      "tags": ["科学", "论文"],
+      "desc": "顶级期刊的目录页"
+    },
+    {
+      "id": "science",
+      "name": "Science",
+      "url": "https://www.science.org/",
+      "tags": ["科学", "论文"],
+      "desc": "AAAS 的旗舰刊物"
+    },
+    {
+      "id": "quanta",
+      "name": "Quanta Magazine",
+      "url": "https://www.quantamagazine.org/",
+      "tags": ["科学", "科普"],
+      "desc": "数学与物理的深度叙事"
+    },
+    {
+      "id": "technologyreview",
+      "name": "MIT科技评论",
+      "url": "https://www.technologyreview.com/",
+      "tags": ["科学", "科普"],
+      "desc": "技术如何改变社会"
+    },
+    {
+      "id": "kepu",
+      "name": "中国科普博览",
+      "url": "https://www.kepu.net.cn/",
+      "tags": ["科学", "科普"],
+      "desc": "中科院出品的科普库"
+    },
+
+    {
+      "id": "bilibili",
+      "name": "哔哩哔哩",
+      "url": "https://www.bilibili.com/v/popular/rank/all",
+      "tags": ["娱乐", "视频"],
+      "desc": "全站排行榜"
+    },
+    {
+      "id": "douyin",
+      "name": "抖音",
+      "url": "https://www.douyin.com/hot",
+      "tags": ["娱乐", "视频"],
+      "desc": "短视频热榜"
+    },
+    {
+      "id": "kuaishou",
+      "name": "快手",
+      "url": "https://www.kuaishou.com/",
+      "tags": ["娱乐", "视频"],
+      "desc": "另一个短视频宇宙"
+    },
+    {
+      "id": "xiaohongshu",
+      "name": "小红书",
+      "url": "https://www.xiaohongshu.com/",
+      "tags": ["娱乐", "生活"],
+      "desc": "生活方式的风向标"
+    },
+    {
+      "id": "acfun",
+      "name": "AcFun",
+      "url": "https://www.acfun.cn/",
+      "tags": ["娱乐", "视频"],
+      "desc": "弹幕视频的老牌社区"
+    },
+    {
+      "id": "ixigua",
+      "name": "西瓜视频",
+      "url": "https://www.ixigua.com/",
+      "tags": ["娱乐", "视频"],
+      "desc": "中长视频的内容池"
+    },
+    {
+      "id": "douyu",
+      "name": "斗鱼",
+      "url": "https://www.douyu.com/",
+      "tags": ["娱乐", "直播"],
+      "desc": "游戏直播主阵地"
+    },
+    {
+      "id": "huya",
+      "name": "虎牙",
+      "url": "https://www.huya.com/",
+      "tags": ["娱乐", "直播"],
+      "desc": "另一个直播宇宙"
+    },
+    {
+      "id": "pearvideo",
+      "name": "梨视频",
+      "url": "https://www.pearvideo.com/",
+      "tags": ["娱乐", "视频"],
+      "desc": "短视频里的社会新闻"
+    },
+
+    {
+      "id": "douban-movie",
+      "name": "豆瓣电影",
+      "url": "https://movie.douban.com/chart",
+      "tags": ["影视", "榜单"],
+      "desc": "选片之前先看榜单"
+    },
+    {
+      "id": "iqiyi",
+      "name": "爱奇艺",
+      "url": "https://www.iqiyi.com/",
+      "tags": ["影视"],
+      "desc": "长视频内容库"
+    },
+    {
+      "id": "tencent-video",
+      "name": "腾讯视频",
+      "url": "https://v.qq.com/",
+      "tags": ["影视"],
+      "desc": "剧集与综艺的主场"
+    },
+    {
+      "id": "youku",
+      "name": "优酷",
+      "url": "https://www.youku.com/",
+      "tags": ["影视"],
+      "desc": "老牌长视频平台"
+    },
+    {
+      "id": "mgtv",
+      "name": "芒果TV",
+      "url": "https://www.mgtv.com/",
+      "tags": ["影视"],
+      "desc": "综艺与剧集的强势方"
+    },
+    {
+      "id": "imdb",
+      "name": "IMDb",
+      "url": "https://www.imdb.com/",
+      "tags": ["影视", "榜单"],
+      "desc": "全球影视资料库"
+    },
+    {
+      "id": "maoyan",
+      "name": "猫眼电影",
+      "url": "https://www.maoyan.com/",
+      "tags": ["影视", "榜单"],
+      "desc": "票房与排片实时数据"
+    },
+    {
+      "id": "mtime",
+      "name": "时光网",
+      "url": "https://www.mtime.com/",
+      "tags": ["影视", "影评"],
+      "desc": "影评与电影资料"
+    },
+
+    {
+      "id": "gcores",
+      "name": "机核",
+      "url": "https://www.gcores.com/",
+      "tags": ["游戏", "文化"],
+      "desc": "游戏文化的深度电台"
+    },
+    {
+      "id": "xiaoheihe",
+      "name": "小黑盒",
+      "url": "https://www.xiaoheihe.com/",
+      "tags": ["游戏", "主机"],
+      "desc": "Steam 玩家的社区"
+    },
+    {
+      "id": "taptap",
+      "name": "TapTap",
+      "url": "https://www.taptap.cn/",
+      "tags": ["游戏", "手游"],
+      "desc": "手游的发现与评分"
+    },
+    {
+      "id": "3dm",
+      "name": "3DM游戏",
+      "url": "https://www.3dmgame.com/",
+      "tags": ["游戏"],
+      "desc": "单机游戏资讯"
+    },
+    {
+      "id": "gamersky",
+      "name": "游民星空",
+      "url": "https://www.gamersky.com/",
+      "tags": ["游戏"],
+      "desc": "单机与主机内容库"
+    },
+    {
+      "id": "17173",
+      "name": "17173",
+      "url": "https://www.17173.com/",
+      "tags": ["游戏"],
+      "desc": "老牌游戏门户"
+    },
+    {
+      "id": "nga",
+      "name": "NGA",
+      "url": "https://bbs.nga.cn/",
+      "tags": ["游戏", "社区"],
+      "desc": "硬核玩家的讨论区"
+    },
+    {
+      "id": "miyoushe",
+      "name": "米游社",
+      "url": "https://www.miyoushe.com/",
+      "tags": ["游戏", "手游"],
+      "desc": "米哈游玩家社区"
+    },
+    {
+      "id": "yystv",
+      "name": "游研社",
+      "url": "https://www.yystv.cn/",
+      "tags": ["游戏", "文化"],
+      "desc": "游戏背后的故事"
+    },
+    {
+      "id": "indienova",
+      "name": "indienova",
+      "url": "https://indienova.com/",
+      "tags": ["游戏"],
+      "desc": "独立游戏的据点"
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "url": "https://store.steampowered.com/",
+      "tags": ["游戏", "平台"],
+      "desc": "买游戏的地方"
+    },
+    {
+      "id": "ign-cn",
+      "name": "IGN中国",
+      "url": "https://www.ign.com.cn/",
+      "tags": ["游戏"],
+      "desc": "游戏评测与资讯"
+    },
+
+    {
+      "id": "netease-music",
+      "name": "网易云音乐",
+      "url": "https://music.163.com/",
+      "tags": ["音乐", "榜单"],
+      "desc": "歌单与评论区"
+    },
+    {
+      "id": "qq-music",
+      "name": "QQ音乐",
+      "url": "https://y.qq.com/",
+      "tags": ["音乐", "榜单"],
+      "desc": "曲库最全的播放器"
+    },
+    {
+      "id": "kugou",
+      "name": "酷狗音乐",
+      "url": "https://www.kugou.com/",
+      "tags": ["音乐"],
+      "desc": "老牌音乐平台"
+    },
+    {
+      "id": "douban-music",
+      "name": "豆瓣音乐",
+      "url": "https://music.douban.com/",
+      "tags": ["音乐", "榜单"],
+      "desc": "唱片评分与分类"
+    },
+    {
+      "id": "xiaoyuzhou",
+      "name": "小宇宙",
+      "url": "https://www.xiaoyuzhoufm.com/",
+      "tags": ["音乐", "播客"],
+      "desc": "中文播客的入口"
+    },
+    {
+      "id": "ximalaya",
+      "name": "喜马拉雅",
+      "url": "https://www.ximalaya.com/",
+      "tags": ["音乐", "播客"],
+      "desc": "音频内容的大卖场"
+    },
+    {
+      "id": "lizhi",
+      "name": "荔枝",
+      "url": "https://www.lizhi.fm/",
+      "tags": ["音乐", "播客"],
+      "desc": "语音直播与播客"
+    },
+    {
+      "id": "apple-music",
+      "name": "Apple Music",
+      "url": "https://music.apple.com/cn/",
+      "tags": ["音乐", "榜单"],
+      "desc": "编辑精选的歌单"
+    },
+
+    {
+      "id": "douban-book",
+      "name": "豆瓣读书",
+      "url": "https://book.douban.com/",
+      "tags": ["阅读", "书评"],
+      "desc": "选书之前先看评分"
+    },
+    {
+      "id": "weread",
+      "name": "微信读书",
+      "url": "https://weread.qq.com/",
+      "tags": ["阅读"],
+      "desc": "社交化的阅读器"
+    },
+    {
+      "id": "qidian",
+      "name": "起点中文网",
+      "url": "https://www.qidian.com/",
+      "tags": ["阅读", "网文"],
+      "desc": "网络文学的第一站"
+    },
+    {
+      "id": "jjwxc",
+      "name": "晋江文学城",
+      "url": "https://www.jjwxc.net/",
+      "tags": ["阅读", "网文"],
+      "desc": "女性向网文的主场"
+    },
+    {
+      "id": "douban-read",
+      "name": "豆瓣阅读",
+      "url": "https://read.douban.com/",
+      "tags": ["阅读"],
+      "desc": "原创作品与电子书"
+    },
+    {
+      "id": "lifeweek",
+      "name": "三联生活周刊",
+      "url": "https://www.lifeweek.com.cn/",
+      "tags": ["阅读"],
+      "desc": "一本杂志的社会观察"
+    },
+    {
+      "id": "kongfz",
+      "name": "孔夫子旧书网",
+      "url": "https://www.kongfz.com/",
+      "tags": ["阅读"],
+      "desc": "绝版书的最后希望"
+    },
+    {
+      "id": "nlc",
+      "name": "国家图书馆",
+      "url": "https://www.nlc.cn/",
+      "tags": ["阅读"],
+      "desc": "馆藏与古籍数字化"
+    },
+    {
+      "id": "ctext",
+      "name": "中国哲学书电子化计划",
+      "url": "https://ctext.org/zh",
+      "tags": ["阅读"],
+      "desc": "古籍全文检索"
+    },
+    {
+      "id": "gutenberg",
+      "name": "Project Gutenberg",
+      "url": "https://www.gutenberg.org/",
+      "tags": ["阅读"],
+      "desc": "六万本公版书"
+    },
+
+    {
+      "id": "hupu",
+      "name": "虎扑",
+      "url": "https://bbs.hupu.com/bxj",
+      "tags": ["体育", "篮球"],
+      "desc": "步行街，不止于体育"
+    },
+    {
+      "id": "zhibo8",
+      "name": "直播吧",
+      "url": "https://www.zhibo8.cc/",
+      "tags": ["体育"],
+      "desc": "比分与赛程的集散地"
+    },
+    {
+      "id": "dongqiudi",
+      "name": "懂球帝",
+      "url": "https://www.dongqiudi.com/",
+      "tags": ["体育", "足球"],
+      "desc": "足球资讯与球迷社区"
+    },
+    {
+      "id": "qq-sports",
+      "name": "腾讯体育",
+      "url": "https://sports.qq.com/",
+      "tags": ["体育"],
+      "desc": "赛事直播与报道"
+    },
+    {
+      "id": "sina-sports",
+      "name": "新浪体育",
+      "url": "https://sports.sina.com.cn/",
+      "tags": ["体育"],
+      "desc": "老牌体育门户"
+    },
+    {
+      "id": "netease-sports",
+      "name": "网易体育",
+      "url": "https://sports.163.com/",
+      "tags": ["体育"],
+      "desc": "体育新闻与讨论"
+    },
+    {
+      "id": "leisu",
+      "name": "雷速体育",
+      "url": "https://www.leisu.com/",
+      "tags": ["体育"],
+      "desc": "实时比分与数据"
+    },
+    {
+      "id": "espn",
+      "name": "ESPN",
+      "url": "https://www.espn.com/",
+      "tags": ["体育"],
+      "desc": "全球体育报道的标杆"
+    },
+    {
+      "id": "cctv-sports",
+      "name": "央视体育",
+      "url": "https://sports.cctv.com/",
+      "tags": ["体育"],
+      "desc": "大赛版权的持有者"
+    },
+
+    {
+      "id": "autohome",
+      "name": "汽车之家",
+      "url": "https://www.autohome.com.cn/",
+      "tags": ["汽车", "评测"],
+      "desc": "车型库与车主口碑"
+    },
+    {
+      "id": "yiche",
+      "name": "易车",
+      "url": "https://www.yiche.com/",
+      "tags": ["汽车", "评测"],
+      "desc": "报价与评测"
+    },
+    {
+      "id": "dongchedi",
+      "name": "懂车帝",
+      "url": "https://www.dongchedi.com/",
+      "tags": ["汽车", "评测"],
+      "desc": "实测与拆解"
+    },
+    {
+      "id": "xchuxing",
+      "name": "新出行",
+      "url": "https://www.xchuxing.com/",
+      "tags": ["汽车", "新能源"],
+      "desc": "新能源车的垂直媒体"
+    },
+    {
+      "id": "42how",
+      "name": "42号车库",
+      "url": "https://www.42how.com/",
+      "tags": ["汽车", "新能源"],
+      "desc": "智能电动车的深度内容"
+    },
+    {
+      "id": "pcauto",
+      "name": "太平洋汽车",
+      "url": "https://www.pcauto.com.cn/",
+      "tags": ["汽车", "评测"],
+      "desc": "老牌汽车门户"
+    },
+    {
+      "id": "gasgoo",
+      "name": "盖世汽车",
+      "url": "https://auto.gasgoo.com/",
+      "tags": ["汽车", "产业"],
+      "desc": "供应链与产业新闻"
+    },
+
+    {
+      "id": "jike",
+      "name": "即刻",
+      "url": "https://web.okjike.com/",
+      "tags": ["社区", "兴趣"],
+      "desc": "互联网人的朋友圈"
+    },
+    {
+      "id": "tieba",
+      "name": "百度贴吧",
+      "url": "https://tieba.baidu.com/",
+      "tags": ["社区", "兴趣"],
+      "desc": "兴趣聚落的老地盘"
+    },
+    {
+      "id": "newsmth",
+      "name": "水木社区",
+      "url": "https://www.newsmth.net/",
+      "tags": ["社区"],
+      "desc": "高校 BBS 的余温"
+    },
+    {
+      "id": "chouti",
+      "name": "抽屉新热榜",
+      "url": "https://www.chouti.com/",
+      "tags": ["社区", "热榜"],
+      "desc": "编辑手工挑选的热点"
+    },
+    {
+      "id": "dapenti",
+      "name": "喷嚏网",
+      "url": "https://www.dapenti.com/",
+      "tags": ["社区"],
+      "desc": "一天里的图与话"
+    },
+    {
+      "id": "smzdm",
+      "name": "什么值得买",
+      "url": "https://www.smzdm.com/",
+      "tags": ["社区", "消费"],
+      "desc": "下单之前的最后一步"
+    },
+    {
+      "id": "douban-group",
+      "name": "豆瓣小组",
+      "url": "https://www.douban.com/group/",
+      "tags": ["社区", "兴趣"],
+      "desc": "中文互联网的兴趣长尾"
+    },
+    {
+      "id": "kdslife",
+      "name": "宽带山",
+      "url": "https://www.kdslife.com/",
+      "tags": ["社区"],
+      "desc": "上海本地生活社区"
+    },
+    {
+      "id": "coolapk",
+      "name": "酷安",
+      "url": "https://www.coolapk.com/",
+      "tags": ["社区", "数码"],
+      "desc": "数码爱好者的聚集地"
+    },
+    {
+      "id": "maimai",
+      "name": "脉脉",
+      "url": "https://maimai.cn/",
+      "tags": ["社区", "职场"],
+      "desc": "职场八卦与匿名区"
+    },
+
+    {
+      "id": "coursera",
+      "name": "Coursera",
+      "url": "https://www.coursera.org/",
+      "tags": ["学习", "课程"],
+      "desc": "名校课程的公开入口"
+    },
+    {
+      "id": "icourse163",
+      "name": "中国大学MOOC",
+      "url": "https://www.icourse163.org/",
+      "tags": ["学习", "课程"],
+      "desc": "国内高校的慕课集合"
+    },
+    {
+      "id": "imooc",
+      "name": "慕课网",
+      "url": "https://www.imooc.com/",
+      "tags": ["学习", "课程"],
+      "desc": "程序员的实战课"
+    },
+    {
+      "id": "geekbang",
+      "name": "极客时间",
+      "url": "https://time.geekbang.org/",
+      "tags": ["学习", "课程"],
+      "desc": "技术人的付费专栏"
+    },
+    {
+      "id": "dedao",
+      "name": "得到",
+      "url": "https://www.dedao.cn/",
+      "tags": ["学习"],
+      "desc": "通识与自我提升"
+    },
+    {
+      "id": "open163",
+      "name": "网易公开课",
+      "url": "https://open.163.com/",
+      "tags": ["学习", "课程"],
+      "desc": "TED 与名校公开课"
+    },
+    {
+      "id": "xuetangx",
+      "name": "学堂在线",
+      "url": "https://www.xuetangx.com/",
+      "tags": ["学习", "课程"],
+      "desc": "清华发起的慕课平台"
+    },
+    {
+      "id": "khanacademy",
+      "name": "可汗学院",
+      "url": "https://zh.khanacademy.org/",
+      "tags": ["学习", "课程"],
+      "desc": "从零补基础的最佳选择"
+    },
+    {
+      "id": "duolingo",
+      "name": "多邻国",
+      "url": "https://www.duolingo.com/",
+      "tags": ["学习", "语言"],
+      "desc": "把语言学成游戏"
+    },
+    {
+      "id": "shanbay",
+      "name": "扇贝",
+      "url": "https://www.shanbay.com/",
+      "tags": ["学习", "语言"],
+      "desc": "背单词的老牌工具"
+    },
+
+    {
+      "id": "baidu",
+      "name": "百度",
+      "url": "https://www.baidu.com/",
+      "tags": ["工具", "搜索"],
+      "desc": "中文搜索的默认项"
+    },
+    {
+      "id": "bing",
+      "name": "必应",
+      "url": "https://www.bing.com/",
+      "tags": ["工具", "搜索"],
+      "desc": "少一点干扰的搜索"
+    },
+    {
+      "id": "sogou-weixin",
+      "name": "搜狗微信",
+      "url": "https://weixin.sogou.com/",
+      "tags": ["工具", "搜索"],
+      "desc": "搜公众号文章的唯一入口"
+    },
+    {
+      "id": "appinn",
+      "name": "小众软件",
+      "url": "https://www.appinn.com/",
+      "tags": ["工具", "软件"],
+      "desc": "发现没人告诉你的好工具"
+    },
+    {
+      "id": "iplaysoft",
+      "name": "异次元软件",
+      "url": "https://www.iplaysoft.com/",
+      "tags": ["工具", "软件"],
+      "desc": "软件与互联网产品推荐"
+    },
+    {
+      "id": "alternativeto",
+      "name": "AlternativeTo",
+      "url": "https://alternativeto.net/",
+      "tags": ["工具", "软件"],
+      "desc": "找一个软件的替代品"
+    },
+    {
+      "id": "wolframalpha",
+      "name": "Wolfram Alpha",
+      "url": "https://www.wolframalpha.com/",
+      "tags": ["工具", "搜索"],
+      "desc": "能算数的知识引擎"
+    },
+    {
+      "id": "stats-gov",
+      "name": "国家统计局",
+      "url": "https://www.stats.gov.cn/",
+      "tags": ["工具", "数据"],
+      "desc": "一切宏观数据的源头"
+    },
+    {
+      "id": "weather-cn",
+      "name": "中国天气",
+      "url": "https://www.weather.com.cn/",
+      "tags": ["工具", "生活"],
+      "desc": "官方气象数据"
+    }
+  ]
+}

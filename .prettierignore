@@ -1,0 +1,18 @@
+# 依赖与构建产物
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# 生成物：由包管理器维护，格式化只会制造无意义 diff
+package-lock.json
+
+# 站点数据：由 scripts/generate-readme.ts 从 data/*.json 生成，格式由脚本保证
+README.md
+
+# 截图等二进制资源
+docs/screenshots/
+
+# prettier 没有对应 parser 的类型（遍历时会自动跳过，这里显式声明意图）
+*.sh

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+      }
+      body {
+        position: relative;
+        overflow: hidden;
+        background: #ffffff;
+        color: #1a1c20;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 72px 80px;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .mark {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: #c62a2f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mark span {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: #fff;
+      }
+      .name {
+        font-size: 40px;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        margin-top: 44px;
+        font-size: 64px;
+        line-height: 1.15;
+        font-weight: 650;
+        letter-spacing: -0.03em;
+      }
+      .sub {
+        margin-top: 20px;
+        font-size: 26px;
+        color: #6b7280;
+        letter-spacing: -0.01em;
+      }
+      .bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #9ca3af;
+        font-size: 20px;
+      }
+      .pills {
+        display: flex;
+        gap: 10px;
+      }
+      .pill {
+        height: 34px;
+        border-radius: 999px;
+        border: 1px solid #eceef2;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        font-size: 17px;
+        color: #6b7280;
+        background: #fafbfc;
+      }
+      .pill.on {
+        background: #c62a2f;
+        border-color: #c62a2f;
+        color: #fff;
+      }
+      .glow {
+        position: absolute;
+        right: -160px;
+        top: -160px;
+        width: 520px;
+        height: 520px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(198, 42, 47, 0.08), rgba(198, 42, 47, 0));
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow"></div>
+    <div>
+      <div class="top">
+        <div class="mark"><span></span></div>
+        <div class="name">RedBot</div>
+      </div>
+      <h1>一个按钮，<br />直达一个信息源。</h1>
+      <p class="sub">189 个中文互联网优质信息源 · 17 个主题 · 社区维护</p>
+    </div>
+    <div class="bottom">
+      <div class="pills">
+        <div class="pill on">全部</div>
+        <div class="pill">新闻</div>
+        <div class="pill">科技</div>
+        <div class="pill">AI</div>
+        <div class="pill">财经</div>
+        <div class="pill">开发</div>
+      </div>
+      <div>redbot.cc</div>
+    </div>
+  </body>
+</html>

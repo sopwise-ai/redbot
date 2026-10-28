@@ -1,0 +1,25 @@
+root = true
+
+# 换行、缩进、编码的单一事实源。
+# 行宽不在这里配置：max_line_length 不在 EditorConfig 规范内（写了也不生效），
+# 行宽只由 .prettierrc 的 printWidth 决定，避免出现两套互相矛盾的标准。
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+# Markdown 行尾双空格是硬换行，必须保留（真正的脏空格由 markdownlint MD009 拦截）
+trim_trailing_whitespace = false
+# 与 .markdownlint-cli2.jsonc 的 MD007.indent 保持一致
+indent_size = 2
+
+[*.{json,jsonc,yml,yaml}]
+indent_size = 2
+
+[*.{sh,bash}]
+indent_size = 4
