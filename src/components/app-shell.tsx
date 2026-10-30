@@ -3,7 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { flushSync } from "react-dom";
 import { ArrowUpRight, SearchIcon, XIcon } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
@@ -22,6 +21,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { buildHueMap } from "@/lib/groups";
 import type { CategoryGroup } from "@/lib/schema";
 import { createSearchIndex } from "@/lib/search";
+import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
 import { useHistory } from "@/lib/use-history";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -82,6 +82,7 @@ export function AppShell({
   /**
    * 分类切换走浏览器原生 View Transitions：只对内容区做交叉淡入淡出，
    * 侧栏/顶栏保持不动。不支持或开启减弱动效时直接切换。
+   * 执行策略（scroll 顺序、reduced-motion 短路）提纯在 switch-category.ts。
    */
   const switchCategory = React.useCallback(
     (next: string) => {
@@ -92,21 +93,11 @@ export function AppShell({
         return;
       }
       if (next === active && !searching) return;
-      window.scrollTo({ top: 0 });
-      syncTagAttribute(next);
       setQuery("");
-      const doc = document as Document & {
-        startViewTransition?: (callback: () => void) => { finished: Promise<void> };
-      };
-      if (
-        typeof doc.startViewTransition !== "function" ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
-        setActive(next);
-        return;
-      }
-      doc.startViewTransition(() => {
-        flushSync(() => setActive(next));
+      applyCategorySwitch({
+        next,
+        env: envFromWindow(window, syncTagAttribute),
+        apply: setActive,
       });
     },
     [active, searching, view, router],
