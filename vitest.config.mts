@@ -14,7 +14,7 @@ export default defineConfig({
     ],
   },
   test: {
-    // 测试只覆盖纯逻辑（数据规则、README 渲染），不需要 DOM 环境
+    // scripts/ 与 src/lib/ 的纯逻辑用 node；history.ts 要真 localStorage，逐文件覆盖为 happy-dom
     environment: "node",
     globals: false,
     // 与 Vitest 默认的 include 对齐：否则新增 .test.tsx / .spec.ts 会被静默漏跑
