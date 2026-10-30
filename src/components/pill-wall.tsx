@@ -1,82 +1,89 @@
+"use client";
+
 import { ArrowUpRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { recordVisit } from "@/lib/history";
 import type { LinkItem } from "@/lib/schema";
 
 /**
- * 8 个低饱和色相 + 按轮次错开明度：
- * 色相多了反而不易分辨，8 个足够拉开，同色相靠明度区分轮次。
+ * 8 个低饱和色相，按分类顺序分配。
+ * 同一个色相既做色点，也做文字色，保证每个分类有自己的辨识度。
  */
 const HUES = [25, 55, 95, 150, 195, 240, 290, 330];
-const LIGHTNESS = [0.66, 0.74, 0.56];
 
 export function hueFor(index: number) {
-  return {
-    h: HUES[index % HUES.length],
-    l: LIGHTNESS[Math.floor(index / HUES.length) % LIGHTNESS.length],
-  };
+  return HUES[index % HUES.length];
+}
+
+export interface PillGroup {
+  slug: string;
+  label: string;
+  items: LinkItem[];
 }
 
 /**
- * 按钮墙：条目宽度由内容决定，整块居中。
- * 主题不再用分区标题表达，改由左侧色点承担——色相按分类顺序用黄金角分布，
- * 同一分类的点连成一段同色，等于没有标题的分组。
+ * 每一组都包一层带 `data-cat` 的容器：
+ * 首帧（JS 还没跑）由 layout 注入的 CSS 依据 `html[data-tag]` 直接隐藏非目标组，
+ * 避免「先渲染全部、再切到分类」的跳动。
  */
 export function PillWall({
-  items,
+  groups,
   hueByLabel,
 }: {
-  items: LinkItem[];
-  hueByLabel: Map<string, { h: number; l: number }>;
+  groups: PillGroup[];
+  hueByLabel: Map<string, number>;
 }) {
-  // 不打标题，但让同一主题的按钮成段：段内 8px，段间 20px
-  const groups = new Map<string, LinkItem[]>();
-  for (const item of items) {
-    const key = item.tags[0];
-    const list = groups.get(key);
-    if (list) list.push(item);
-    else groups.set(key, [item]);
-  }
-
   return (
-    <div className="flex flex-col gap-5">
-      {[...groups.entries()].map(([label, list]) => (
-        <ul key={label} aria-label={label} className="flex flex-wrap gap-2">
-          {list.map((item) => (
-            <li key={item.id}>
-              <LinkPill item={item} tone={hueByLabel.get(label) ?? { h: 0, l: 0.66 }} />
-            </li>
-          ))}
-        </ul>
+    <div className="flex flex-col gap-8">
+      {groups.map((group) => (
+        <div
+          key={group.slug}
+          data-cat={group.slug}
+          data-search={group.slug === "search" ? "" : undefined}
+          className="pill-group"
+        >
+          <ul
+            aria-label={group.label}
+            className="flex flex-wrap gap-2 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]"
+          >
+            {group.items.map((item) => (
+              <li key={item.id}>
+                <LinkPill item={item} hue={hueByLabel.get(item.tags[0]) ?? 0} />
+              </li>
+            ))}
+          </ul>
+        </div>
       ))}
     </div>
   );
 }
 
-export function LinkPill({ item, tone }: { item: LinkItem; tone: { h: number; l: number } }) {
+export function LinkPill({ item, hue }: { item: LinkItem; hue: number }) {
   return (
     <Button
       asChild
       variant="outline"
       size="sm"
-      className="group h-10 gap-2 rounded-xl bg-card px-3.5 font-medium shadow-[0_1px_2px_oklch(0.2_0.01_264/0.06)] hover:border-primary/30 hover:bg-accent hover:shadow-[0_2px_8px_oklch(0.2_0.01_264/0.1)] focus-visible:ring-2 focus-visible:ring-ring/30"
+      className="group h-9 justify-between gap-2.5 rounded-lg border-border bg-card px-3 text-base font-normal text-foreground/90 shadow-xs transition-[background-color,border-color,box-shadow,color] duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-ring/25 hover:bg-accent hover:text-foreground hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-offset-0 lg:w-full"
     >
       <a
         href={item.url}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => recordVisit(item.id)}
         title={item.desc}
         aria-label={`${item.name}：${item.desc}（在新标签页打开）`}
       >
         <span
           aria-hidden
-          style={{ ["--dot-hue" as string]: tone.h, ["--dot-l" as string]: tone.l }}
-          className="size-1.5 shrink-0 rounded-full bg-[oklch(var(--dot-l)_0.07_var(--dot-hue))] dark:bg-[oklch(0.76_0.06_var(--dot-hue))]"
+          style={{ ["--dot-hue" as string]: hue }}
+          className="size-[5px] shrink-0 rounded-full bg-[oklch(0.64_0.13_var(--dot-hue))] dark:bg-[oklch(0.75_0.11_var(--dot-hue))]"
         />
-        <span className="max-w-[18rem] truncate">{item.name}</span>
+        <span className="min-w-0 flex-1 truncate text-left">{item.name}</span>
         <ArrowUpRight
           aria-hidden
-          className="size-3 shrink-0 text-muted-foreground/30 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+          className="size-3.5 shrink-0 text-muted-foreground/35 transition-colors group-hover:text-primary"
         />
       </a>
     </Button>

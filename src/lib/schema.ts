@@ -23,6 +23,10 @@ export const catalogSchema = z.strictObject({
 export const categorySchema = z.strictObject({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   label: z.string().min(1).max(6),
+  /** 侧栏的视觉分组；只影响展示，不影响数据归属 */
+  group: z.string().min(1).max(8),
+  /** 侧栏用的 emoji 图标，1 个字符（emoji 可能占两个码元） */
+  emoji: z.string().min(1).max(8),
   blurb: z.string().min(1).max(24),
 });
 
