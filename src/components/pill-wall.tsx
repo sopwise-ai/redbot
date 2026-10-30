@@ -1,20 +1,11 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, CheckIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { recordVisit } from "@/lib/history";
 import type { LinkItem } from "@/lib/schema";
-
-/**
- * 8 个低饱和色相，按分类顺序分配。
- * 同一个色相既做色点，也做文字色，保证每个分类有自己的辨识度。
- */
-const HUES = [25, 55, 95, 150, 195, 240, 290, 330];
-
-export function hueFor(index: number) {
-  return HUES[index % HUES.length];
-}
+import { cn } from "@/lib/utils";
 
 export interface PillGroup {
   slug: string;
@@ -59,7 +50,46 @@ export function PillWall({
   );
 }
 
-export function LinkPill({ item, hue }: { item: LinkItem; hue: number }) {
+export function LinkPill({
+  item,
+  hue,
+  variant = "browse",
+  selected = false,
+  onToggle,
+}: {
+  item: LinkItem;
+  hue: number;
+  /** browse：链接（默认）；manage：选中态复选按钮（足迹管理模式） */
+  variant?: "browse" | "manage";
+  selected?: boolean;
+  onToggle?: (id: string) => void;
+}) {
+  if (variant === "manage") {
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onToggle?.(item.id)}
+        aria-pressed={selected}
+        className={cn(
+          "group h-9 w-full justify-between gap-2.5 rounded-lg border-border bg-card px-3 text-base font-normal text-foreground/90 shadow-xs transition-[background-color,border-color,box-shadow] duration-150 hover:border-ring/25 hover:bg-accent hover:text-foreground hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:outline-none",
+          selected && "border-primary/60 bg-primary/5",
+        )}
+      >
+        <span
+          aria-hidden
+          className={cn(
+            "flex size-4 shrink-0 items-center justify-center rounded-[5px] border",
+            selected ? "border-primary bg-primary text-primary-foreground" : "border-border",
+          )}
+        >
+          {selected ? <CheckIcon className="size-3" /> : null}
+        </span>
+        <span className="min-w-0 flex-1 truncate text-left">{item.name}</span>
+      </Button>
+    );
+  }
+
   return (
     <Button
       asChild

@@ -18,6 +18,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { recordVisit } from "@/lib/history";
+import { bucketByGroup } from "@/lib/groups";
 import { useHistory } from "@/lib/use-history";
 import type { CategoryGroup } from "@/lib/schema";
 import { site } from "@/lib/site";
@@ -50,12 +51,7 @@ export function AppSidebar({
   }
 
   // 按 group 字段聚合成 4 组，保持 categories.json 里的相对顺序
-  const buckets = new Map<string, CategoryGroup[]>();
-  for (const group of groups) {
-    const list = buckets.get(group.group);
-    if (list) list.push(group);
-    else buckets.set(group.group, [group]);
-  }
+  const buckets = bucketByGroup(groups);
 
   return (
     <Sidebar collapsible="icon">

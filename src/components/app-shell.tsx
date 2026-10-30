@@ -8,7 +8,7 @@ import { ArrowUpRight, SearchIcon, XIcon } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { HistoryView } from "@/components/history-view";
-import { PillWall, hueFor } from "@/components/pill-wall";
+import { PillWall } from "@/components/pill-wall";
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TopicsIndex } from "@/components/topics-index";
@@ -19,6 +19,7 @@ import { Kbd } from "@/components/ui/kbd";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { buildHueMap } from "@/lib/groups";
 import type { CategoryGroup } from "@/lib/schema";
 import { createSearchIndex } from "@/lib/search";
 import { useHistory } from "@/lib/use-history";
@@ -76,10 +77,7 @@ export function AppShell({
     [fuse, query, searching],
   );
 
-  const hueByLabel = React.useMemo(
-    () => new Map(groups.map((group, index) => [group.label, hueFor(index)])),
-    [groups],
-  );
+  const hueByLabel = React.useMemo(() => buildHueMap(groups), [groups]);
 
   /**
    * 分类切换走浏览器原生 View Transitions：只对内容区做交叉淡入淡出，
