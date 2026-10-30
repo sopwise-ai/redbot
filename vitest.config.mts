@@ -22,5 +22,25 @@ export default defineConfig({
     // 显式 exclude 是整体替换（默认只有 node_modules 与 .git），
     // 防止把 .next/、out/ 里的同名文件当测试跑
     exclude: ["**/node_modules/**", "**/.git/**", ".next/**", "out/**", "coverage/**"],
+    // 覆盖率只看有逻辑的模块：React Hook（use-history）、常量表（site）、
+    // 纯转发（utils）没有可测行为，纳入只会稀释指标、逼人写形式主义测试。
+    // 阈值按当前真实水位（行 96%+）设 90%：留余量，跌破才拦。
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html", "lcov"],
+      include: ["scripts/lib/**/*.ts", "src/lib/**/*.ts"],
+      exclude: [
+        "**/*.test.ts",
+        "src/lib/use-history.ts",
+        "src/lib/site.ts",
+        "src/lib/utils.ts",
+      ],
+      thresholds: {
+        lines: 90,
+        functions: 90,
+        statements: 90,
+        branches: 80,
+      },
+    },
   },
 });
