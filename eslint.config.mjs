@@ -16,6 +16,7 @@ const config = [
       "node_modules/**",
       "next-env.d.ts",
       "*.tsbuildinfo",
+      "coverage/**",
       "docs/screenshots/**",
     ],
   },

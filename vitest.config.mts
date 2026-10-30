@@ -29,12 +29,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html", "lcov"],
       include: ["scripts/lib/**/*.ts", "src/lib/**/*.ts"],
-      exclude: [
-        "**/*.test.ts",
-        "src/lib/use-history.ts",
-        "src/lib/site.ts",
-        "src/lib/utils.ts",
-      ],
+      exclude: ["**/*.test.ts", "src/lib/use-history.ts", "src/lib/site.ts", "src/lib/utils.ts"],
       thresholds: {
         lines: 90,
         functions: 90,

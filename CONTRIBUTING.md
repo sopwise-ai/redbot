@@ -73,6 +73,9 @@ RedBot 的价值不来自「收得多」，而来自**收得准**。所以门槛
 ## 本地开发
 
 环境：Node 版本以 [`.nvmrc`](./.nvmrc) 为准（在仓库根目录跑 `nvm use`），包管理器用 npm（有 `package-lock.json`）。
+两个版本号是刻意不同的，别「顺手统一」：`.nvmrc`（24）锁定**开发/CI 实际使用的版本**，
+`package.json` 的 `engines`（>=22.12.0）是**可运行的最低版本**——前者跟着 LTS 升级，后者只在
+用到新 API 时才抬。
 
 ```bash
 npm install
