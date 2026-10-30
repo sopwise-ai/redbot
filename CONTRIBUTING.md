@@ -77,11 +77,12 @@ RedBot 的价值不来自「收得多」，而来自**收得准**。所以门槛
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm run verify       # 格式 + Markdown + 数据 + 单测 + 类型（与 CI 前五步一致）
+npm run verify       # 格式 + Markdown + ESLint + 数据 + README 一致性 + 单测 + 类型（CI 也跑这些）
 npm run validate     # 只跑数据校验
 npm run check:links  # 数据校验 + 逐个探测 URL 可达性（较慢，改过 url 才需要）
 npm run test         # 单元测试（数据规则与 README 渲染）
 npm run readme       # 从 data/ 重新生成 README.md
+npm run lint         # ESLint（React Hooks 依赖、未使用变量等）
 npm run format       # prettier 全量格式化
 npm run build        # 校验 + 生成 README + 静态导出到 out/（CI 另跑这一步和 README 一致性检查）
 ```

@@ -212,7 +212,11 @@ export function AppSidebar({
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm" className="text-sm text-muted-foreground">
-              <a href={`${site.repo}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noopener noreferrer">
+              <a
+                href={`${site.repo}/blob/main/CONTRIBUTING.md`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <GitPullRequestIcon />
                 <span>提交收录</span>
                 <ArrowUpRight className="ml-auto size-3.5 opacity-50" />

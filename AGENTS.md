@@ -17,6 +17,7 @@
 - Tailwind CSS v4（CSS-first，token 在 `src/app/globals.css` 的 `@theme inline`）
 - shadcn/ui（registry 组件，源码在 `src/components/ui/`；新增控件见下文约定 2）
 - fuse.js（客户端搜索）、next-themes（浅色 / 深色 / 跟随系统三态，切换器是 `src/components/theme-toggle.tsx`）、zod（数据契约）
+- ESLint 9 + `eslint-config-next`（`eslint.config.mjs`，用 FlatCompat 桥接 15.x 的 eslintrc 配置；等 Next 16 再简化）
 - **`output: "export"` 纯静态**：构建期产出 `out/`，没有服务端运行时、没有 API 路由
 
 ## 命令
@@ -24,7 +25,9 @@
 ```bash
 npm run dev          # 开发服务器 http://localhost:3000
 npm run build        # 校验数据 → 生成 README → 静态导出
-npm run verify       # 格式 + Markdown + 数据 + 单测 + 类型（提交前跑这个）
+npm run verify       # 格式 + Markdown + ESLint + 数据 + README 一致性 + 单测 + 类型（提交前跑这个）
+npm run lint         # ESLint（next/core-web-vitals + next/typescript，flat config）
+npm run clean        # 删 .next / out / tsbuildinfo
 npm run validate     # 只跑数据校验
 npm run check:links  # 数据校验 + 逐个探测 URL 可达性（慢，改过 url 才需要）
 npm run test         # 单元测试（数据规则、README 渲染）
@@ -137,7 +140,7 @@ scripts/lib/readme.ts README 渲染本身（纯函数），有单测
 改动后至少要跑：
 
 ```bash
-npm run verify      # 格式 + Markdown + 数据 + 单测 + 类型
+npm run verify      # 格式 + Markdown + ESLint + 数据 + README 一致性 + 单测 + 类型
 npm run build       # 生成 README + 静态导出（CI 随后断言 out/index.html 里有 ≥100 个 target="_blank"）
 git diff --exit-code -- README.md   # CI 会做：忘了重新生成 README 就挂
 ```

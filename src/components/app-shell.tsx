@@ -140,7 +140,7 @@ export function AppShell({
     if (searching || view !== "wall") return;
     const path = active === ALL ? "/" : `/topics/${active}/`;
     if (window.location.pathname !== path) window.history.replaceState(null, "", path);
-  }, [active, searching]);
+  }, [active, searching, view]);
 
   // 浏览器前进/后退
   React.useEffect(() => {
