@@ -19,6 +19,11 @@ next-env.d.ts
 .DS_Store
 .idea/
 *.swp
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 
-# 本地缓存
-.eslintcache
+# 本地缓存、日志与密钥
+*.log*
+*.pem
+coverage/

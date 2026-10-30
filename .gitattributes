@@ -19,6 +19,6 @@
 *.sh text eol=lf
 *.bash text eol=lf
 
-# 锁文件：标记为生成物以从语言统计中排除；刻意不加 -diff，
-# 否则 PR 里的依赖变更会退化成 "Bin xxx -> yyy"，无法评审。
+# 锁文件：显式声明为生成物（从语言统计中排除、GitHub diff 默认折叠）
+# 不加 -diff：锁文件的文本 diff 是评审依赖变更的唯一依据。
 package-lock.json linguist-generated=true

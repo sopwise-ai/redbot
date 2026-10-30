@@ -1,8 +1,9 @@
 root = true
 
 # 换行、缩进、编码的单一事实源。
-# 行宽不在这里配置：max_line_length 不在 EditorConfig 规范内（写了也不生效），
-# 行宽只由 .prettierrc 的 printWidth 决定，避免出现两套互相矛盾的标准。
+# 行宽不在这里配置：max_line_length 不在 EditorConfig 规范（0.17.x）的属性表里，
+# 而 Prettier 3 会读它并映射成 printWidth —— 写在这里等于给行宽多开一个入口。
+# 行宽只由 .prettierrc 的 printWidth 决定（*.md 另有 200 的 override）。
 
 [*]
 charset = utf-8

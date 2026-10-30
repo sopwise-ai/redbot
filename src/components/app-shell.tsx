@@ -310,7 +310,7 @@ export function AppShell({
                   size="sm"
                   className="hidden rounded-full md:inline-flex"
                 >
-                  <a href={site.repo} target="_blank" rel="noreferrer">
+                  <a href={site.repo} target="_blank" rel="noopener noreferrer">
                     GitHub
                     <ArrowUpRight aria-hidden className="size-3.5" />
                   </a>
@@ -408,7 +408,7 @@ export function AppShell({
                         <a
                           href={`${site.repo}/issues/new?labels=link-suggestion`}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                         >
                           建议收录
                         </a>

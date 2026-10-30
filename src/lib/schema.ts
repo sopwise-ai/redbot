@@ -9,7 +9,8 @@ import { z } from "zod";
 export const linkSchema = z.strictObject({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "id 必须是小写 kebab-case，且发布后不可修改"),
   name: z.string().min(1).max(20),
-  url: z.url(),
+  // 只接受 https：让契约本身成立，dev 与裸 `next build`（跳过 scripts/validate）也拦得住
+  url: z.url({ protocol: /^https$/ }),
   tags: z.array(z.string().min(1)).min(1).max(3),
   desc: z.string().min(1).max(28),
 });

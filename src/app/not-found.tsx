@@ -32,7 +32,7 @@ export default function NotFound() {
           <Link href="/">回到首页</Link>
         </Button>
         <Button asChild variant="outline" className="rounded-full">
-          <a href={site.repo} target="_blank" rel="noreferrer">
+          <a href={site.repo} target="_blank" rel="noopener noreferrer">
             GitHub
             <ArrowUpRightIcon aria-hidden className="size-3.5" />
           </a>

@@ -64,18 +64,26 @@ Not every conflict represents a code of conduct violation, and this Code of Cond
 encouraged behaviors and norms that can help avoid conflicts and minimize harm.
 
 When an incident does occur, it is important to report it promptly. To report a possible violation,
-**contact the project maintainers through GitHub** — open a minimal Issue asking for a private
-channel (do not include incident details in the public Issue itself), or reach the maintainer
-[@sopwise-ai](https://github.com/sopwise-ai) directly. A dedicated email address is not yet
-published; this document will be updated when one is available.
+**use the project's private reporting channel** — the same one used for security reports, because it
+notifies only the maintainers and is not visible to the public:
 
-Community Moderators take reports of violations seriously and will make every effort to respond in a
-timely manner. They will investigate all reports of code of conduct violations, reviewing messages,
-logs, and recordings, or interviewing witnesses and other participants. Community Moderators will
-keep investigation and enforcement actions as transparent as possible while prioritizing safety and
-confidentiality. In order to honor these values, enforcement actions are carried out in private with
-the involved parties, but communicating to the whole community may be part of a mutually agreed upon
-resolution.
+<https://github.com/sopwise-ai/redbot/security/advisories/new>
+
+Start the title with `Code of Conduct:` so it can be routed correctly. Do **not** describe the
+incident in a public Issue, and do not @-mention people involved. If the report concerns the sole
+maintainer, GitHub's abuse form (<https://github.com/contact/report-abuse>) is reviewed by GitHub
+rather than by us.
+
+**Community Moderators** for this project are the maintainers listed in
+[`.github/CODEOWNERS`](./.github/CODEOWNERS).
+
+Community Moderators take reports of violations seriously and will make every effort to respond
+within **7 business days**. They will investigate all reports of code of conduct violations,
+reviewing messages, logs, and recordings, or interviewing witnesses and other participants.
+Community Moderators will keep investigation and enforcement actions as transparent as possible
+while prioritizing safety and confidentiality. In order to honor these values, enforcement actions
+are carried out in private with the involved parties, but communicating to the whole community may
+be part of a mutually agreed upon resolution.
 
 ## Addressing and Repairing Harm
 
@@ -85,31 +93,49 @@ incident's impact on the individuals involved and the community as a whole. Depe
 of a violation, lower rungs on the ladder may be skipped.
 
 1. **Warning** — a private, written warning from Community Moderators, providing clarity around the
-   nature of the violation and an explanation of why the behavior was inappropriate.
-2. **Temporary or permanent ban** — a temporary ban from any sort of interaction or public
-   communication with the community for a specified period of time; a permanent ban under repeated
-   or severe violations.
-3. **Repair** — where appropriate, the parties are invited to take part in a restorative process.
+   nature of the violation and an explanation of why the behavior was inappropriate. A public
+   apology may be requested.
+2. **Temporarily limited activities** — a private, written warning with a time-limited cooldown
+   period. The cooldown may be limited to particular channels or interactions with particular
+   community members. A public apology may be requested.
+3. **Temporary suspension** — a private, written warning with a set of conditions for returning to
+   the community, such as not interacting with the person who was harmed. A public apology may be
+   requested.
+4. **Permanent ban** — a permanent removal from all community spaces, tools, and communication
+   channels. No repair is possible at this severity.
+
+This enforcement ladder is intended as a guideline. It does not limit the ability of Community
+Moderators to use their discretion and judgment, in keeping with the best interests of our community.
 
 ## Scope
 
 This Code of Conduct applies within all community spaces, and also applies when an individual is
-officially representing the community in public or other spaces.
+officially representing the community in public or other spaces. Examples of representing our
+community include using an official email address, posting via an official social media account, or
+acting as an appointed representative at an online or offline event.
 
 ## 中文说明
 
-本行为准则适用于本仓库的 Issue、Pull Request、Discussions 及任何以本项目名义参与的公开场合。
+以下为便于阅读的中文摘要，**如有歧义以上方英文原文为准**；官方简体中文译本见
+<https://www.contributor-covenant.org/zh-cn/version/3/0/code_of_conduct/>。
 
-- **鼓励**：尊重项目目标、友善而诚实地交流、尊重不同观点、为贡献负责、接受建设性反馈
-- **禁止**：骚扰、人身攻击、基于身份的刻板印象或歧视、未经许可公开他人隐私、威胁与煽动伤害、
-  冒充他人、不注明来源、夹带商业推广
-- **举报**：不要在公开 Issue 里描述事件细节。请开一个仅含「请求私下联系」的最小 Issue，
-  或直接联系维护者 [@sopwise-ai](https://github.com/sopwise-ai)。我们会在 **7 个工作日内**回应
-- **处理**：以修复伤害为目标，视严重程度采取私下警告、临时封禁、永久封禁等措施
+本行为准则适用于本仓库的 Issue、Pull Request、Discussions，以及任何以本项目名义参与的公开场合。
+
+- **鼓励**：尊重项目目标与活动方式、友善而诚实地交流、尊重不同观点与经历、为自己的行为与贡献负责、
+  给予并接受建设性反馈、在造成伤害时进行弥补
+- **禁止**：骚扰、人身攻击、基于身份的刻板印象或歧视、性化、未经许可公开他人隐私、威胁与煽动伤害、
+  冒充他人、不注明来源、夹带商业推广、传播包含上述行为的内容
+- **举报**：不要在公开 Issue 里描述事件细节，请走上文的私密通道（Security → Report a vulnerability，
+  标题以 `Code of Conduct:` 开头）。我们是**社区管理员**（即 [`.github/CODEOWNERS`](./.github/CODEOWNERS)
+  里的维护者），会在 **7 个工作日内**回应
+- **处理**：以修复伤害为目标，视严重程度采取私下警告、暂时限制活动、暂时停权、永久封禁；
+  这一阶梯是指导方针，不限制管理员为社区利益作出的判断
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 3.0,
-available at <https://www.contributor-covenant.org/version/3/0/>.
+This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 3.0, permanently
+available at <https://www.contributor-covenant.org/version/3/0/>. The Contributor Covenant is
+stewarded by the [Organization for Ethical Source](https://ethicalsource.dev) and licensed under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 [homepage]: https://www.contributor-covenant.org

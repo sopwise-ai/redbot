@@ -5,14 +5,21 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 
+# 本地工具产物：vercel CLI 生成，其中的 project.json 会被 prettier 当普通 JSON 改写
+.vercel/
+
 # 生成物：由包管理器维护，格式化只会制造无意义 diff
 package-lock.json
 
 # 站点数据：由 scripts/generate-readme.ts 从 data/*.json 生成，格式由脚本保证
 README.md
 
-# 截图等二进制资源
+# 二进制资源：prettier 没有对应 parser（遍历时会自动跳过），这里显式声明意图
 docs/screenshots/
+public/*.png
 
-# prettier 没有对应 parser 的类型（遍历时会自动跳过，这里显式声明意图）
+# 刻意不排除 src/components/ui/：registry 原文不符合本仓库格式，
+# `npx shadcn add` 覆盖同名文件后跑一次 npm run format 即可（见 AGENTS.md）。
+
+# prettier 没有对应 parser 的类型
 *.sh
