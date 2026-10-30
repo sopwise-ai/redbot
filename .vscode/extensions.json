@@ -1,0 +1,8 @@
+{
+  // 推荐安装而非强制：克隆者没有这些插件也能正常开发，只是少了保存时格式化与 class 补全
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss"
+  ]
+}
