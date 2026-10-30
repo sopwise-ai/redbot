@@ -350,7 +350,7 @@ export function AppShell({
                         {title}
                       </h1>
                       {visibleCount > 0 ? (
-                        <Badge variant="secondary" className="tabular-nums text-muted-foreground">
+                        <Badge variant="secondary" className="text-muted-foreground tabular-nums">
                           {visibleCount}
                         </Badge>
                       ) : null}
@@ -363,11 +363,11 @@ export function AppShell({
                     <div className="hidden shrink-0 text-right md:block">
                       <Link
                         href="/topics/"
-                        className="text-xs tabular-nums text-muted-foreground transition-colors hover:text-foreground hover:underline hover:underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+                        className="text-xs text-muted-foreground tabular-nums transition-colors hover:text-foreground hover:underline hover:underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
                       >
                         {groups.length} 个主题
                       </Link>
-                      <p className="mt-1 text-2xs tabular-nums text-muted-foreground/60">
+                      <p className="mt-1 text-2xs text-muted-foreground/60 tabular-nums">
                         更新于 {updated}
                       </p>
                     </div>
@@ -381,7 +381,7 @@ export function AppShell({
 
               {searching ? (
                 results.length > 0 ? (
-                  <div className="animate-in fade-in-0 duration-200">
+                  <div className="animate-in duration-200 fade-in-0">
                     <PillWall
                       groups={[{ slug: "search", label: "search", items: results }]}
                       hueByLabel={hueByLabel}

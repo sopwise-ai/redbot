@@ -63,7 +63,7 @@ export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs tabular-nums text-muted-foreground">
+        <span className="text-xs text-muted-foreground tabular-nums">
           {items.length} 个 · 按最近使用排序
         </span>
         <div className="ml-auto flex items-center gap-2">

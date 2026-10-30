@@ -126,7 +126,7 @@ export function AppSidebar({
                       🐾
                     </span>
                     <span className="truncate">足迹</span>
-                    <span className="ml-auto text-2xs tabular-nums text-muted-foreground/50">
+                    <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
                       {entries.length}
                     </span>
                   </SidebarMenuButton>
@@ -146,7 +146,7 @@ export function AppSidebar({
                       🗂️
                     </span>
                     <span className="truncate">全部</span>
-                    <span className="ml-auto text-2xs tabular-nums text-muted-foreground/50">
+                    <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
                       {total}
                     </span>
                   </SidebarMenuButton>
@@ -160,7 +160,7 @@ export function AppSidebar({
           <span className="text-2xs font-medium tracking-[0.08em] text-muted-foreground/60">
             主题
           </span>
-          <span className="ml-auto text-2xs tabular-nums text-muted-foreground/40">
+          <span className="ml-auto text-2xs text-muted-foreground/40 tabular-nums">
             {groups.length}
           </span>
         </div>
@@ -188,7 +188,7 @@ export function AppSidebar({
                         {group.emoji}
                       </span>
                       <span className="truncate">{group.label}</span>
-                      <span className="ml-auto text-2xs tabular-nums text-muted-foreground/50">
+                      <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
                         {group.items.length}
                       </span>
                     </SidebarMenuButton>

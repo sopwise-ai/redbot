@@ -35,7 +35,7 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline gap-2">
                       <span className="text-md font-medium">{item.label}</span>
-                      <span className="text-2xs tabular-nums text-muted-foreground/60">
+                      <span className="text-2xs text-muted-foreground/60 tabular-nums">
                         {item.items.length}
                       </span>
                     </span>
