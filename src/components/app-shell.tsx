@@ -301,7 +301,11 @@ export function AppShell({
               />
 
               <p className="sr-only" aria-live="polite">
-                {searching ? `找到 ${results.length} 个结果` : `共 ${visibleCount} 个信息源`}
+                {searching
+                  ? `找到 ${results.length} 个结果`
+                  : view === "wall"
+                    ? `当前分类：${activeGroup?.label ?? "全部"}，共 ${visibleCount} 个信息源`
+                    : `共 ${visibleCount} 个信息源`}
               </p>
 
               {searching ? (
@@ -314,7 +318,11 @@ export function AppShell({
                   </div>
                 ) : (
                   <div className="rounded-xl border border-dashed px-6 py-16 text-center">
-                    <p className="text-md font-medium">没有匹配「{query.trim()}」的信息源</p>
+                    <p className="text-md font-medium">
+                      没有匹配
+                      <span className="text-muted-foreground">「{query.trim()}」</span>
+                      的信息源
+                    </p>
                     <p className="mt-2 text-sm text-muted-foreground">
                       换个关键词试试，或者把这个源提交给社区。
                     </p>
