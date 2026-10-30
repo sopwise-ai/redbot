@@ -6,25 +6,24 @@ import { usePathname, useRouter } from "next/navigation";
 import { ArrowUpRight, SearchIcon, XIcon } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { CategoryChips } from "@/components/category-chips";
 import { HistoryView } from "@/components/history-view";
 import { PillWall } from "@/components/pill-wall";
+import { ShellHeader } from "@/components/shell-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TopicsIndex } from "@/components/topics-index";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { buildHueMap } from "@/lib/groups";
 import type { CategoryGroup } from "@/lib/schema";
 import { createSearchIndex } from "@/lib/search";
 import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
 import { useHistory } from "@/lib/use-history";
 import { site } from "@/lib/site";
-import { cn } from "@/lib/utils";
 
 const ALL = "all";
 
@@ -188,44 +187,9 @@ export function AppShell({
   const visibleGroups = activeGroup && !searching ? [activeGroup] : groups;
   const visibleCount = searching
     ? results.length
-    : view === "topics"
-      ? groups.length
-      : view === "search"
-        ? 0
-        : view === "history"
-          ? historyEntries.length
-          : (activeGroup?.items.length ?? total);
-
-  const headEmoji = searching
-    ? "🔍"
-    : view === "topics"
-      ? "🗂️"
-      : view === "history"
-        ? "🐾"
-        : view === "search"
-          ? "🔍"
-          : (activeGroup?.emoji ?? "🗂️");
-
-  const title = searching
-    ? "搜索结果"
-    : view === "topics"
-      ? "全部主题"
-      : view === "search"
-        ? "搜索"
-        : view === "history"
-          ? "足迹"
-          : (activeGroup?.label ?? "全部信息源");
-  const subtitle = searching
-    ? `在全部 ${total} 个信息源里查找，不区分主题`
-    : view === "topics"
-      ? "按主题浏览，或直接从侧栏进入"
-      : view === "search"
-        ? `在全部 ${total} 个信息源里查找，不区分主题`
-        : view === "history"
-          ? "你点过的信息源，按最近使用排序"
-          : activeGroup
-            ? activeGroup.blurb
-            : "点一下直达，不用再记网址";
+    : view === "history"
+      ? historyEntries.length
+      : (activeGroup?.items.length ?? total);
 
   return (
     <>
@@ -325,44 +289,16 @@ export function AppShell({
 
           <main id="content" tabIndex={-1} className="flex-1 px-5 pb-12 outline-none lg:px-8">
             <div className="mx-auto w-full max-w-[1160px]">
-              <div className="border-b border-border/70 pt-10 pb-6">
-                <div className="flex items-start gap-4">
-                  <div
-                    aria-hidden
-                    className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-[22px] leading-none shadow-xs"
-                  >
-                    {headEmoji}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h1 className="text-2xl leading-[32px] font-semibold tracking-[-0.02em] sm:text-3xl sm:leading-[40px]">
-                        {title}
-                      </h1>
-                      {visibleCount > 0 ? (
-                        <Badge variant="secondary" className="text-muted-foreground tabular-nums">
-                          {visibleCount}
-                        </Badge>
-                      ) : null}
-                    </div>
-                    <p className="mt-1.5 text-sm leading-6 text-muted-foreground sm:text-md">
-                      {subtitle}
-                    </p>
-                  </div>
-                  {view !== "topics" && !searching ? (
-                    <div className="hidden shrink-0 text-right md:block">
-                      <Link
-                        href="/topics/"
-                        className="text-xs text-muted-foreground tabular-nums transition-colors hover:text-foreground hover:underline hover:underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
-                      >
-                        {groups.length} 个主题
-                      </Link>
-                      <p className="mt-1 text-2xs text-muted-foreground/60 tabular-nums">
-                        更新于 {updated}
-                      </p>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
+              <ShellHeader
+                view={view}
+                searching={searching}
+                activeGroup={activeGroup}
+                groups={groups}
+                total={total}
+                updated={updated}
+                searchCount={results.length}
+                historyCount={historyEntries.length}
+              />
 
               <p className="sr-only" aria-live="polite">
                 {searching ? `找到 ${results.length} 个结果` : `共 ${visibleCount} 个信息源`}
@@ -432,41 +368,3 @@ export function AppShell({
     </>
   );
 }
-
-function CategoryChips({
-  groups,
-  total,
-  active,
-  onSelect,
-  className,
-}: {
-  groups: CategoryGroup[];
-  total: number;
-  active: string;
-  onSelect: (slug: string) => void;
-  className?: string;
-}) {
-  return (
-    <ToggleGroup
-      type="single"
-      value={active}
-      onValueChange={(value) => onSelect(value || ALL)}
-      aria-label="按主题过滤"
-      className={cn("gap-1", className)}
-    >
-      <ToggleGroupItem value={ALL} className={chipClass}>
-        全部
-        <span className="text-2xs tabular-nums opacity-50">{total}</span>
-      </ToggleGroupItem>
-      {groups.map((group) => (
-        <ToggleGroupItem key={group.slug} value={group.slug} className={chipClass}>
-          {group.label}
-          <span className="text-2xs tabular-nums opacity-50">{group.items.length}</span>
-        </ToggleGroupItem>
-      ))}
-    </ToggleGroup>
-  );
-}
-
-const chipClass =
-  "h-8 shrink-0 rounded-full border-transparent px-3.5 text-xs text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground";
