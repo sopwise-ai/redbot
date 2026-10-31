@@ -225,7 +225,7 @@ export function AppShell({
         ? "搜索"
         : view === "history"
           ? "足迹"
-          : (activeGroup?.label ?? "全部信息源");
+          : (activeGroup?.label ?? site.tagline);
   const subtitle = searching
     ? `在全部 ${total} 个信息源里查找，不区分主题`
     : view === "topics"
@@ -236,7 +236,10 @@ export function AppShell({
           ? "你点过的信息源，按最近使用排序"
           : activeGroup
             ? activeGroup.blurb
-            : "点一下直达，不用再记网址";
+            : site.subtitle;
+
+  // 首页＝按钮墙 + 无分类 + 非搜索：只有这里展示品牌标语与信任行
+  const isHome = !searching && view === "wall" && !activeGroup;
 
   return (
     <>
@@ -336,7 +339,7 @@ export function AppShell({
 
           <main id="content" tabIndex={-1} className="flex-1 px-5 pb-12 outline-none lg:px-8">
             <div className="mx-auto w-full max-w-[1160px]">
-              <div className="border-b border-border/70 pt-10 pb-6">
+              <div className="pt-10 pb-6">
                 <div className="flex items-start gap-4">
                   <div
                     aria-hidden
@@ -346,10 +349,16 @@ export function AppShell({
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <h1 className="text-2xl leading-[32px] font-semibold tracking-[-0.02em] sm:text-3xl sm:leading-[40px]">
+                      <h1
+                        className={
+                          isHome
+                            ? "text-xl leading-7 font-semibold tracking-[-0.02em] sm:text-3xl sm:leading-[40px]"
+                            : "text-2xl leading-[32px] font-semibold tracking-[-0.02em] sm:text-3xl sm:leading-[40px]"
+                        }
+                      >
                         {title}
                       </h1>
-                      {visibleCount > 0 ? (
+                      {visibleCount > 0 && !isHome ? (
                         <Badge variant="secondary" className="text-muted-foreground tabular-nums">
                           {visibleCount}
                         </Badge>
@@ -358,6 +367,11 @@ export function AppShell({
                     <p className="mt-1.5 text-sm leading-6 text-muted-foreground sm:text-md">
                       {subtitle}
                     </p>
+                    {isHome ? (
+                      <p className="mt-2 text-xs leading-5 text-muted-foreground/70">
+                        {site.trust}
+                      </p>
+                    ) : null}
                   </div>
                   {view !== "topics" && !searching ? (
                     <div className="hidden shrink-0 text-right md:block">

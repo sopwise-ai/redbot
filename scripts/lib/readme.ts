@@ -7,6 +7,12 @@ export interface ReadmeInput {
     name: string;
     domain: string;
     url: string;
+    /** L1 标语 */
+    tagline: string;
+    /** L2 副标语 */
+    subtitle: string;
+    /** L3 信任行 */
+    trust: string;
     license: string;
     author: string;
     repo: string;
@@ -60,16 +66,21 @@ ${rows}`;
 
 # RedBot
 
-> 一个按钮，直达一个信息源。
+> ${site.tagline}
+>
+> ${site.subtitle}
+
+**${site.trust}**
 
 [![CI](https://github.com/sopwise-ai/redbot/actions/workflows/ci.yml/badge.svg)](https://github.com/sopwise-ai/redbot/actions/workflows/ci.yml)
 [![links](https://img.shields.io/badge/信息源-${catalog.links.length}-c62a2f)](./data/links.json)
 [![categories](https://img.shields.io/badge/主题-${categories.length}-555)](./data/categories.json)
 [![license](https://img.shields.io/badge/license-${site.license}-555)](./LICENSE)
 
-RedBot 是中文互联网优质信息源的极简入口。页面上只有按钮：点一下，直达该平台**信息密度最高的那个页面** —— 热榜、快讯、榜单、广场；首页本身就是信息流的门户，就直达首页。
+RedBot 是一份**能点的网站清单**：每个主题只留最值得去的几个站，分好类、写着「什么时候该用它」，
+点一下直达该站**信息密度最高的那个页面** —— 热榜、快讯、榜单、广场；首页本身就是信息流的门户，就直达首页。
 
-![RedBot 首页：一页按钮，点一下直达一个信息源](./docs/screenshots/home.png)
+![RedBot 首页：中文互联网精选网站清单](./docs/screenshots/home.png)
 
 **在线访问**：[${site.domain}](${site.url})　｜　本地预览：\`npm run build && npm run start\` → <http://localhost:4173>
 

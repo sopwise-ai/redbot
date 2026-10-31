@@ -2,7 +2,7 @@
   "name": "redbot",
   "version": "0.1.0",
   "private": true,
-  "description": "中文互联网优质信息源的极简入口：一个按钮，直达一个信息源。",
+  "description": "中文互联网精选网站清单：挑过的，分好的，点得开的。免费开源、人工精选、无广告无跟踪。",
   "license": "MIT",
   "author": "SopwiseAI (https://redbot.cc)",
   "homepage": "https://redbot.cc",

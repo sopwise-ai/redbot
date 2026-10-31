@@ -17,6 +17,7 @@ const config = [
       "next-env.d.ts",
       "*.tsbuildinfo",
       "coverage/**",
+      ".worktrees/**",
       "docs/screenshots/**",
     ],
   },

@@ -5,6 +5,9 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 
+# git worktree 隔离工作区（每份都带完整 node_modules）
+.worktrees/
+
 # 本地工具产物：vercel CLI 生成，其中的 project.json 会被 prettier 当普通 JSON 改写
 .vercel/
 

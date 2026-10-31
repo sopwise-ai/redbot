@@ -15,5 +15,12 @@
     "MD035": { "style": "---" },
     "MD046": { "style": "fenced" },
   },
-  "ignores": ["node_modules/**", ".next/**", "out/**", "**/*.tsbuildinfo"],
+  "ignores": [
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "**/*.tsbuildinfo",
+    // git worktree 隔离工作区：里面有一份完整的 node_modules，扫进来会 lint 上千个第三方 .md
+    ".worktrees/**",
+  ],
 }
