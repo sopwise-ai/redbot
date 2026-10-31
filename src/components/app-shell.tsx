@@ -22,6 +22,7 @@ import { buildHueMap } from "@/lib/groups";
 import type { CategoryGroup } from "@/lib/schema";
 import { createSearchIndex } from "@/lib/search";
 import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
+import { replaceUrlQuietly } from "@/lib/url";
 import { useHistory } from "@/lib/use-history";
 import { site } from "@/lib/site";
 
@@ -110,16 +111,19 @@ export function AppShell({
     }
   }, [searching]);
 
-  // 地址栏：搜索时是 /search/?q=，清空后回到来源页
+  // 地址栏：搜索时是 /search/?q=，清空后回到来源页。
+  // 必须用 replaceUrlQuietly（绕过 Next 的 replaceState patch）：
+  // patch 会让每次改 URL 都 dispatch ACTION_RESTORE → router state 变化 →
+  // <main id="content"> 抢走焦点，输入框每打一个字就失焦
   React.useEffect(() => {
     if (searching) {
       const q = new URLSearchParams({ q: query.trim() }).toString();
-      window.history.replaceState(null, "", `/search/?${q}`);
+      replaceUrlQuietly(`/search/?${q}`);
       return;
     }
     if (window.location.pathname.startsWith("/search")) {
       const back = trackedOrigin.current ? originPath.current : "/";
-      window.history.replaceState(null, "", back);
+      replaceUrlQuietly(back);
     }
   }, [searching, query]);
 
@@ -127,7 +131,7 @@ export function AppShell({
   React.useEffect(() => {
     if (searching || view !== "wall") return;
     const path = active === ALL ? "/" : `/topics/${active}/`;
-    if (window.location.pathname !== path) window.history.replaceState(null, "", path);
+    if (window.location.pathname !== path) replaceUrlQuietly(path);
   }, [active, searching, view]);
 
   // 浏览器前进/后退
