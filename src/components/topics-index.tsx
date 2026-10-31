@@ -1,16 +1,12 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
+import { bucketByGroup } from "@/lib/groups";
 import type { CategoryGroup } from "@/lib/schema";
 
 /** 主题索引：渲染在主区域里，与按钮墙共用同一个外壳 */
 export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
-  const buckets = new Map<string, CategoryGroup[]>();
-  for (const group of groups) {
-    const list = buckets.get(group.group);
-    if (list) list.push(group);
-    else buckets.set(group.group, [group]);
-  }
+  const buckets = bucketByGroup(groups);
 
   return (
     <div className="flex flex-col gap-10">
