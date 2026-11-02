@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        这类问题通常改一行 `data/links.json` 就能修好，也欢迎直接提 Pull Request。
+        这类问题通常改主题文件里的一行就能修好（`data/topics/<主题>.json`），也欢迎直接提 Pull Request。
 
   - type: input
     id: entry

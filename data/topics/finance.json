@@ -1,0 +1,120 @@
+{
+  "label": "财经",
+  "emoji": "💰",
+  "blurb": "钱在哪里流动",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "36kr",
+      "name": "36氪快讯",
+      "url": "https://36kr.com/newsflashes",
+      "tags": ["快讯"],
+      "desc": "创投圈的实时快讯"
+    },
+    {
+      "id": "wallstreetcn",
+      "name": "华尔街见闻",
+      "url": "https://wallstreetcn.com/live/global",
+      "tags": ["快讯"],
+      "desc": "全球市场的分钟级快讯"
+    },
+    {
+      "id": "cls",
+      "name": "财联社",
+      "url": "https://www.cls.cn/telegraph",
+      "tags": ["快讯"],
+      "desc": "A 股盘中的电报流"
+    },
+    {
+      "id": "yicai",
+      "name": "第一财经",
+      "url": "https://www.yicai.com/",
+      "tags": ["深度"],
+      "desc": "专业财经媒体的日常"
+    },
+    {
+      "id": "caixin",
+      "name": "财新网",
+      "url": "https://www.caixin.com/",
+      "tags": ["深度"],
+      "desc": "严肃财经调查的标杆"
+    },
+    {
+      "id": "eeo",
+      "name": "经济观察网",
+      "url": "https://www.eeo.com.cn/",
+      "tags": ["深度"],
+      "desc": "宏观经济与产业观察"
+    },
+    {
+      "id": "tmtpost",
+      "name": "钛媒体",
+      "url": "https://www.tmtpost.com/",
+      "tags": ["商业"],
+      "desc": "科技商业的产业视角"
+    },
+    {
+      "id": "lieyunwang",
+      "name": "猎云网",
+      "url": "https://www.lieyunwang.com/",
+      "tags": ["创业"],
+      "desc": "创业与融资的一手消息"
+    },
+    {
+      "id": "jin10",
+      "name": "金十数据",
+      "url": "https://www.jin10.com/",
+      "tags": ["市场"],
+      "desc": "全球财经数据快讯"
+    },
+    {
+      "id": "xueqiu",
+      "name": "雪球",
+      "url": "https://xueqiu.com/today",
+      "tags": ["投资"],
+      "desc": "投资者的今日话题"
+    },
+    {
+      "id": "eastmoney",
+      "name": "东方财富",
+      "url": "https://www.eastmoney.com/",
+      "tags": ["市场"],
+      "desc": "行情与资讯的合流处"
+    },
+    {
+      "id": "10jqka",
+      "name": "同花顺",
+      "url": "https://www.10jqka.com.cn/",
+      "tags": ["市场"],
+      "desc": "看盘工具与财经资讯"
+    },
+    {
+      "id": "gelonghui",
+      "name": "格隆汇",
+      "url": "https://www.gelonghui.com/",
+      "tags": ["市场"],
+      "desc": "港股与全球市场视角"
+    },
+    {
+      "id": "stcn",
+      "name": "证券时报",
+      "url": "https://www.stcn.com/",
+      "tags": ["市场"],
+      "desc": "监管与上市公司的一手消息"
+    },
+    {
+      "id": "nbd",
+      "name": "每日经济新闻",
+      "url": "https://www.nbd.com.cn/",
+      "tags": ["市场"],
+      "desc": "政策与产业的快讯"
+    },
+    {
+      "id": "chinaventure",
+      "name": "投中网",
+      "url": "https://www.chinaventure.com.cn/",
+      "tags": ["创业"],
+      "desc": "一级市场的交易情报"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "label": "影视",
+  "emoji": "🎥",
+  "blurb": "看什么，先看榜单",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "douban-movie",
+      "name": "豆瓣电影",
+      "url": "https://movie.douban.com/chart",
+      "tags": ["榜单"],
+      "desc": "选片之前先看榜单"
+    },
+    {
+      "id": "iqiyi",
+      "name": "爱奇艺",
+      "url": "https://www.iqiyi.com/",
+      "tags": [],
+      "desc": "长视频内容库"
+    },
+    {
+      "id": "tencent-video",
+      "name": "腾讯视频",
+      "url": "https://v.qq.com/",
+      "tags": [],
+      "desc": "剧集与综艺的主场"
+    },
+    {
+      "id": "youku",
+      "name": "优酷",
+      "url": "https://www.youku.com/",
+      "tags": [],
+      "desc": "老牌长视频平台"
+    },
+    {
+      "id": "mgtv",
+      "name": "芒果TV",
+      "url": "https://www.mgtv.com/",
+      "tags": [],
+      "desc": "综艺与剧集的强势方"
+    },
+    {
+      "id": "imdb",
+      "name": "IMDb",
+      "url": "https://www.imdb.com/",
+      "tags": ["榜单"],
+      "desc": "全球影视资料库"
+    },
+    {
+      "id": "maoyan",
+      "name": "猫眼电影",
+      "url": "https://www.maoyan.com/",
+      "tags": ["榜单"],
+      "desc": "票房与排片实时数据"
+    },
+    {
+      "id": "mtime",
+      "name": "时光网",
+      "url": "https://www.mtime.com/",
+      "tags": ["影评"],
+      "desc": "影评与电影资料"
+    }
+  ]
+}

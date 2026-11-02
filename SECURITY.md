@@ -25,18 +25,18 @@ We welcome reports in English. Please use the private channel above instead of a
 We acknowledge within **7 business days** and follow a **90-day** coordinated disclosure window.
 
 时间线：确认收到后每 **14 天**在 Advisory 里同步一次进展；判定为超范围或不予修复的，会在 7 个工作日内
-说明理由并请你同意公开。涉及 `data/links.json` 的恶意外链属于紧急项，确认后 **72 小时**内下线并重新部署，
+说明理由并请你同意公开。涉及 `data/topics/` 的恶意外链属于紧急项，确认后 **72 小时**内下线并重新部署，
 不受 90 天窗口约束。
 
 ## 项目构成
 
 RedBot 是**纯静态站点**，这决定了安全边界：
 
-| 组件     | 说明                                                                       |
-| -------- | -------------------------------------------------------------------------- |
-| 站点     | Next.js（App Router，`output: "export"`），构建期生成 HTML，无服务端运行时 |
-| 数据     | `data/links.json` + `data/categories.json`，构建期完成校验与渲染           |
-| 构建脚本 | `scripts/validate.ts`、`scripts/generate-readme.ts`                        |
+| 组件     | 说明                                                                              |
+| -------- | --------------------------------------------------------------------------------- |
+| 站点     | Next.js（App Router，`output: "export"`），构建期生成 HTML，无服务端运行时        |
+| 数据     | `data/topics.json` + `data/topics/*.json`，构建期完成校验与渲染                   |
+| 构建脚本 | `scripts/generate-topics.ts`、`scripts/validate.ts`、`scripts/generate-readme.ts` |
 
 **没有**后端服务、数据库、账号体系、Cookie、第三方统计脚本或外部字体请求。
 
@@ -53,7 +53,7 @@ RedBot 是**纯静态站点**，这决定了安全边界：
 - **外链投毒 / 仿冒**：把已收录条目的 `url` 改到钓鱼或仿冒站点，包括域名近似
   （`weibo.com.evil.tld`）、IDN 同形字、跳转到安装包、「以 https 伪装」的恶意页面。
   判断标准是「用户以为自己在点 X」—— 这属于安全问题，不是数据争议
-- **数据层注入**：能让 `data/links.json` 通过校验、但生成 `javascript:` / `data:` / `vbscript:`
+- **数据层注入**：能让 `data/topics/*.json` 通过校验、但生成 `javascript:` / `data:` / `vbscript:`
   URL 或畸形标签的路径
 - **前端**：XSS（例如 `title` / `aria-label` 等属性拼接）、依赖引入的客户端漏洞、
   元数据注入（`metadataBase` / OG）

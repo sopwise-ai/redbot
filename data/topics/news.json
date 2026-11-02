@@ -1,0 +1,127 @@
+{
+  "label": "新闻",
+  "emoji": "📰",
+  "blurb": "今天发生了什么",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "weibo-hot",
+      "name": "微博热搜",
+      "url": "https://s.weibo.com/top/summary",
+      "tags": ["热榜"],
+      "desc": "十分钟前的全网议题"
+    },
+    {
+      "id": "zhihu-hot",
+      "name": "知乎热榜",
+      "url": "https://www.zhihu.com/hot",
+      "tags": ["热榜"],
+      "desc": "讨论质量最高的热榜"
+    },
+    {
+      "id": "baidu-hot",
+      "name": "百度热搜",
+      "url": "https://top.baidu.com/board?tab=realtime",
+      "tags": ["热榜"],
+      "desc": "搜索引擎里的集体注意力"
+    },
+    {
+      "id": "thepaper",
+      "name": "澎湃新闻",
+      "url": "https://www.thepaper.cn/",
+      "tags": ["深度"],
+      "desc": "时政原创新闻第一现场"
+    },
+    {
+      "id": "jiemian",
+      "name": "界面新闻",
+      "url": "https://www.jiemian.com/",
+      "tags": ["深度"],
+      "desc": "商业与资本的清醒视角"
+    },
+    {
+      "id": "bjnews",
+      "name": "新京报",
+      "url": "https://www.bjnews.com.cn/",
+      "tags": ["深度"],
+      "desc": "调查报道仍有锋芒"
+    },
+    {
+      "id": "qq-news",
+      "name": "腾讯新闻",
+      "url": "https://news.qq.com/",
+      "tags": [],
+      "desc": "门户时代的新闻聚合"
+    },
+    {
+      "id": "netease-news",
+      "name": "网易新闻",
+      "url": "https://news.163.com/",
+      "tags": [],
+      "desc": "跟贴往往比新闻好看"
+    },
+    {
+      "id": "ifeng-news",
+      "name": "凤凰新闻",
+      "url": "https://news.ifeng.com/",
+      "tags": [],
+      "desc": "带一点国际视野的报道"
+    },
+    {
+      "id": "huanqiu",
+      "name": "环球网",
+      "url": "https://www.huanqiu.com/",
+      "tags": ["国际"],
+      "desc": "国际新闻的快节奏输出"
+    },
+    {
+      "id": "xinhua",
+      "name": "新华网",
+      "url": "https://www.xinhuanet.com/",
+      "tags": [],
+      "desc": "权威发布的原始出处"
+    },
+    {
+      "id": "cctv",
+      "name": "央视网",
+      "url": "https://www.cctv.com/",
+      "tags": [],
+      "desc": "电视端的新闻与专题"
+    },
+    {
+      "id": "chinanews",
+      "name": "中国新闻网",
+      "url": "https://www.chinanews.com.cn/",
+      "tags": [],
+      "desc": "面向海外华人的中文通讯社"
+    },
+    {
+      "id": "guancha",
+      "name": "观察者网",
+      "url": "https://www.guancha.cn/",
+      "tags": ["国际"],
+      "desc": "立场鲜明的国际时评"
+    },
+    {
+      "id": "zaobao",
+      "name": "联合早报",
+      "url": "https://www.zaobao.com.sg/",
+      "tags": ["国际"],
+      "desc": "东南亚视角的中文报道"
+    },
+    {
+      "id": "bbc-zh",
+      "name": "BBC中文",
+      "url": "https://www.bbc.com/zhongwen/simp",
+      "tags": ["国际"],
+      "desc": "外部视角看中国"
+    },
+    {
+      "id": "initium",
+      "name": "端传媒",
+      "url": "https://theinitium.com/",
+      "tags": ["深度"],
+      "desc": "付费墙内的深度报道"
+    }
+  ]
+}

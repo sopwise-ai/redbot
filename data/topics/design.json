@@ -1,0 +1,92 @@
+{
+  "label": "产品设计",
+  "emoji": "🎨",
+  "blurb": "做东西的灵感来源",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "producthunt",
+      "name": "Product Hunt",
+      "url": "https://www.producthunt.com/",
+      "tags": ["产品"],
+      "desc": "每天一个新产品"
+    },
+    {
+      "id": "awwwards",
+      "name": "Awwwards",
+      "url": "https://www.awwwards.com/",
+      "tags": ["灵感"],
+      "desc": "网页设计的年度标杆"
+    },
+    {
+      "id": "dribbble",
+      "name": "Dribbble",
+      "url": "https://dribbble.com/",
+      "tags": ["作品集"],
+      "desc": "设计师的作品橱窗"
+    },
+    {
+      "id": "behance",
+      "name": "Behance",
+      "url": "https://www.behance.net/",
+      "tags": ["作品集"],
+      "desc": "完整的创意作品集"
+    },
+    {
+      "id": "zcool",
+      "name": "站酷",
+      "url": "https://www.zcool.com.cn/",
+      "tags": ["作品集"],
+      "desc": "国内设计师的主场"
+    },
+    {
+      "id": "ui-cn",
+      "name": "UI中国",
+      "url": "https://www.ui.cn/",
+      "tags": ["资源"],
+      "desc": "UI 与交互的资源库"
+    },
+    {
+      "id": "huaban",
+      "name": "花瓣",
+      "url": "https://huaban.com/",
+      "tags": ["灵感"],
+      "desc": "灵感采集的老牌图库"
+    },
+    {
+      "id": "uisdc",
+      "name": "优设",
+      "url": "https://www.uisdc.com/",
+      "tags": ["资源"],
+      "desc": "设计教程与素材"
+    },
+    {
+      "id": "woshipm",
+      "name": "人人都是产品经理",
+      "url": "https://www.woshipm.com/",
+      "tags": ["产品"],
+      "desc": "产品经理的方法论集散地"
+    },
+    {
+      "id": "figma-community",
+      "name": "Figma Community",
+      "url": "https://www.figma.com/community",
+      "tags": ["资源"],
+      "desc": "可直接复用的设计文件"
+    },
+    {
+      "id": "godly",
+      "name": "Godly",
+      "url": "https://godly.website/",
+      "tags": ["灵感"],
+      "desc": "顶级网页设计案例集"
+    },
+    {
+      "id": "land-book",
+      "name": "Land-book",
+      "url": "https://land-book.com/",
+      "tags": ["灵感"],
+      "desc": "按风格分类的落地页图库"
+    }
+  ]
+}

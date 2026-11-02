@@ -1,0 +1,92 @@
+{
+  "label": "游戏",
+  "emoji": "🎮",
+  "blurb": "玩什么与为什么玩",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "gcores",
+      "name": "机核",
+      "url": "https://www.gcores.com/",
+      "tags": ["文化"],
+      "desc": "游戏文化的深度电台"
+    },
+    {
+      "id": "xiaoheihe",
+      "name": "小黑盒",
+      "url": "https://www.xiaoheihe.com/",
+      "tags": ["主机"],
+      "desc": "Steam 玩家的社区"
+    },
+    {
+      "id": "taptap",
+      "name": "TapTap",
+      "url": "https://www.taptap.cn/",
+      "tags": ["手游"],
+      "desc": "手游的发现与评分"
+    },
+    {
+      "id": "3dm",
+      "name": "3DM游戏",
+      "url": "https://www.3dmgame.com/",
+      "tags": [],
+      "desc": "单机游戏资讯"
+    },
+    {
+      "id": "gamersky",
+      "name": "游民星空",
+      "url": "https://www.gamersky.com/",
+      "tags": [],
+      "desc": "单机与主机内容库"
+    },
+    {
+      "id": "17173",
+      "name": "17173",
+      "url": "https://www.17173.com/",
+      "tags": [],
+      "desc": "老牌游戏门户"
+    },
+    {
+      "id": "nga",
+      "name": "NGA",
+      "url": "https://bbs.nga.cn/",
+      "tags": ["社区"],
+      "desc": "硬核玩家的讨论区"
+    },
+    {
+      "id": "miyoushe",
+      "name": "米游社",
+      "url": "https://www.miyoushe.com/",
+      "tags": ["手游"],
+      "desc": "米哈游玩家社区"
+    },
+    {
+      "id": "yystv",
+      "name": "游研社",
+      "url": "https://www.yystv.cn/",
+      "tags": ["文化"],
+      "desc": "游戏背后的故事"
+    },
+    {
+      "id": "indienova",
+      "name": "indienova",
+      "url": "https://indienova.com/",
+      "tags": [],
+      "desc": "独立游戏的据点"
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "url": "https://store.steampowered.com/",
+      "tags": ["平台"],
+      "desc": "买游戏的地方"
+    },
+    {
+      "id": "ign-cn",
+      "name": "IGN中国",
+      "url": "https://www.ign.com.cn/",
+      "tags": [],
+      "desc": "游戏评测与资讯"
+    }
+  ]
+}

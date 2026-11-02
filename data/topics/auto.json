@@ -1,0 +1,57 @@
+{
+  "label": "汽车",
+  "emoji": "🚗",
+  "blurb": "车与出行",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "autohome",
+      "name": "汽车之家",
+      "url": "https://www.autohome.com.cn/",
+      "tags": ["评测"],
+      "desc": "车型库与车主口碑"
+    },
+    {
+      "id": "yiche",
+      "name": "易车",
+      "url": "https://www.yiche.com/",
+      "tags": ["评测"],
+      "desc": "报价与评测"
+    },
+    {
+      "id": "dongchedi",
+      "name": "懂车帝",
+      "url": "https://www.dongchedi.com/",
+      "tags": ["评测"],
+      "desc": "实测与拆解"
+    },
+    {
+      "id": "xchuxing",
+      "name": "新出行",
+      "url": "https://www.xchuxing.com/",
+      "tags": ["新能源"],
+      "desc": "新能源车的垂直媒体"
+    },
+    {
+      "id": "42how",
+      "name": "42号车库",
+      "url": "https://www.42how.com/",
+      "tags": ["新能源"],
+      "desc": "智能电动车的深度内容"
+    },
+    {
+      "id": "pcauto",
+      "name": "太平洋汽车",
+      "url": "https://www.pcauto.com.cn/",
+      "tags": ["评测"],
+      "desc": "老牌汽车门户"
+    },
+    {
+      "id": "gasgoo",
+      "name": "盖世汽车",
+      "url": "https://auto.gasgoo.com/",
+      "tags": ["产业"],
+      "desc": "供应链与产业新闻"
+    }
+  ]
+}

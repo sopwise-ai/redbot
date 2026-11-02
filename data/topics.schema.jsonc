@@ -1,0 +1,127 @@
+// RedBot 数据规范（规范性文件）
+//
+// 适用两类数据：
+//   1) data/topics/<slug>.json —— 一个主题的全部内容（label / emoji / blurb / updated / links）
+//   2) data/topics.json        —— 有序主题清单（slug 数组），决定全站顺序
+//
+// 本文件是「规范」：字段、类型、上限、跨文件约束都以这里为准。
+// src/lib/schema.ts 的 zod 契约是它在构建期的可执行镜像，两者必须一致；
+// 改规则时先改这里，再同步 zod、校验脚本与文档。
+//
+// 工具：标准 JSON Schema 2020-12（编辑器可据此提示/校验单个主题文件）。
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://redbot.cc/schema/topics.schema.json",
+  "title": "RedBot 主题数据",
+  "description": "一个主题文件，或有序主题清单。跨文件约束见文件末尾注释。",
+  "oneOf": [{ "$ref": "#/$defs/topicFile" }, { "$ref": "#/$defs/manifest" }],
+
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "主题标识：小写 kebab-case。必须与文件名一致（data/topics/<slug>.json），同时是 /topics/<slug>/ 路由。发布后不可修改。",
+    },
+
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "url", "desc"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "全局唯一，小写 kebab-case。发布后不可修改（统计与去重的锚点）。",
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20,
+          "description": "按钮文案。中文名优先 ≤6 字；超过 12 字会在按钮里被截断（只提醒、不拦截）。",
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "description": "必须 https。指向该站信息密度最高的页面：榜单 / 快讯 / 列表页 / 广场；站点首页仅在首页本身就是信息流时接受。",
+        },
+        "tags": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "default": [],
+          "items": { "type": "string", "minLength": 1 },
+          "description": "副标签，0–2 个，可省略（默认空数组），取自 LIMITS.subtags 白名单。主分类由「所在文件」决定，这里不写；同一个链接的副标签不能重复。",
+        },
+        "desc": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 28,
+          "description": "推荐理由：什么场景下该点它。不写公司简介或百科介绍。",
+        },
+      },
+    },
+
+    "topicFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "emoji", "blurb", "updated", "links"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 6,
+          "description": "主题名。每个主题唯一；同时是该主题下所有链接的主分类（不写在链接里）。",
+        },
+        "emoji": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8,
+          "description": "侧栏与主题索引的图标，必须是一个字形（⌨️、👨‍👩‍👧‍👦 都算一个）。",
+        },
+        "blurb": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24,
+          "description": "一句话说明，用在主题卡片与主题页副标题。",
+        },
+        "updated": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "本文件最后一次修改的日期（YYYY-MM-DD，必须是真实存在的日期）。全站「更新于」取所有主题的最大值，不需要单独维护全局日期。",
+        },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": { "$ref": "#/$defs/link" },
+          "description": "顺序即优先级：越靠前越常用，按钮墙按此顺序渲染。",
+        },
+      },
+    },
+
+    "manifest": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/slug" },
+      "description": "有序主题清单。数组顺序 = 全站顺序（侧栏、主题索引、README 目录、色相），与文件系统顺序无关。",
+    },
+  },
+}
+
+// ── 跨文件约束（单文件 Schema 表达不了，由 npm run validate 强制）────────────
+//
+// 1. 一一对应：data/topics.json 里的每个 slug 必须有 data/topics/<slug>.json；
+//    目录里每个 *.json 也必须登记在清单里。有清单没文件、有文件没清单都报错。
+// 2. 文件名 = slug：data/topics/ai.json 的 slug 就是 "ai"，不允许文件内另写 slug。
+// 3. 主分类 = 所在文件：链接写在 ai.json 就属于「AI」，因此 tags 只写副标签。
+// 4. 全局唯一：id / url（归一化后）/ name 跨所有主题文件唯一，重复即构建失败；
+//    label 也必须全局唯一（它是合并后的分组键，重复会静默串组）。
+// 5. 配额：每个主题 1–20 条；主题总数 ≤20（见 LIMITS.perCategory / LIMITS.categories）。
+// 6. 发布后不可改：slug 决定 URL 与主题文件路径，id 是统计锚点；改名 = 断链。
+// 7. 副标签白名单：LIMITS.subtags（src/lib/schema.ts），未登记的新标签先加白名单再用。
+// 8. updated：每个主题文件记录自己的修改日期，全站取最大值；改数据时把该文件的 updated 改成当天。

@@ -29,6 +29,20 @@ export function checkData(
   const labels = new Set(categories.map((category) => category.label));
   const subtags = new Set<string>(limits.subtags);
 
+  // ── 主题 ────────────────────────────────────────────────
+  // label 是合并后链接的分组依据（catalog.ts 用 label 建索引），重复会让两组静默并进同一组
+  const labelOwner = new Map<string, string>();
+  for (const category of categories) {
+    const owner = labelOwner.get(category.label);
+    if (owner) {
+      errors.push(
+        `主题 label 重复：「${category.label}」（data/topics/${owner}.json 与 data/topics/${category.slug}.json）`,
+      );
+    } else {
+      labelOwner.set(category.label, category.slug);
+    }
+  }
+
   // ── 唯一性 ──────────────────────────────────────────────
   const seenId = new Map<string, string>();
   const seenUrl = new Map<string, string>();
@@ -43,25 +57,25 @@ export function checkData(
 
     const normalized = normalizeUrl(link.url);
     if (seenUrl.has(normalized)) {
-      errors.push(`URL 重复：「${link.name}」与「${seenUrl.get(normalized)}」`);
+      errors.push(`URL 重复：「${link.name}」(${link.id}) 与「${seenUrl.get(normalized)}」`);
     } else {
-      seenUrl.set(normalized, link.name);
+      seenUrl.set(normalized, `${link.name} (${link.id})`);
     }
 
     const nameKey = link.name.toLowerCase().replace(/\s+/g, "");
     if (seenName.has(nameKey)) {
-      errors.push(`名称重复：「${link.name}」与「${seenName.get(nameKey)}」`);
+      errors.push(`名称重复：「${link.name}」(${link.id}) 与「${seenName.get(nameKey)}」`);
     } else {
-      seenName.set(nameKey, link.name);
+      seenName.set(nameKey, `${link.name} (${link.id})`);
     }
   }
 
-  // ── 分类与标签 ──────────────────────────────────────────
+  // ── 标签 ────────────────────────────────────────────────
   for (const link of catalog.links) {
     const [primary, ...rest] = link.tags;
 
     if (!labels.has(primary)) {
-      errors.push(`「${link.name}」的主分类「${primary}」不在 categories.json 中`);
+      errors.push(`「${link.name}」的主分类「${primary}」没有对应的主题文件（data/topics/）`);
     } else {
       perCategory.set(primary, (perCategory.get(primary) ?? 0) + 1);
     }
@@ -69,7 +83,7 @@ export function checkData(
     for (const tag of rest) {
       if (!subtags.has(tag)) {
         errors.push(
-          `「${link.name}」使用了未登记的副标签「${tag}」，请先在 schema.ts 的 LIMITS.subtags 中登记`,
+          `「${link.name}」(${link.id}) 使用了未登记的副标签「${tag}」，请先在 schema.ts 的 LIMITS.subtags 中登记`,
         );
       }
     }
@@ -77,15 +91,15 @@ export function checkData(
 
   // ── 配额 ────────────────────────────────────────────────
   if (categories.length > limits.categories) {
-    errors.push(`分类过多：${categories.length} 个，上限 ${limits.categories} 个`);
+    errors.push(`主题过多：${categories.length} 个，上限 ${limits.categories} 个`);
   }
 
   for (const category of categories) {
     const count = perCategory.get(category.label) ?? 0;
-    if (count === 0) errors.push(`分类「${category.label}」没有任何条目`);
+    if (count === 0) errors.push(`主题「${category.label}」没有任何条目`);
     if (count > limits.perCategory) {
       errors.push(
-        `分类「${category.label}」有 ${count} 条，超过上限 ${limits.perCategory} 条 —— 请先下架旧的，再加新的`,
+        `主题「${category.label}」有 ${count} 条，超过上限 ${limits.perCategory} 条 —— 请先下架旧的，再加新的`,
       );
     }
   }

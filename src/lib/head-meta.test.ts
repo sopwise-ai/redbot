@@ -7,7 +7,6 @@ import type { CategoryGroup } from "@/lib/schema";
 const activeGroup = {
   slug: "news",
   label: "新闻",
-  group: "资讯",
   emoji: "📰",
   blurb: "正在发生的事",
   items: [{ id: "weibo-hot" }],

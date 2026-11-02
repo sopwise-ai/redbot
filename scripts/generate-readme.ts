@@ -9,16 +9,27 @@
  *   tsx scripts/generate-readme.ts --check    # 只检查是否与数据一致，不一致就退出 1
  */
 import { readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
-import { categoriesSchema, catalogSchema, LIMITS } from "../src/lib/schema";
+import { mergeTopics } from "../src/lib/merge-topics";
+import { LIMITS } from "../src/lib/schema";
 import { site } from "../src/lib/site";
+import { loadTopics } from "./lib/load-topics";
 import { buildReadme } from "./lib/readme";
 
+const dataDir = fileURLToPath(new URL("../data", import.meta.url));
 const root = new URL("../", import.meta.url);
-const readJson = (path: string) => JSON.parse(readFileSync(new URL(path, root), "utf8"));
 
-const catalog = catalogSchema.parse(readJson("data/links.json"));
-const categories = categoriesSchema.parse(readJson("data/categories.json"));
+const { entries, errors } = loadTopics(dataDir);
+if (errors.length > 0) {
+  console.error(`✗ 数据文件有问题（${errors.length} 处）：`);
+  for (const error of errors) console.error(`  - ${error}`);
+  process.exit(1);
+}
+
+const merged = mergeTopics(entries);
+const catalog = { updated: merged.updated, links: merged.links };
+const categories = merged.categories;
 
 const readme = buildReadme({
   catalog,
@@ -32,7 +43,7 @@ const check = process.argv.includes("--check");
 
 if (!check) {
   writeFileSync(target, readme, "utf8");
-  console.log(`✓ README.md 已生成：${catalog.links.length} 条链接 / ${categories.length} 个分类`);
+  console.log(`✓ README.md 已生成：${catalog.links.length} 条链接 / ${categories.length} 个主题`);
 } else {
   const current = readFileSync(target, "utf8");
   if (current === readme) {

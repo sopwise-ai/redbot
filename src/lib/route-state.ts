@@ -1,4 +1,4 @@
-/** 全部信息源的分类标识，与 app-shell / category-chips 共用同一个字面量 */
+/** 全部信息源的分类标识，与 app-shell 共用同一个字面量 */
 export const ALL = "all";
 
 export interface ParsedRoute {

@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { ArrowUpRight, SearchIcon, XIcon } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
-import { CategoryChips } from "@/components/category-chips";
 import { HistoryView } from "@/components/history-view";
 import { PillWall } from "@/components/pill-wall";
 import { ShellHeader } from "@/components/shell-header";
@@ -423,16 +422,6 @@ export function AppShell({
               </div>
             </div>
           </header>
-
-          {/* 移动端：把主题筛选从抽屉里拉出来（横滑、跟随选中项在 CategoryChips 内） */}
-          <div className="sticky top-14 z-20 border-b bg-background/85 backdrop-blur-md md:hidden">
-            <CategoryChips
-              groups={groups}
-              total={total}
-              active={active}
-              onSelect={switchCategory}
-            />
-          </div>
 
           <main id="content" tabIndex={-1} className="flex-1 px-5 pb-12 outline-none lg:px-8">
             <div className="mx-auto w-full max-w-[1160px]">

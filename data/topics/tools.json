@@ -1,0 +1,71 @@
+{
+  "label": "工具",
+  "emoji": "🧰",
+  "blurb": "搜索与软件发现",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "baidu",
+      "name": "百度",
+      "url": "https://www.baidu.com/",
+      "tags": ["搜索"],
+      "desc": "中文搜索的默认项"
+    },
+    {
+      "id": "bing",
+      "name": "必应",
+      "url": "https://www.bing.com/",
+      "tags": ["搜索"],
+      "desc": "少一点干扰的搜索"
+    },
+    {
+      "id": "sogou-weixin",
+      "name": "搜狗微信",
+      "url": "https://weixin.sogou.com/",
+      "tags": ["搜索"],
+      "desc": "搜公众号文章的唯一入口"
+    },
+    {
+      "id": "appinn",
+      "name": "小众软件",
+      "url": "https://www.appinn.com/",
+      "tags": ["软件"],
+      "desc": "发现没人告诉你的好工具"
+    },
+    {
+      "id": "iplaysoft",
+      "name": "异次元软件",
+      "url": "https://www.iplaysoft.com/",
+      "tags": ["软件"],
+      "desc": "软件与互联网产品推荐"
+    },
+    {
+      "id": "alternativeto",
+      "name": "AlternativeTo",
+      "url": "https://alternativeto.net/",
+      "tags": ["软件"],
+      "desc": "找一个软件的替代品"
+    },
+    {
+      "id": "wolframalpha",
+      "name": "Wolfram Alpha",
+      "url": "https://www.wolframalpha.com/",
+      "tags": ["搜索"],
+      "desc": "能算数的知识引擎"
+    },
+    {
+      "id": "stats-gov",
+      "name": "国家统计局",
+      "url": "https://www.stats.gov.cn/",
+      "tags": ["数据"],
+      "desc": "一切宏观数据的源头"
+    },
+    {
+      "id": "weather-cn",
+      "name": "中国天气",
+      "url": "https://www.weather.com.cn/",
+      "tags": ["生活"],
+      "desc": "官方气象数据"
+    }
+  ]
+}

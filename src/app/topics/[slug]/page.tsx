@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { categories, getGroups, getStats } from "@/lib/catalog";
 import { site } from "@/lib/site";
 
-// 只生成 categories.json 里有的分类；其余路径走 404
+// 只生成 data/topics.json 里登记的主题；其余路径走 404
 export const dynamicParams = false;
 
 export function generateStaticParams() {

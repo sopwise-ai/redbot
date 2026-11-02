@@ -23,7 +23,7 @@ describe("模块加载即校验（真实数据）", () => {
 describe("getGroups", () => {
   const groups = getGroups();
 
-  it("每个分类恰好一组，顺序与 categories.json 一致", () => {
+  it("每个分类恰好一组，顺序与 data/topics.json 一致", () => {
     expect(groups.map((g) => g.slug)).toEqual(categories.map((c) => c.slug));
   });
 
@@ -37,15 +37,13 @@ describe("getGroups", () => {
     }
   });
 
-  it("组内顺序保持 links.json 的原始顺序（顺序即优先级）", () => {
+  it("主题内顺序保持主题文件的原始顺序（顺序即优先级）", () => {
     const news = groups.find((g) => g.slug === "news")!;
     const original = catalog.links.filter((l) => l.tags[0] === "新闻");
     expect(news.items).toEqual(original);
   });
 
-  it("空分类直接抛错（构建期失败优先于运行时兜底）", () => {
-    // 真实数据不应有空分类；这里断言的是不变量本身：
-    // getGroups 对空分类 throw，而不是静默渲染空段
+  it("每个主题至少一条（schema 已强制，这里守住展示层假设）", () => {
     expect(groups.every((g) => g.items.length > 0)).toBe(true);
   });
 });

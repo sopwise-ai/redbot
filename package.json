@@ -29,8 +29,11 @@
     "node": ">=26.0.0"
   },
   "scripts": {
+    "predev": "npm run gen",
     "dev": "next dev",
-    "build": "npm run validate && npm run readme && next build",
+    "gen": "tsx scripts/generate-topics.ts",
+    "gen:check": "tsx scripts/generate-topics.ts --check",
+    "build": "npm run gen && npm run validate && npm run readme && next build",
     "start": "serve out -l 4173 --no-clipboard",
     "clean": "node -e \"for (const p of ['.next','out','tsconfig.tsbuildinfo']) require('node:fs').rmSync(p,{recursive:true,force:true})\"",
     "validate": "tsx scripts/validate.ts",
@@ -43,7 +46,7 @@
     "lint:md": "markdownlint-cli2",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "verify": "npm run format:check && npm run lint:md && npm run lint && npm run validate && npm run readme:check && npm run test && npm run typecheck",
+    "verify": "npm run format:check && npm run lint:md && npm run lint && npm run gen:check && npm run validate && npm run readme:check && npm run test && npm run typecheck",
     "lint": "eslint . --max-warnings=0"
   },
   "dependencies": {

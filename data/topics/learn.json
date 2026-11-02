@@ -1,0 +1,78 @@
+{
+  "label": "学习",
+  "emoji": "🎓",
+  "blurb": "系统性地变强",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "coursera",
+      "name": "Coursera",
+      "url": "https://www.coursera.org/",
+      "tags": ["课程"],
+      "desc": "名校课程的公开入口"
+    },
+    {
+      "id": "icourse163",
+      "name": "中国大学MOOC",
+      "url": "https://www.icourse163.org/",
+      "tags": ["课程"],
+      "desc": "国内高校的慕课集合"
+    },
+    {
+      "id": "imooc",
+      "name": "慕课网",
+      "url": "https://www.imooc.com/",
+      "tags": ["课程"],
+      "desc": "程序员的实战课"
+    },
+    {
+      "id": "geekbang",
+      "name": "极客时间",
+      "url": "https://time.geekbang.org/",
+      "tags": ["课程"],
+      "desc": "技术人的付费专栏"
+    },
+    {
+      "id": "dedao",
+      "name": "得到",
+      "url": "https://www.dedao.cn/",
+      "tags": [],
+      "desc": "通识与自我提升"
+    },
+    {
+      "id": "open163",
+      "name": "网易公开课",
+      "url": "https://open.163.com/",
+      "tags": ["课程"],
+      "desc": "TED 与名校公开课"
+    },
+    {
+      "id": "xuetangx",
+      "name": "学堂在线",
+      "url": "https://www.xuetangx.com/",
+      "tags": ["课程"],
+      "desc": "清华发起的慕课平台"
+    },
+    {
+      "id": "khanacademy",
+      "name": "可汗学院",
+      "url": "https://zh.khanacademy.org/",
+      "tags": ["课程"],
+      "desc": "从零补基础的最佳选择"
+    },
+    {
+      "id": "duolingo",
+      "name": "多邻国",
+      "url": "https://www.duolingo.com/",
+      "tags": ["语言"],
+      "desc": "把语言学成游戏"
+    },
+    {
+      "id": "shanbay",
+      "name": "扇贝",
+      "url": "https://www.shanbay.com/",
+      "tags": ["语言"],
+      "desc": "背单词的老牌工具"
+    }
+  ]
+}

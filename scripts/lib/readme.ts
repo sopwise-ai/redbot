@@ -62,7 +62,7 @@ ${rows}`;
     "- [License](#license)",
   ].join("\n");
 
-  return `<!-- 本文件由 scripts/generate-readme.ts 自动生成。请修改 data/links.json，而不是直接编辑这里。 -->
+  return `<!-- 本文件由 scripts/generate-readme.ts 自动生成。请修改 data/topics/<slug>.json，而不是直接编辑这里。 -->
 
 # RedBot
 
@@ -73,8 +73,8 @@ ${rows}`;
 **${site.trust}**
 
 [![CI](https://github.com/sopwise-ai/redbot/actions/workflows/ci.yml/badge.svg)](https://github.com/sopwise-ai/redbot/actions/workflows/ci.yml)
-[![links](https://img.shields.io/badge/信息源-${catalog.links.length}-c62a2f)](./data/links.json)
-[![categories](https://img.shields.io/badge/主题-${categories.length}-555)](./data/categories.json)
+[![links](https://img.shields.io/badge/信息源-${catalog.links.length}-c62a2f)](./data/topics/)
+[![categories](https://img.shields.io/badge/主题-${categories.length}-555)](./data/topics.json)
 [![license](https://img.shields.io/badge/license-${site.license}-555)](./LICENSE)
 
 RedBot 是一份**能点的网站清单**：每个主题只留最值得去的几个站，分好类、写着「什么时候该用它」，
@@ -93,7 +93,7 @@ RedBot 是一份**能点的网站清单**：每个主题只留最值得去的几
 - 🔍 **全站搜索** —— 顶栏即搜即显，\`⌘K\` / \`Ctrl+K\` 聚焦，\`Esc\` 回到来源页；搜索状态可分享（\`/search/?q=播客\`）
 - 🕘 **足迹** —— 点过的都记在本地 \`localStorage\`，可回看、可清理，不上传
 - 🌗 **三态主题** —— 浅色 / 深色 / 跟随系统，首帧不闪
-- 🌱 **社区维护** —— 全部数据都在 [\`data/links.json\`](./data/links.json)，靠 Pull Request 增删
+- 🌱 **社区维护** —— 全部数据都在 [\`data/topics/\`](./data/topics/)，一个主题一个文件，靠 Pull Request 增删
 
 ## 它不做什么
 
@@ -124,7 +124,7 @@ ${sections.join("\n\n")}
 
 ## 贡献
 
-1. 改 [\`data/links.json\`](./data/links.json)（只有新增主题时才动 \`data/categories.json\`）
+1. 改 [\`data/topics/<主题>.json\`](./data/topics/)（新增主题时同时在 \`data/topics.json\` 登记一行）
 2. 跑 \`npm run readme\` 重新生成 README.md，**与数据一起提交**
 3. 提 Pull Request
 
@@ -137,14 +137,14 @@ CI 会检查格式、重复、分类配额与 README 一致性；链接可达性
   "id": "example-source",
   "name": "示例信息源",
   "url": "https://example.com/hot",
-  "tags": ["开发", "热榜"],
+  "tags": ["热榜"],
   "desc": "一句话说清它为什么值得点"
 }
 \`\`\`
 
 - \`id\`：小写 kebab-case，**发布后不可更改**
 - \`name\`：按钮文案，硬上限 20 字符，中文名优先 ≤ 6 字；超过 12 字符会出提示，且按钮里会被截断（靠 \`title\` 兜底）
-- \`tags\`：1–3 个。第一个是主分类（必须来自 \`data/categories.json\`），其余为副标签（需在白名单内）
+- \`tags\`：0–2 个副标签（需在 \`LIMITS.subtags\` 白名单内）；主分类由链接所在的主题文件决定，不用写
 - \`desc\`：推荐理由，不超过 28 字；会用于按钮悬停提示与 SEO
 
 详细流程、收录标准与常见 CI 失败见 [CONTRIBUTING.md](./CONTRIBUTING.md)。

@@ -8,36 +8,25 @@
  *   tsx scripts/validate.ts                 # 结构与规则校验
  *   tsx scripts/validate.ts --check-links   # 额外探测每个 URL 是否可达（较慢）
  */
-import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
-import { categoriesSchema, catalogSchema } from "../src/lib/schema";
+import { mergeTopics } from "../src/lib/merge-topics";
 import { checkData } from "./lib/checks";
+import { loadTopics } from "./lib/load-topics";
 
-const root = new URL("../", import.meta.url);
-const readJson = (path: string) => JSON.parse(readFileSync(new URL(path, root), "utf8"));
+const dataDir = fileURLToPath(new URL("../data", import.meta.url));
 
 const checkLinks = process.argv.includes("--check-links");
 
-const catalogResult = catalogSchema.safeParse(readJson("data/links.json"));
-const categoriesResult = categoriesSchema.safeParse(readJson("data/categories.json"));
-
-if (!catalogResult.success) {
-  console.error("✗ data/links.json 结构不合法：");
-  for (const issue of catalogResult.error.issues) {
-    console.error(`  - ${issue.path.join(".") || "(root)"}: ${issue.message}`);
-  }
-  process.exit(1);
-}
-if (!categoriesResult.success) {
-  console.error("✗ data/categories.json 结构不合法：");
-  for (const issue of categoriesResult.error.issues) {
-    console.error(`  - ${issue.path.join(".") || "(root)"}: ${issue.message}`);
-  }
+const { entries, errors: loadErrors } = loadTopics(dataDir);
+if (loadErrors.length > 0) {
+  console.error(`✗ 数据文件有问题（${loadErrors.length} 处）：`);
+  for (const error of loadErrors) console.error(`  - ${error}`);
   process.exit(1);
 }
 
-const catalog = catalogResult.data;
-const categories = categoriesResult.data;
+const { categories, links, updated } = mergeTopics(entries);
+const catalog = { updated, links };
 const { errors, warnings, homepageLinks, perCategory } = checkData(catalog, categories);
 
 // ── 链接可达性（可选）────────────────────────────────────
@@ -79,7 +68,7 @@ async function runLinkCheck() {
 // ── 输出 ─────────────────────────────────────────────────
 console.log("RedBot 数据校验");
 console.log(
-  `  ${catalog.links.length} 条链接 / ${categories.length} 个分类 / ${new Set(catalog.links.flatMap((l) => l.tags.slice(1))).size} 个副标签`,
+  `  ${catalog.links.length} 条链接 / ${categories.length} 个主题 / ${new Set(catalog.links.flatMap((l) => l.tags.slice(1))).size} 个副标签`,
 );
 console.log(
   "  " +

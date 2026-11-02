@@ -1,0 +1,78 @@
+{
+  "label": "AI",
+  "emoji": "🤖",
+  "blurb": "模型、论文与新工具",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "qbitai",
+      "name": "量子位",
+      "url": "https://www.qbitai.com/",
+      "tags": ["资讯"],
+      "desc": "AI 进展的日常追踪"
+    },
+    {
+      "id": "jiqizhixin",
+      "name": "机器之心",
+      "url": "https://www.jiqizhixin.com/",
+      "tags": ["深度"],
+      "desc": "AI 技术与产业解读"
+    },
+    {
+      "id": "aibase",
+      "name": "AIBase",
+      "url": "https://www.aibase.com/",
+      "tags": ["产品"],
+      "desc": "AI 工具与产品的索引"
+    },
+    {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "url": "https://huggingface.co/",
+      "tags": ["模型"],
+      "desc": "模型与数据集的仓库"
+    },
+    {
+      "id": "arxiv-ai",
+      "name": "arXiv cs.AI",
+      "url": "https://arxiv.org/list/cs.AI/recent",
+      "tags": ["论文"],
+      "desc": "每天的最新预印本"
+    },
+    {
+      "id": "paperswithcode",
+      "name": "Papers with Code",
+      "url": "https://paperswithcode.com/",
+      "tags": ["论文"],
+      "desc": "论文与代码的配对索引"
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "url": "https://openai.com/news/",
+      "tags": ["资讯"],
+      "desc": "第一手的模型发布"
+    },
+    {
+      "id": "deepmind",
+      "name": "Google DeepMind",
+      "url": "https://deepmind.google/discover/blog/",
+      "tags": ["论文"],
+      "desc": "前沿研究的一手博客"
+    },
+    {
+      "id": "the-batch",
+      "name": "The Batch",
+      "url": "https://www.deeplearning.ai/the-batch/",
+      "tags": ["资讯"],
+      "desc": "吴恩达团队的每周综述"
+    },
+    {
+      "id": "simonwillison",
+      "name": "Simon Willison",
+      "url": "https://simonwillison.net/",
+      "tags": ["深度"],
+      "desc": "最诚实的一线实践笔记"
+    }
+  ]
+}

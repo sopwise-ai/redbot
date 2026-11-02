@@ -1,0 +1,78 @@
+{
+  "label": "阅读",
+  "emoji": "📚",
+  "blurb": "书与长文字",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "douban-book",
+      "name": "豆瓣读书",
+      "url": "https://book.douban.com/",
+      "tags": ["书评"],
+      "desc": "选书之前先看评分"
+    },
+    {
+      "id": "weread",
+      "name": "微信读书",
+      "url": "https://weread.qq.com/",
+      "tags": [],
+      "desc": "社交化的阅读器"
+    },
+    {
+      "id": "qidian",
+      "name": "起点中文网",
+      "url": "https://www.qidian.com/",
+      "tags": ["网文"],
+      "desc": "网络文学的第一站"
+    },
+    {
+      "id": "jjwxc",
+      "name": "晋江文学城",
+      "url": "https://www.jjwxc.net/",
+      "tags": ["网文"],
+      "desc": "女性向网文的主场"
+    },
+    {
+      "id": "douban-read",
+      "name": "豆瓣阅读",
+      "url": "https://read.douban.com/",
+      "tags": [],
+      "desc": "原创作品与电子书"
+    },
+    {
+      "id": "lifeweek",
+      "name": "三联生活周刊",
+      "url": "https://www.lifeweek.com.cn/",
+      "tags": [],
+      "desc": "一本杂志的社会观察"
+    },
+    {
+      "id": "kongfz",
+      "name": "孔夫子旧书网",
+      "url": "https://www.kongfz.com/",
+      "tags": [],
+      "desc": "绝版书的最后希望"
+    },
+    {
+      "id": "nlc",
+      "name": "国家图书馆",
+      "url": "https://www.nlc.cn/",
+      "tags": [],
+      "desc": "馆藏与古籍数字化"
+    },
+    {
+      "id": "ctext",
+      "name": "中国哲学书电子化计划",
+      "url": "https://ctext.org/zh",
+      "tags": [],
+      "desc": "古籍全文检索"
+    },
+    {
+      "id": "gutenberg",
+      "name": "Project Gutenberg",
+      "url": "https://www.gutenberg.org/",
+      "tags": [],
+      "desc": "六万本公版书"
+    }
+  ]
+}

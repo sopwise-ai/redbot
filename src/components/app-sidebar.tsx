@@ -9,7 +9,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -18,7 +17,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { recordVisit } from "@/lib/history";
-import { bucketByGroup } from "@/lib/groups";
 import { useHistory } from "@/lib/use-history";
 import type { CategoryGroup } from "@/lib/schema";
 import { site } from "@/lib/site";
@@ -52,9 +50,7 @@ export function AppSidebar({
     if (isMobile) setOpenMobile(false);
   }
 
-  // 按 group 字段聚合成 4 组，保持 categories.json 里的相对顺序
-  const buckets = bucketByGroup(groups);
-
+  // 主题顺序即 data/topics.json 的顺序
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -161,39 +157,34 @@ export function AppSidebar({
           </span>
         </div>
 
-        {[...buckets.entries()].map(([groupName, items]) => (
-          <SidebarGroup key={groupName} className="py-0">
-            <SidebarGroupLabel className="h-6 px-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
-              {groupName}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {items.map((group) => (
-                  <SidebarMenuItem key={group.slug}>
-                    <SidebarMenuButton
-                      isActive={active === group.slug}
-                      aria-current={active === group.slug ? "true" : undefined}
-                      onClick={() => select(group.slug)}
-                      tooltip={group.label}
-                      className={itemClass}
+        <SidebarGroup className="py-0">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {groups.map((group) => (
+                <SidebarMenuItem key={group.slug}>
+                  <SidebarMenuButton
+                    isActive={active === group.slug}
+                    aria-current={active === group.slug ? "true" : undefined}
+                    onClick={() => select(group.slug)}
+                    tooltip={group.label}
+                    className={itemClass}
+                  >
+                    <span
+                      aria-hidden
+                      className="w-[18px] shrink-0 text-center text-base leading-none"
                     >
-                      <span
-                        aria-hidden
-                        className="w-[18px] shrink-0 text-center text-base leading-none"
-                      >
-                        {group.emoji}
-                      </span>
-                      <span className="truncate">{group.label}</span>
-                      <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
-                        {group.items.length}
-                      </span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+                      {group.emoji}
+                    </span>
+                    <span className="truncate">{group.label}</span>
+                    <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
+                      {group.items.length}
+                    </span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>

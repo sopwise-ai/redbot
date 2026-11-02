@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { bucketByGroup, buildHueMap, hueFor } from "@/lib/groups";
+import { buildHueMap, hueFor } from "@/lib/groups";
 import type { CategoryGroup } from "@/lib/schema";
 
 function group(partial: Partial<CategoryGroup>): CategoryGroup {
   return {
     slug: "x",
     label: "X",
-    group: "资讯",
     emoji: "🗂️",
     blurb: "x",
     items: [],
@@ -16,31 +15,10 @@ function group(partial: Partial<CategoryGroup>): CategoryGroup {
 }
 
 const groups = [
-  group({ slug: "news", label: "新闻", group: "资讯", items: [{ id: "a" } as never] }),
-  group({ slug: "tech", label: "技术", group: "资讯" }),
-  group({ slug: "fun", label: "好玩", group: "生活" }),
+  group({ slug: "news", label: "新闻", items: [{ id: "a" } as never] }),
+  group({ slug: "tech", label: "技术" }),
+  group({ slug: "fun", label: "好玩" }),
 ];
-
-describe("bucketByGroup", () => {
-  it("按 group 字段聚合", () => {
-    const buckets = bucketByGroup(groups);
-    expect([...buckets.keys()]).toEqual(["资讯", "生活"]);
-    expect(buckets.get("资讯")?.map((g) => g.slug)).toEqual(["news", "tech"]);
-    expect(buckets.get("生活")?.map((g) => g.slug)).toEqual(["fun"]);
-  });
-
-  it("分组顺序 = 首次出现顺序（保持 categories.json 原序）", () => {
-    const reordered = [
-      group({ slug: "fun", label: "好玩", group: "生活" }),
-      group({ slug: "news", label: "新闻", group: "资讯" }),
-    ];
-    expect([...bucketByGroup(reordered).keys()]).toEqual(["生活", "资讯"]);
-  });
-
-  it("空列表返回空 Map", () => {
-    expect(bucketByGroup([]).size).toBe(0);
-  });
-});
 
 describe("hueFor", () => {
   it("索引即 HUES 顺序", () => {

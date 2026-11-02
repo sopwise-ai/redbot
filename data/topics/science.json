@@ -1,0 +1,64 @@
+{
+  "label": "科学",
+  "emoji": "🔬",
+  "blurb": "解释世界的知识",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "guokr",
+      "name": "果壳",
+      "url": "https://www.guokr.com/",
+      "tags": ["科普"],
+      "desc": "把科学讲成人话"
+    },
+    {
+      "id": "huanqiukexue",
+      "name": "环球科学",
+      "url": "https://www.huanqiukexue.com/",
+      "tags": ["科普"],
+      "desc": "科学美国人中文版"
+    },
+    {
+      "id": "arxiv",
+      "name": "arXiv",
+      "url": "https://arxiv.org/",
+      "tags": ["论文"],
+      "desc": "预印本的第一站"
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "url": "https://www.nature.com/",
+      "tags": ["论文"],
+      "desc": "顶级期刊的目录页"
+    },
+    {
+      "id": "science",
+      "name": "Science",
+      "url": "https://www.science.org/",
+      "tags": ["论文"],
+      "desc": "AAAS 的旗舰刊物"
+    },
+    {
+      "id": "quanta",
+      "name": "Quanta Magazine",
+      "url": "https://www.quantamagazine.org/",
+      "tags": ["科普"],
+      "desc": "数学与物理的深度叙事"
+    },
+    {
+      "id": "technologyreview",
+      "name": "MIT科技评论",
+      "url": "https://www.technologyreview.com/",
+      "tags": ["科普"],
+      "desc": "技术如何改变社会"
+    },
+    {
+      "id": "kepu",
+      "name": "中国科普博览",
+      "url": "https://www.kepu.net.cn/",
+      "tags": ["科普"],
+      "desc": "中科院出品的科普库"
+    }
+  ]
+}

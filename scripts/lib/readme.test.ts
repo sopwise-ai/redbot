@@ -16,12 +16,11 @@ const site = {
 };
 
 const categories: Category[] = [
-  { slug: "news", label: "新闻", group: "资讯", emoji: "📰", blurb: "今天发生了什么" },
-  { slug: "ai", label: "AI", group: "资讯", emoji: "📰", blurb: "模型与工具" },
+  { slug: "news", label: "新闻", emoji: "📰", blurb: "今天发生了什么" },
+  { slug: "ai", label: "AI", emoji: "📰", blurb: "模型与工具" },
 ];
 
 const catalog: Catalog = {
-  version: 1,
   updated: "2026-10-28",
   links: [
     {

@@ -1,0 +1,71 @@
+{
+  "label": "娱乐",
+  "emoji": "🎬",
+  "blurb": "打发时间的正确方式",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "bilibili",
+      "name": "哔哩哔哩",
+      "url": "https://www.bilibili.com/v/popular/rank/all",
+      "tags": ["视频"],
+      "desc": "全站排行榜"
+    },
+    {
+      "id": "douyin",
+      "name": "抖音",
+      "url": "https://www.douyin.com/hot",
+      "tags": ["视频"],
+      "desc": "短视频热榜"
+    },
+    {
+      "id": "kuaishou",
+      "name": "快手",
+      "url": "https://www.kuaishou.com/",
+      "tags": ["视频"],
+      "desc": "另一个短视频宇宙"
+    },
+    {
+      "id": "xiaohongshu",
+      "name": "小红书",
+      "url": "https://www.xiaohongshu.com/",
+      "tags": ["生活"],
+      "desc": "生活方式的风向标"
+    },
+    {
+      "id": "acfun",
+      "name": "AcFun",
+      "url": "https://www.acfun.cn/",
+      "tags": ["视频"],
+      "desc": "弹幕视频的老牌社区"
+    },
+    {
+      "id": "ixigua",
+      "name": "西瓜视频",
+      "url": "https://www.ixigua.com/",
+      "tags": ["视频"],
+      "desc": "中长视频的内容池"
+    },
+    {
+      "id": "douyu",
+      "name": "斗鱼",
+      "url": "https://www.douyu.com/",
+      "tags": ["直播"],
+      "desc": "游戏直播主阵地"
+    },
+    {
+      "id": "huya",
+      "name": "虎牙",
+      "url": "https://www.huya.com/",
+      "tags": ["直播"],
+      "desc": "另一个直播宇宙"
+    },
+    {
+      "id": "pearvideo",
+      "name": "梨视频",
+      "url": "https://www.pearvideo.com/",
+      "tags": ["视频"],
+      "desc": "短视频里的社会新闻"
+    }
+  ]
+}

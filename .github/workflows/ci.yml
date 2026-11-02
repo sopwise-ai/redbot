@@ -48,6 +48,10 @@ jobs:
       - name: Validate data
         run: npm run validate
 
+      # 主题清单变化后必须重新生成静态入口，否则 dev/build 看到的是旧主题列表
+      - name: Generated topic entry up to date
+        run: npm run gen:check
+
       # 纯逻辑单测：数据规则（去重 / 配额 / 标签）与 README 渲染（锚点 / 标题唯一）
       - name: Unit tests
         run: npm run test

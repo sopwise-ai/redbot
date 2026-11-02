@@ -1,0 +1,134 @@
+{
+  "label": "开发",
+  "emoji": "⌨️",
+  "blurb": "写代码的人在看什么",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "github-trending",
+      "name": "GitHub Trending",
+      "url": "https://github.com/trending",
+      "tags": ["开源"],
+      "desc": "每天值得看的开源项目"
+    },
+    {
+      "id": "juejin",
+      "name": "掘金热榜",
+      "url": "https://juejin.cn/hot",
+      "tags": [],
+      "desc": "中文开发者的当日热榜"
+    },
+    {
+      "id": "v2ex",
+      "name": "V2EX",
+      "url": "https://www.v2ex.com/?tab=hot",
+      "tags": [],
+      "desc": "技术人的闲聊与真话"
+    },
+    {
+      "id": "hackernews",
+      "name": "Hacker News",
+      "url": "https://news.ycombinator.com/",
+      "tags": [],
+      "desc": "全球技术圈的头条"
+    },
+    {
+      "id": "ruanyf-weekly",
+      "name": "阮一峰周刊",
+      "url": "https://github.com/ruanyf/weekly",
+      "tags": ["周刊"],
+      "desc": "每周五的技术与人文精选"
+    },
+    {
+      "id": "oschina",
+      "name": "开源中国",
+      "url": "https://www.oschina.net/",
+      "tags": ["开源"],
+      "desc": "国内开源项目集散地"
+    },
+    {
+      "id": "infoq",
+      "name": "InfoQ",
+      "url": "https://www.infoq.cn/",
+      "tags": ["深度"],
+      "desc": "架构与工程实践"
+    },
+    {
+      "id": "stackoverflow",
+      "name": "Stack Overflow",
+      "url": "https://stackoverflow.com/",
+      "tags": ["问答"],
+      "desc": "问题的标准答案在这里"
+    },
+    {
+      "id": "segmentfault",
+      "name": "SegmentFault",
+      "url": "https://segmentfault.com/",
+      "tags": ["问答"],
+      "desc": "中文技术问答社区"
+    },
+    {
+      "id": "cnblogs",
+      "name": "博客园",
+      "url": "https://www.cnblogs.com/",
+      "tags": [],
+      "desc": "老派程序员的博客地盘"
+    },
+    {
+      "id": "csdn",
+      "name": "CSDN",
+      "url": "https://www.csdn.net/",
+      "tags": [],
+      "desc": "中文技术内容的最大池子"
+    },
+    {
+      "id": "linuxdo",
+      "name": "Linux.do",
+      "url": "https://linux.do/",
+      "tags": [],
+      "desc": "新一代技术社区"
+    },
+    {
+      "id": "hellogithub",
+      "name": "HelloGitHub",
+      "url": "https://hellogithub.com/",
+      "tags": ["开源"],
+      "desc": "每月精选有趣的开源项目"
+    },
+    {
+      "id": "aliyun-dev",
+      "name": "阿里云开发者社区",
+      "url": "https://developer.aliyun.com/",
+      "tags": ["云原生"],
+      "desc": "云与后端的一线实践"
+    },
+    {
+      "id": "tencent-cloud-dev",
+      "name": "腾讯云开发者社区",
+      "url": "https://cloud.tencent.com/developer",
+      "tags": ["云原生"],
+      "desc": "云原生与架构干货"
+    },
+    {
+      "id": "meituan-tech",
+      "name": "美团技术团队",
+      "url": "https://tech.meituan.com/",
+      "tags": ["深度"],
+      "desc": "中文互联网最好的工程博客之一"
+    },
+    {
+      "id": "lobsters",
+      "name": "Lobsters",
+      "url": "https://lobste.rs/",
+      "tags": ["开源"],
+      "desc": "HN 之外的技术社区"
+    },
+    {
+      "id": "mdn",
+      "name": "MDN",
+      "url": "https://developer.mozilla.org/zh-CN/",
+      "tags": ["前端"],
+      "desc": "前端文档的事实标准"
+    }
+  ]
+}

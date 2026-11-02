@@ -1,0 +1,78 @@
+{
+  "label": "社区",
+  "emoji": "💬",
+  "blurb": "人和人讨论的地方",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "jike",
+      "name": "即刻",
+      "url": "https://web.okjike.com/",
+      "tags": ["兴趣"],
+      "desc": "互联网人的朋友圈"
+    },
+    {
+      "id": "tieba",
+      "name": "百度贴吧",
+      "url": "https://tieba.baidu.com/",
+      "tags": ["兴趣"],
+      "desc": "兴趣聚落的老地盘"
+    },
+    {
+      "id": "newsmth",
+      "name": "水木社区",
+      "url": "https://www.newsmth.net/",
+      "tags": [],
+      "desc": "高校 BBS 的余温"
+    },
+    {
+      "id": "chouti",
+      "name": "抽屉新热榜",
+      "url": "https://www.chouti.com/",
+      "tags": ["热榜"],
+      "desc": "编辑手工挑选的热点"
+    },
+    {
+      "id": "dapenti",
+      "name": "喷嚏网",
+      "url": "https://www.dapenti.com/",
+      "tags": [],
+      "desc": "一天里的图与话"
+    },
+    {
+      "id": "smzdm",
+      "name": "什么值得买",
+      "url": "https://www.smzdm.com/",
+      "tags": ["消费"],
+      "desc": "下单之前的最后一步"
+    },
+    {
+      "id": "douban-group",
+      "name": "豆瓣小组",
+      "url": "https://www.douban.com/group/",
+      "tags": ["兴趣"],
+      "desc": "中文互联网的兴趣长尾"
+    },
+    {
+      "id": "kdslife",
+      "name": "宽带山",
+      "url": "https://www.kdslife.com/",
+      "tags": [],
+      "desc": "上海本地生活社区"
+    },
+    {
+      "id": "coolapk",
+      "name": "酷安",
+      "url": "https://www.coolapk.com/",
+      "tags": ["数码"],
+      "desc": "数码爱好者的聚集地"
+    },
+    {
+      "id": "maimai",
+      "name": "脉脉",
+      "url": "https://maimai.cn/",
+      "tags": ["职场"],
+      "desc": "职场八卦与匿名区"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "label": "体育",
+  "emoji": "⚽",
+  "blurb": "比分与赛场",
+  "updated": "2026-10-28",
+  "links": [
+    {
+      "id": "hupu",
+      "name": "虎扑",
+      "url": "https://bbs.hupu.com/bxj",
+      "tags": ["篮球"],
+      "desc": "步行街，不止于体育"
+    },
+    {
+      "id": "zhibo8",
+      "name": "直播吧",
+      "url": "https://www.zhibo8.cc/",
+      "tags": [],
+      "desc": "比分与赛程的集散地"
+    },
+    {
+      "id": "dongqiudi",
+      "name": "懂球帝",
+      "url": "https://www.dongqiudi.com/",
+      "tags": ["足球"],
+      "desc": "足球资讯与球迷社区"
+    },
+    {
+      "id": "qq-sports",
+      "name": "腾讯体育",
+      "url": "https://sports.qq.com/",
+      "tags": [],
+      "desc": "赛事直播与报道"
+    },
+    {
+      "id": "sina-sports",
+      "name": "新浪体育",
+      "url": "https://sports.sina.com.cn/",
+      "tags": [],
+      "desc": "老牌体育门户"
+    },
+    {
+      "id": "netease-sports",
+      "name": "网易体育",
+      "url": "https://sports.163.com/",
+      "tags": [],
+      "desc": "体育新闻与讨论"
+    },
+    {
+      "id": "leisu",
+      "name": "雷速体育",
+      "url": "https://www.leisu.com/",
+      "tags": [],
+      "desc": "实时比分与数据"
+    },
+    {
+      "id": "espn",
+      "name": "ESPN",
+      "url": "https://www.espn.com/",
+      "tags": [],
+      "desc": "全球体育报道的标杆"
+    },
+    {
+      "id": "cctv-sports",
+      "name": "央视体育",
+      "url": "https://sports.cctv.com/",
+      "tags": [],
+      "desc": "大赛版权的持有者"
+    }
+  ]
+}

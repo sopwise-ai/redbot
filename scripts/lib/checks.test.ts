@@ -6,8 +6,8 @@ import { checkData, normalizeUrl } from "./checks";
 const LIMITS = { perCategory: 3, categories: 2, subtags: ["热榜", "深度"] };
 
 const categories: Category[] = [
-  { slug: "news", label: "新闻", group: "资讯", emoji: "📰", blurb: "今天发生了什么" },
-  { slug: "dev", label: "开发", group: "资讯", emoji: "📰", blurb: "写代码的人在看什么" },
+  { slug: "news", label: "新闻", emoji: "📰", blurb: "今天发生了什么" },
+  { slug: "dev", label: "开发", emoji: "📰", blurb: "写代码的人在看什么" },
 ];
 
 const link = (over: Partial<Catalog["links"][number]> = {}) => ({
@@ -20,7 +20,7 @@ const link = (over: Partial<Catalog["links"][number]> = {}) => ({
 });
 
 const run = (links: Catalog["links"], cats: Category[] = categories) =>
-  checkData({ version: 1, updated: "2026-10-28", links } as Catalog, cats, LIMITS);
+  checkData({ updated: "2026-10-28", links } as Catalog, cats, LIMITS);
 
 describe("normalizeUrl", () => {
   it("忽略 www、末尾斜杠与协议差异", () => {
@@ -54,7 +54,7 @@ describe("checkData — 唯一性", () => {
   });
 });
 
-describe("checkData — 分类与标签", () => {
+describe("checkData — 主题与标签", () => {
   it("主分类不在 categories 里时报错", () => {
     const { errors } = run([link({ tags: ["不存在"] }), link({ id: "b", url: "https://b.com/x" })]);
     expect(errors.some((e) => e.includes("主分类"))).toBe(true);
@@ -68,12 +68,27 @@ describe("checkData — 分类与标签", () => {
     expect(errors.some((e) => e.includes("未登记的副标签"))).toBe(true);
   });
 
-  it("空分类报错", () => {
+  it("主题没有任何条目时报错", () => {
     const { errors } = run([
       link({ url: "https://a.com/x" }),
       link({ id: "b", url: "https://b.com/x" }),
     ]);
     expect(errors.some((e) => e.includes("开发") && e.includes("没有任何条目"))).toBe(true);
+  });
+
+  it("主题 label 重复时报错，并指名两个文件", () => {
+    const { errors } = run(
+      [link({ url: "https://a.com/x" }), link({ id: "b", url: "https://b.com/x" })],
+      [categories[0], { ...categories[1], label: "新闻" }],
+    );
+    expect(
+      errors.some(
+        (e) =>
+          e.includes("主题 label 重复") &&
+          e.includes("data/topics/news.json") &&
+          e.includes("data/topics/dev.json"),
+      ),
+    ).toBe(true);
   });
 });
 
@@ -89,12 +104,12 @@ describe("checkData — 配额", () => {
     expect(errors.some((e) => e.includes("超过上限"))).toBe(true);
   });
 
-  it("分类数量超过上限时报错", () => {
+  it("主题数量超过上限时报错", () => {
     const { errors } = run(
       [link({ url: "https://a.com/x" }), link({ id: "b", url: "https://b.com/x" })],
-      [...categories, { slug: "ai", label: "AI", group: "资讯", emoji: "📰", blurb: "模型" }],
+      [...categories, { slug: "ai", label: "AI", emoji: "📰", blurb: "模型" }],
     );
-    expect(errors.some((e) => e.includes("分类过多"))).toBe(true);
+    expect(errors.some((e) => e.includes("主题过多"))).toBe(true);
   });
 });
 
