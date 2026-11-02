@@ -9,7 +9,8 @@ import { z } from "zod";
 export const linkSchema = z.strictObject({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "id 必须是小写 kebab-case，且发布后不可修改"),
   name: z.string().min(1).max(20),
-  url: z.url(),
+  // 只接受 https：让契约本身成立，dev 与裸 `next build`（跳过 scripts/validate）也拦得住
+  url: z.url({ protocol: /^https$/ }),
   tags: z.array(z.string().min(1)).min(1).max(3),
   desc: z.string().min(1).max(28),
 });
@@ -23,6 +24,10 @@ export const catalogSchema = z.strictObject({
 export const categorySchema = z.strictObject({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   label: z.string().min(1).max(6),
+  /** 侧栏的视觉分组；只影响展示，不影响数据归属 */
+  group: z.string().min(1).max(8),
+  /** 侧栏用的 emoji 图标，1 个字符（emoji 可能占两个码元） */
+  emoji: z.string().min(1).max(8),
   blurb: z.string().min(1).max(24),
 });
 

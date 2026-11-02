@@ -6,8 +6,8 @@ import { checkData, normalizeUrl } from "./checks";
 const LIMITS = { perCategory: 3, categories: 2, subtags: ["热榜", "深度"] };
 
 const categories: Category[] = [
-  { slug: "news", label: "新闻", blurb: "今天发生了什么" },
-  { slug: "dev", label: "开发", blurb: "写代码的人在看什么" },
+  { slug: "news", label: "新闻", group: "资讯", emoji: "📰", blurb: "今天发生了什么" },
+  { slug: "dev", label: "开发", group: "资讯", emoji: "📰", blurb: "写代码的人在看什么" },
 ];
 
 const link = (over: Partial<Catalog["links"][number]> = {}) => ({
@@ -92,7 +92,7 @@ describe("checkData — 配额", () => {
   it("分类数量超过上限时报错", () => {
     const { errors } = run(
       [link({ url: "https://a.com/x" }), link({ id: "b", url: "https://b.com/x" })],
-      [...categories, { slug: "ai", label: "AI", blurb: "模型" }],
+      [...categories, { slug: "ai", label: "AI", group: "资讯", emoji: "📰", blurb: "模型" }],
     );
     expect(errors.some((e) => e.includes("分类过多"))).toBe(true);
   });

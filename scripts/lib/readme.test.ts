@@ -7,14 +7,17 @@ const site = {
   name: "RedBot",
   domain: "redbot.cc",
   url: "https://redbot.cc",
+  tagline: "中文互联网精选网站清单",
+  subtitle: "挑过的，分好的，点得开的。",
+  trust: "免费、开源、人工精选。",
   license: "MIT",
   author: "SopwiseAI",
   repo: "https://github.com/sopwise-ai/redbot",
 };
 
 const categories: Category[] = [
-  { slug: "news", label: "新闻", blurb: "今天发生了什么" },
-  { slug: "ai", label: "AI", blurb: "模型与工具" },
+  { slug: "news", label: "新闻", group: "资讯", emoji: "📰", blurb: "今天发生了什么" },
+  { slug: "ai", label: "AI", group: "资讯", emoji: "📰", blurb: "模型与工具" },
 ];
 
 const catalog: Catalog = {

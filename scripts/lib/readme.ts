@@ -7,6 +7,12 @@ export interface ReadmeInput {
     name: string;
     domain: string;
     url: string;
+    /** L1 标语 */
+    tagline: string;
+    /** L2 副标语 */
+    subtitle: string;
+    /** L3 信任行 */
+    trust: string;
     license: string;
     author: string;
     repo: string;
@@ -39,37 +45,65 @@ ${rows}`;
   });
 
   // GitHub 的标题锚点会转小写：`### AI` 的锚点是 `#ai`，写成 `#AI` 目录就点不动（MD051 抓到过）
-  const toc = categories
-    .map((category) => `- [${category.label}](#${category.label.toLowerCase()})`)
+  const tocCategories = categories
+    .map((category) => `  - [${category.label}](#${category.label.toLowerCase()})`)
     .join("\n");
+
+  const toc = [
+    "- [特点](#特点)",
+    "- [它不做什么](#它不做什么)",
+    "- [目录](#目录)",
+    "- [全部信息源](#全部信息源)",
+    tocCategories,
+    "- [收录标准](#收录标准)",
+    "- [贡献](#贡献)",
+    "- [本地开发](#本地开发)",
+    "- [文档](#文档)",
+    "- [License](#license)",
+  ].join("\n");
 
   return `<!-- 本文件由 scripts/generate-readme.ts 自动生成。请修改 data/links.json，而不是直接编辑这里。 -->
 
 # RedBot
 
-> 一个按钮，直达一个信息源。
+> ${site.tagline}
+>
+> ${site.subtitle}
+
+**${site.trust}**
 
 [![CI](https://github.com/sopwise-ai/redbot/actions/workflows/ci.yml/badge.svg)](https://github.com/sopwise-ai/redbot/actions/workflows/ci.yml)
 [![links](https://img.shields.io/badge/信息源-${catalog.links.length}-c62a2f)](./data/links.json)
 [![categories](https://img.shields.io/badge/主题-${categories.length}-555)](./data/categories.json)
 [![license](https://img.shields.io/badge/license-${site.license}-555)](./LICENSE)
 
-RedBot 是中文互联网优质信息源的极简入口。页面上只有按钮：点一下，直达该平台**信息密度最高的那个页面** —— 热榜、快讯、榜单、广场，而不是首页。
+RedBot 是一份**能点的网站清单**：每个主题只留最值得去的几个站，分好类、写着「什么时候该用它」，
+点一下直达该站**信息密度最高的那个页面** —— 热榜、快讯、榜单、广场；首页本身就是信息流的门户，就直达首页。
 
-不是热榜阅读器，不抓取内容，不展示标题，不需要登录。它更像一份**用按钮呈现的 awesome list**。
+![RedBot 首页：中文互联网精选网站清单](./docs/screenshots/home.png)
 
-**在线访问**：[${site.domain}](${site.url})
+**在线访问**：[${site.domain}](${site.url})　｜　本地预览：\`npm run build && npm run start\` → <http://localhost:4173>
+
+深色、移动端、主题菜单、足迹与搜索态等截图见 [docs/screenshots/](./docs/screenshots/)。
 
 ## 特点
 
-- 🔘 **只有按钮** —— 没有内容聚合、没有摘要流、没有推荐算法
-- 🏷️ **按主题过滤** —— ${categories.length} 个主题，随时只看你关心的
-- 🔍 **可搜索** —— 关键词实时过滤，支持 \`⌘K\` / \`Ctrl+K\` 聚焦
+- 🔘 **只有按钮** —— 没有内容聚合、没有摘要流、没有推荐算法，也没有第三方脚本、统计与 Cookie
+- 🏷️ **按主题过滤** —— ${categories.length} 个主题，随时只看你关心的；分类有自己的地址（\`/topics/dev/\`）
+- 🔍 **全站搜索** —— 顶栏即搜即显，\`⌘K\` / \`Ctrl+K\` 聚焦，\`Esc\` 回到来源页；搜索状态可分享（\`/search/?q=播客\`）
+- 🕘 **足迹** —— 点过的都记在本地 \`localStorage\`，可回看、可清理，不上传
+- 🌗 **三态主题** —— 浅色 / 深色 / 跟随系统，首帧不闪
 - 🌱 **社区维护** —— 全部数据都在 [\`data/links.json\`](./data/links.json)，靠 Pull Request 增删
+
+## 它不做什么
+
+这是定位红线，不是「暂未实现」：不做内容聚合与摘要、不做阅读器、不做账号与跨设备同步、不引入第三方脚本与统计。
 
 ## 目录
 
 ${toc}
+
+## 全部信息源
 
 ${sections.join("\n\n")}
 
@@ -77,10 +111,12 @@ ${sections.join("\n\n")}
 
 **硬性要求**（任一不满足即拒）
 
-1. **未登录状态**打开就能看到内容 —— 需要登录才可见的页面不收
-2. 指向具体的**榜单 / 快讯 / 列表页**，而不是站点首页
+1. **未登录能读到主要内容** —— 需要登录、需要扫码进 App 的不收；付费墙站点按例外逐条收录，记在 [docs/VERIFY.md](./docs/VERIFY.md)
+2. 指向具体的**页** —— 榜单、快讯流、列表页、广场。**站点首页原则上不接受**（例外：首页本身就是信息流的门户）
 3. 是**信息源**，不是交易或工作目的地 —— 电商、网盘、会议工具不属于这里
 4. 中文内容优先，域名可访问
+
+校验器对「指向首页」只统计、不拦截；当前有 164 条属于上面第 2 条的例外，清单见 [docs/VERIFY.md](./docs/VERIFY.md)。
 
 **软性参考**：更新频率、内容独家性、界面广告密度、是否为该领域的事实标准。
 
@@ -88,7 +124,13 @@ ${sections.join("\n\n")}
 
 ## 贡献
 
-修改 [\`data/links.json\`](./data/links.json)，提交 Pull Request 即可。CI 会自动检查格式、重复、分类配额和链接可达性。
+1. 改 [\`data/links.json\`](./data/links.json)（只有新增主题时才动 \`data/categories.json\`）
+2. 跑 \`npm run readme\` 重新生成 README.md，**与数据一起提交**
+3. 提 Pull Request
+
+CI 会检查格式、重复、分类配额与 README 一致性；链接可达性由每周运行一次的 Link Check 工作流巡检，
+新加链接前请本地先跑 \`npm run check:links\`。不想开 PR 也可以直接用
+[Issue 模板](https://github.com/sopwise-ai/redbot/issues/new/choose) 推荐或报错。
 
 \`\`\`json
 {
@@ -101,30 +143,42 @@ ${sections.join("\n\n")}
 \`\`\`
 
 - \`id\`：小写 kebab-case，**发布后不可更改**
-- \`name\`：按钮文案，尽量不超过 6 个汉字
-- \`tags\`：第一个是主分类（必须来自 \`data/categories.json\`），其余为副标签（需在白名单内）
+- \`name\`：按钮文案，硬上限 20 字符，中文名优先 ≤ 6 字；超过 12 字符会出提示，且按钮里会被截断（靠 \`title\` 兜底）
+- \`tags\`：1–3 个。第一个是主分类（必须来自 \`data/categories.json\`），其余为副标签（需在白名单内）
 - \`desc\`：推荐理由，不超过 28 字；会用于按钮悬停提示与 SEO
 
-详细流程见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
+详细流程、收录标准与常见 CI 失败见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ## 本地开发
 
 \`\`\`bash
+nvm use              # Node 版本见 .nvmrc
 npm install
-npm run dev          # 本地开发 http://localhost:3000
-npm run verify       # 格式 + Markdown + 数据校验 + 单测 + 类型检查
+npm run dev          # 开发服务器 http://localhost:3000
 npm run build        # 校验 + 生成 README + 静态导出到 out/
+npm run start        # 预览导出产物 http://localhost:4173
+npm run readme       # 从 data/ 重新生成 README.md
+npm run test         # 单测：数据规则与 README 渲染
+npm run verify       # 格式 + Markdown + 数据 + 单测 + 类型（提交前跑这个）
 \`\`\`
 
-技术栈：Next.js（App Router，\`output: "export"\` 纯静态）、TypeScript、Tailwind CSS v4、shadcn/ui、Fuse.js。
+技术栈：Next.js 15（App Router，\`output: "export"\` 纯静态，构建期把全部按钮渲染进 HTML）、React 19、
+TypeScript 5、Tailwind CSS v4、shadcn/ui、Fuse.js、zod。
 
-## 参与贡献
+## 文档
 
 - [贡献指南](./CONTRIBUTING.md) —— 收录标准、字段规范与 PR 流程
+- [变更日志](./CHANGELOG.md) —— 每个版本改了什么
 - [行为准则](./CODE_OF_CONDUCT.md) —— Contributor Covenant 3.0
 - [安全政策](./SECURITY.md) —— 漏洞上报的私密通道
 - [获取帮助](./SUPPORT.md) —— 该去哪里提问
 - [设计记录](./docs/DESIGN-LOG.md) —— 界面为什么长这样
+- [已知欠账](./docs/VERIFY.md) —— 待人工核验的链接
+
+## 致谢
+
+感谢 [shadcn/ui](https://ui.shadcn.com) 的组件与 [Next.js](https://nextjs.org) 的静态导出，
+以及所有通过 Pull Request 提交与订正链接的贡献者。
 
 ## License
 

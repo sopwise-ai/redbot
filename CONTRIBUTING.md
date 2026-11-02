@@ -7,12 +7,13 @@ RedBot 的价值不来自「收得多」，而来自**收得准**。所以门槛
 
 ## 最快的路径
 
-1. Fork 仓库，修改 [`data/links.json`](./data/links.json) 一个文件
-2. 本地跑一次 `npm run verify`
-3. 提交 PR，CI 会自动检查格式、重复、配额与产物
-4. 维护者只做价值判断，格式问题机器已经拦掉了
+1. Fork 仓库，只改 [`data/links.json`](./data/links.json)（只有新增分类时才动 `data/categories.json`）
+2. 本地：`npm install` → `npm run readme` → `npm run verify`
+3. 提交 PR，**把 `npm run readme` 重新生成的 `README.md` 一起提交**
+4. CI 检查格式、重复、配额、README 一致性；维护者只做价值判断
 
-**不要直接改 `README.md`** —— 它由 `npm run readme` 从数据生成，CI 会校验一致性。
+**不要手改 `README.md`** —— 它由 `npm run readme` 从数据生成。改完数据跑一次生成，把产物一起提交，
+否则 CI 的 `README up to date` 会失败。
 
 ## 收录标准
 
@@ -33,40 +34,72 @@ RedBot 的价值不来自「收得多」，而来自**收得准**。所以门槛
 
 ## 字段规范
 
-| 字段   | 规则                      | 说明                                                                                                                     |
-| ------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `id`   | 小写 kebab-case，全局唯一 | **发布后不可修改**，是统计与去重的锚点                                                                                   |
-| `name` | ≤ 12 字符，优先 ≤ 6 汉字  | 就是按钮上的字，长了会被截断                                                                                             |
-| `url`  | https，指向具体页面       | 见上面的收录标准                                                                                                         |
-| `tags` | 1–3 个                    | 第一个是主分类，必须存在于 `data/categories.json`；其余是副标签，必须在 `src/lib/schema.ts` 的 `LIMITS.subtags` 白名单里 |
-| `desc` | ≤ 28 字                   | **写推荐理由，不写百科介绍**。「每天更新三次，财经快讯最快」优于「专业的财经资讯平台」                                   |
+| 字段   | 规则                       | 说明                                                                                                                     |
+| ------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `id`   | 小写 kebab-case，全局唯一  | **发布后不可修改**，是统计与去重的锚点                                                                                   |
+| `name` | ≤ 20 字符，优先 ≤ 6 个汉字 | 就是按钮上的字；超过 12 字符只提醒不拦，但长了会在按钮里被截断                                                           |
+| `url`  | https，指向具体页面        | 见上面的收录标准                                                                                                         |
+| `tags` | 1–3 个                     | 第一个是主分类，必须存在于 `data/categories.json`；其余是副标签，必须在 `src/lib/schema.ts` 的 `LIMITS.subtags` 白名单里 |
+| `desc` | ≤ 28 字                    | **写推荐理由，不写百科介绍**。「每天更新三次，财经快讯最快」优于「专业的财经资讯平台」                                   |
+
+`data/links.json` 顶部还有两个字段：**`updated` 改成提交当天的日期**（`YYYY-MM-DD`，页头的「更新于」读的就是它）；
+`version` 只在数据结构变化时由维护者递增，PR 里不要动。
+
+校验分成两档，别把提醒当通过：
+
+- **拦下**（非 0 退出）：id / URL / 名称重复、分类配额超限、副标签不在白名单、主分类不存在、非 https
+- **只提醒**：`name` 超过 12 字符、URL 指向站点首页。这两条靠人判断
 
 ## 新增分类
 
-分类不是越多越好 —— 上限 20 个（`LIMITS.categories`），超过之后按钮墙会失去结构感。新增分类需要：
+分类不是越多越好 —— 上限 20 个（`LIMITS.categories`），超过之后按钮墙会失去结构感。
 
-1. 在 `data/categories.json` 增加 `{ slug, label, blurb }`，顺序即按钮墙上的分组顺序
-2. 在 PR 里说明为什么现有分类装不下
-3. 至少准备 5 条符合标准的条目
+`data/categories.json` 的每一项**五个字段全部必填**（`strictObject`，少一个或写错一个都解析失败）：
+
+```json
+{ "slug": "reading", "label": "阅读", "group": "生活", "emoji": "📚", "blurb": "读什么" }
+```
+
+- `slug`：小写 kebab-case，同时成为 `/topics/<slug>/` 路径
+- `label`：≤ 6 字，`tags[0]` 里引用的就是它
+- `group`：侧栏分组，只能是 `资讯` / `技术` / `生活` / `社区与工具` 之一
+- `emoji`：单个字符，侧栏图标
+- `blurb`：≤ 24 字的副标题
+
+另外需要：在 PR 里说明为什么现有分类装不下；至少准备 5 条符合标准的条目（校验器只要求分类非空）。
 
 > 分类顺序还会决定配色（`hueFor(index)`），调换顺序会改变全站色点颜色，属预期行为。
 
 ## 本地开发
 
-环境：Node 版本见 [`.nvmrc`](./.nvmrc)（当前 22），包管理器用 npm（有 `package-lock.json`）。
+环境：Node 版本以 [`.nvmrc`](./.nvmrc) 为准（在仓库根目录跑 `nvm use`），包管理器用 npm（有 `package-lock.json`）。
+两个版本号是刻意不同的，别「顺手统一」：`.nvmrc`（24）锁定**开发/CI 实际使用的版本**，
+`package.json` 的 `engines`（>=22.12.0）是**可运行的最低版本**——前者跟着 LTS 升级，后者只在
+用到新 API 时才抬。
 
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm run verify       # 格式 + Markdown + 数据校验 + 类型检查（提交前跑这个）
+npm run verify       # 格式 + Markdown + ESLint + 数据 + README 一致性 + 单测 + 类型（CI 也跑这些）
 npm run validate     # 只跑数据校验
-npm run check:links  # 数据校验 + 逐个探测 URL 可达性（较慢）
+npm run check:links  # 数据校验 + 逐个探测 URL 可达性（较慢，改过 url 才需要）
 npm run test         # 单元测试（数据规则与 README 渲染）
+npm run readme       # 从 data/ 重新生成 README.md
+npm run lint         # ESLint（React Hooks 依赖、未使用变量等）
 npm run format       # prettier 全量格式化
-npm run build        # 校验 + 生成 README + 静态导出到 out/
+npm run build        # 校验 + 生成 README + 静态导出到 out/（CI 另跑这一步和 README 一致性检查）
 ```
 
-数据校验会拦下这些情况：id / URL / 名称重复、分类配额超限、副标签不在白名单、主分类不存在、非 https。
+涉及界面改动时，请跑 `npm run build && npm run start` 看导出产物（`out/`，4173 端口），
+并附桌面 1440、移动 390、深浅色各一的截图。
+
+## 发现问题怎么办
+
+先搜一遍已有 Issue，再选模板。四种模板（新增或更正信息源 / 链接失效或指错页 / 缺陷报告 / 功能建议）
+的具体入口见 [SUPPORT.md](./SUPPORT.md) —— 那里是唯一事实源，模板会自动带上 `links` / `bug` /
+`enhancement` 标签。
+
+安全漏洞与行为准则问题**不要**开公开 Issue，走 [安全政策](./SECURITY.md) 的私密通道。
 
 ## 提交信息
 
@@ -81,18 +114,44 @@ chore(deps): 升级 next 到 15.5.28
 `type` 用 `feat` / `fix` / `docs` / `style` / `refactor` / `perf` / `test` / `build` / `ci` / `chore`。
 **CI 暂不强制校验提交信息**，但依赖升级由 Dependabot 自动按此格式生成。
 
-## 维护者清单
+提交信息、Issue、PR 用中文或英文都可以。**无需签署 CLA 或 DCO**，提交即表示同意以
+[MIT](./LICENSE) 授权。
 
-首次启用仓库时，需要在 GitHub 上创建这些标签，Issue / PR 模板与 Dependabot 会引用它们：
+## 分支与 PR
 
-| 标签           | 用途                      |
-| -------------- | ------------------------- |
-| `bug`          | 缺陷与失效链接            |
-| `links`        | 数据条目的新增或更正      |
-| `enhancement`  | 功能建议                  |
-| `dependencies` | Dependabot 的依赖升级     |
-| `ci`           | 工作流与 Actions 相关改动 |
+- 从 `main` 切分支，命名随意（`feat/xxx`、`fix/xxx`、`data/add-xxx`）
+- **一个 PR 只做一件事**：一条链接，或同一主题的一组链接。别把「加三个源 + 改样式 + 升依赖」混在一起
+- 合并用 squash，合并后维护者删分支
+- 数据 PR 的正文按 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md) 填表即可
+
+## 常见 CI 失败
+
+| 报错                   | 处理                                                        |
+| ---------------------- | ----------------------------------------------------------- |
+| `Format check` 挂      | 跑 `npm run format` 再提交                                  |
+| `Markdown lint` 挂     | 看输出的规则号与文件行号；行宽（MD013）已关，其余都是真问题 |
+| `README up to date` 挂 | 跑 `npm run readme`，把生成的 `README.md` 一起提交          |
+| `Validate data` 挂     | 输出会指明具体规则（重复 / 配额 / 标签 / https），按提示改  |
+| `Unit tests` 挂        | 跑 `npm test` 看断言；数据规则改动才会影响它                |
+
+## 标签
+
+不需要自己打标签：Issue 模板会自动带上 `links` / `bug` / `enhancement`，Dependabot 会带
+`dependencies` / `ci`。PR 由维护者在合并前补标，标签只用于生成 Release Notes（见
+[`.github/release.yml`](./.github/release.yml)）。
 
 ## 审核节奏
 
-维护者会在 **7 天内**给出第一次回应：合并、要求修改，或说明拒绝理由。被拒不代表源不好，可能只是分类已满或定位不符。
+维护者会在 **7 个工作日内**给出第一次回应：合并、要求修改，或说明拒绝理由。
+被拒不代表源不好，可能只是分类已满或定位不符。
+
+## 维护者备忘
+
+贡献者可以跳过这一节。首次启用仓库 / 每次发版时要做的事：
+
+- [ ] 在 GitHub 上创建标签 `bug` / `links` / `enhancement` / `dependencies` / `ci` / `documentation`
+- [ ] Settings → Code security 里开启 **Private vulnerability reporting**
+      （`SECURITY.md` 与 `CODE_OF_CONDUCT.md` 的私密通道都依赖它）
+- [ ] 开启分支保护：`main` 需要 `ci` 检查通过才能合并
+- [ ] 发版：改 `package.json` 与 `package-lock.json` 的版本号 → 把 `## [Unreleased]` 落成
+      `## [x.y.z] - YYYY-MM-DD` → 打 `vX.Y.Z` tag → 按 `.github/release.yml` 生成 Release Notes

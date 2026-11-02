@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowUpRight, BookOpenIcon, GitPullRequestIcon, XIcon } from "lucide-react";
+import { ArrowUpRight, BookOpenIcon, GitPullRequestIcon, ShuffleIcon, XIcon } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -13,45 +14,61 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/components/ui/sidebar";
+import { recordVisit } from "@/lib/history";
+import { bucketByGroup } from "@/lib/groups";
+import { useHistory } from "@/lib/use-history";
 import type { CategoryGroup } from "@/lib/schema";
 import { site } from "@/lib/site";
+
+const itemClass =
+  "h-9 rounded-lg px-2 text-sm text-muted-foreground transition-colors data-[active=true]:bg-primary/8 data-[active=true]:font-semibold data-[active=true]:text-foreground dark:data-[active=true]:bg-primary/15";
 
 export function AppSidebar({
   groups,
   total,
   active,
   onSelect,
+  historyActive = false,
+  onOpenHistory,
 }: {
   groups: CategoryGroup[];
   total: number;
   active: string;
   onSelect: (slug: string) => void;
+  historyActive?: boolean;
+  onOpenHistory?: () => void;
 }) {
   const { isMobile, setOpenMobile } = useSidebar();
+  const { entries } = useHistory();
 
-  // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容
+  // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容。
+  // 注意：抽屉是 Radix Dialog（Sheet），onOpenChange(false) 会在退出动画后卸载内容并解除
+  // body 滚动锁；这里同步关，避免与分类切换的 View Transition 抢时序。
   function select(slug: string) {
     onSelect(slug);
     if (isMobile) setOpenMobile(false);
   }
 
+  // 按 group 字段聚合成 4 组，保持 categories.json 里的相对顺序
+  const buckets = bucketByGroup(groups);
+
   return (
-    <Sidebar collapsible="offcanvas">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-1.5">
+        <div className="flex items-center gap-2 px-1 py-1.5">
           <div className="flex min-w-0 flex-1 items-center gap-2.5">
             <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <span className="size-2 rounded-full bg-primary-foreground" />
             </div>
-            <div className="grid min-w-0 leading-tight">
-              <span className="truncate font-semibold">{site.name}</span>
-              <span className="truncate text-xs text-muted-foreground">{site.tagline}</span>
+            <div className="grid min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
+              <span className="truncate text-md font-semibold">{site.name}</span>
+              <span className="truncate text-2xs text-muted-foreground">{site.tagline}</span>
             </div>
           </div>
+          <SidebarTrigger className="hidden shrink-0 text-muted-foreground md:inline-flex" />
           {isMobile ? (
             <Button
               type="button"
@@ -67,82 +84,145 @@ export function AppSidebar({
         </div>
       </SidebarHeader>
 
+      <div className="px-2 pb-2 group-data-[collapsible=icon]:px-1">
+        <Button
+          variant="outline"
+          onClick={() => {
+            const all = groups.flatMap((group) => group.items);
+            if (all.length === 0) return;
+            const pick = all[Math.floor(Math.random() * all.length)];
+            recordVisit(pick.id);
+            window.open(pick.url, "_blank", "noopener,noreferrer");
+          }}
+          className="h-9 w-full justify-start gap-2 rounded-lg px-2.5 text-sm font-normal shadow-xs group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+        >
+          <ShuffleIcon aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+          <span className="truncate group-data-[collapsible=icon]:hidden">随机一个</span>
+        </Button>
+      </div>
+
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{groups.length} 个主题</SidebarGroupLabel>
+        <SidebarGroup className="py-0">
           <SidebarGroupContent>
             <nav aria-label="主题导航">
               <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={historyActive}
+                    aria-current={historyActive ? "true" : undefined}
+                    onClick={() => {
+                      onOpenHistory?.();
+                      if (isMobile) setOpenMobile(false);
+                    }}
+                    tooltip="足迹"
+                    className={itemClass}
+                  >
+                    <span
+                      aria-hidden
+                      className="w-[18px] shrink-0 text-center text-sm leading-none"
+                    >
+                      🐾
+                    </span>
+                    <span className="truncate">足迹</span>
+                    <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
+                      {entries.length}
+                    </span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     isActive={active === "all"}
                     aria-current={active === "all" ? "true" : undefined}
                     onClick={() => select("all")}
                     tooltip="全部"
-                    className="data-[active=true]:bg-primary/10 data-[active=true]:font-medium data-[active=true]:text-primary"
+                    className={itemClass}
                   >
                     <span
                       aria-hidden
-                      className="flex size-6 shrink-0 items-center justify-center rounded-md border bg-muted/40 text-[11px] font-medium text-muted-foreground"
+                      className="w-[18px] shrink-0 text-center text-base leading-none"
                     >
-                      全
+                      🗂️
                     </span>
                     <span className="truncate">全部</span>
-                    <span className="ml-auto text-xs tabular-nums text-muted-foreground/60">
+                    <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
                       {total}
                     </span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                {groups.map((group) => (
+              </SidebarMenu>
+            </nav>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <div className="sticky top-0 z-10 flex items-center gap-2 bg-sidebar px-3 pt-3 pb-1 group-data-[collapsible=icon]:hidden">
+          <span className="text-2xs font-medium tracking-[0.08em] text-muted-foreground/60">
+            主题
+          </span>
+          <span className="ml-auto text-2xs text-muted-foreground/40 tabular-nums">
+            {groups.length}
+          </span>
+        </div>
+
+        {[...buckets.entries()].map(([groupName, items]) => (
+          <SidebarGroup key={groupName} className="py-0">
+            <SidebarGroupLabel className="h-6 px-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground/60">
+              {groupName}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.map((group) => (
                   <SidebarMenuItem key={group.slug}>
                     <SidebarMenuButton
                       isActive={active === group.slug}
                       aria-current={active === group.slug ? "true" : undefined}
                       onClick={() => select(group.slug)}
                       tooltip={group.label}
-                      className="data-[active=true]:bg-primary/10 data-[active=true]:font-medium data-[active=true]:text-primary"
+                      className={itemClass}
                     >
                       <span
                         aria-hidden
-                        className="flex size-6 shrink-0 items-center justify-center rounded-md border bg-muted/40 text-[11px] font-medium text-muted-foreground"
+                        className="w-[18px] shrink-0 text-center text-base leading-none"
                       >
-                        {group.label.slice(0, 1)}
+                        {group.emoji}
                       </span>
                       <span className="truncate">{group.label}</span>
-                      <span className="ml-auto text-xs tabular-nums text-muted-foreground/60">
+                      <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
                         {group.items.length}
                       </span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
-            </nav>
-          </SidebarGroupContent>
-        </SidebarGroup>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="sm">
-              <a href={`${site.repo}#收录标准`} target="_blank" rel="noreferrer">
+            <SidebarMenuButton asChild size="sm" className="text-sm text-muted-foreground">
+              <a href={`${site.repo}#收录标准`} target="_blank" rel="noopener noreferrer">
                 <BookOpenIcon />
                 <span>收录标准</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="sm">
-              <a href={`${site.repo}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noreferrer">
+            <SidebarMenuButton asChild size="sm" className="text-sm text-muted-foreground">
+              <a
+                href={`${site.repo}/blob/main/CONTRIBUTING.md`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <GitPullRequestIcon />
                 <span>提交收录</span>
-                <ArrowUpRight className="ml-auto size-3.5 text-muted-foreground" />
+                <ArrowUpRight className="ml-auto size-3.5 opacity-50" />
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }

@@ -4,7 +4,9 @@
  *
  * 渲染逻辑在 scripts/lib/readme.ts（纯函数，有单元测试），这里只负责读写。
  *
- * 用法：tsx scripts/generate-readme.ts
+ * 用法：
+ *   tsx scripts/generate-readme.ts            # 写入 README.md
+ *   tsx scripts/generate-readme.ts --check    # 只检查是否与数据一致，不一致就退出 1
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
@@ -25,5 +27,23 @@ const readme = buildReadme({
   limits: { perCategory: LIMITS.perCategory },
 });
 
-writeFileSync(new URL("README.md", root), readme, "utf8");
-console.log(`✓ README.md 已生成：${catalog.links.length} 条链接 / ${categories.length} 个分类`);
+const target = new URL("README.md", root);
+const check = process.argv.includes("--check");
+
+if (!check) {
+  writeFileSync(target, readme, "utf8");
+  console.log(`✓ README.md 已生成：${catalog.links.length} 条链接 / ${categories.length} 个分类`);
+} else {
+  const current = readFileSync(target, "utf8");
+  if (current === readme) {
+    console.log("✓ README.md 与数据一致");
+  } else {
+    // 只打印首个差异位置：整篇 diff 在 CI 日志里没有价值
+    const at = [...current].findIndex((char, index) => char !== readme[index]);
+    console.error("✗ README.md 与 data/ 不一致，跑一次 `npm run readme` 再提交。");
+    console.error(`  首个差异在第 ${at + 1} 个字符附近：`);
+    console.error(`  当前：${JSON.stringify(current.slice(at, at + 60))}`);
+    console.error(`  应为：${JSON.stringify(readme.slice(at, at + 60))}`);
+    process.exit(1);
+  }
+}

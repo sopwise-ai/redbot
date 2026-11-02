@@ -45,7 +45,7 @@ export function SiteFooter({
           <a
             href={site.repo}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="rounded-sm underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
           >
             {site.license}

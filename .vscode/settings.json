@@ -1,0 +1,28 @@
+{
+  // 目标：克隆即得与 CI 一致的行为——保存即 Prettier 格式化 + ESLint 修复，
+  // Tailwind class 补全认得本仓库的 v4 CSS-first 配置。
+  // 刻意不锁 editorconfig 类通用偏好（字号/主题），那些是个人设置。
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.useFlatConfig": true,
+  "files.eol": "\n",
+  "files.trimFinalNewlines": true,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  // Markdown 行尾双空格是硬换行，交给 .editorconfig 的 [*.md] 段处理
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+  // Tailwind CSS IntelliSense：v4 没有 tailwind.config，插件自动读 globals.css 的 @theme
+  "tailwindCSS.files.exclude": ["**/.git/**", "**/node_modules/**", "**/.next/**", "**/out/**"],
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/package-lock.json": true,
+    "**/tsconfig.tsbuildinfo": true
+  }
+}

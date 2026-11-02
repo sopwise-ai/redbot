@@ -52,6 +52,10 @@ jobs:
       - name: Unit tests
         run: npm run test
 
+      # 类型与规则：tsc 只查类型，ESLint 才管 Hook 依赖数组这类运行时错误
+      - name: Lint
+        run: npm run lint
+
       - name: Typecheck
         run: npm run typecheck
 
@@ -69,3 +73,10 @@ jobs:
           count=$(grep -o 'target="_blank"' out/index.html | wc -l)
           echo "exported links: $count"
           test "$count" -ge 100
+
+      # SECURITY.md 承诺「target=_blank 一律带 rel=noopener noreferrer」，在这里兑现
+      - name: Check link rel
+        run: |
+          unguarded=$(grep -oE '<a [^>]*target="_blank"[^>]*>' out/index.html | grep -v 'noopener' || true)
+          if [ -n "$unguarded" ]; then echo "$unguarded"; exit 1; fi
+          echo "all target=_blank links carry rel=noopener"
