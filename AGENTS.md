@@ -13,11 +13,11 @@
 
 ## 技术栈
 
-- Next.js 15（App Router）+ React 19 + TypeScript 5
+- Next.js 16（App Router）+ React 19 + TypeScript 5；Node 26（`.nvmrc` 锁定，CI 用 `node-version-file` 读同一个值）
 - Tailwind CSS v4（CSS-first，token 在 `src/app/globals.css` 的 `@theme inline`）
 - shadcn/ui（registry 组件，源码在 `src/components/ui/`；新增控件见下文约定 2）
 - fuse.js（客户端搜索）、next-themes（浅色 / 深色 / 跟随系统三态，切换器是 `src/components/theme-toggle.tsx`）、zod（数据契约）
-- ESLint 9 + `eslint-config-next`（`eslint.config.mjs`，用 FlatCompat 桥接 15.x 的 eslintrc 配置；等 Next 16 再简化）
+- ESLint 10 + `eslint-config-next` 16（`eslint.config.mjs`，原生 flat config：core-web-vitals 入口 + TypeScript 规则入口，不再用 FlatCompat）
 - **`output: "export"` 纯静态**：构建期产出 `out/`，没有服务端运行时、没有 API 路由
 
 ## 命令

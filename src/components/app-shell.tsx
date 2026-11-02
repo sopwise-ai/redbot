@@ -123,6 +123,8 @@ export function AppShell({
       window.location.search,
       groups.map((group) => group.slug),
     );
+    // 静态导出没有服务端注入，首帧只能从地址栏读这一次；urlSynced 保证不重复触发
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (route.query) setQuery(route.query);
     // 直链/刷新进来时这条 URL 本来就在历史里，后续输入只 replace 不再 push
     if (route.isSearch) searchEntryPushed.current = true;

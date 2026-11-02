@@ -12,6 +12,8 @@ export function useHistory() {
   React.useEffect(() => {
     const refresh = () => setEntries(readHistory());
     refresh();
+    // 挂载后读一次 localStorage（服务端没有存储），这次置位是 hydration 边界
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReady(true);
     return subscribeHistory(refresh);
   }, []);

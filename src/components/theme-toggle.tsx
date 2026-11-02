@@ -22,6 +22,8 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   // 首帧不知道用户偏好，先渲染一个占位，避免 hydration 不一致
   const [mounted, setMounted] = React.useState(false);
+  // 挂载后才拿得到用户偏好：next-themes 的标准 hydration 守卫，只置位一次
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   React.useEffect(() => setMounted(true), []);
 
   const current = OPTIONS.find((option) => option.value === theme) ?? OPTIONS[2];

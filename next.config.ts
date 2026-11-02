@@ -5,9 +5,14 @@ const nextConfig: NextConfig = {
   // 不依赖 Node 运行时，也不发起任何运行时请求。
   //
   // 前提：部署在域名**根路径**（https://redbot.cc/）。产物里的资源引用是 /_next/... 这种绝对路径，
-  // 要迁到子路径（例如 GitHub Pages 项目页 /redbot/），必须同时改三处：
-  //   1) 这里加 basePath，2) src/app/manifest.ts 的 start_url / scope，3) src/app/layout.tsx 的 metadataBase
-  // 缺一处就会出现资源 404 或 canonical 指错域。
+  // 要迁到子路径（例如 GitHub Pages 项目页 /redbot/），basePath 只自动作用于 next/link 这类路由，
+  // 其余根绝对路径都要手改，且不止一处：
+  //   1) 这里加 basePath；
+  //   2) src/lib/site.ts 的 url（metadataBase / sitemap / robots 都从它派生）；
+  //   3) src/app/manifest.ts 的 start_url / scope / icons；
+  //   4) src/app/layout.tsx 里 "/og.png" 这类 metadata 图片路径；
+  //   5) src/app/robots.ts 的 disallow 前缀。
+  // 缺一处就会出现资源 404 或 canonical / sitemap 指错域。
   output: "export",
   trailingSlash: true,
   // 纯静态导出没有图片优化服务；本项目只有 public/og.png，保留这一行不影响产物

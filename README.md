@@ -429,7 +429,7 @@ npm run test         # 单测：数据规则与 README 渲染
 npm run verify       # 格式 + Markdown + 数据 + 单测 + 类型（提交前跑这个）
 ```
 
-技术栈：Next.js 15（App Router，`output: "export"` 纯静态，构建期把全部按钮渲染进 HTML）、React 19、
+技术栈：Next.js 16（App Router，`output: "export"` 纯静态，构建期把全部按钮渲染进 HTML）、React 19、
 TypeScript 5、Tailwind CSS v4、shadcn/ui、Fuse.js、zod。
 
 ## 文档

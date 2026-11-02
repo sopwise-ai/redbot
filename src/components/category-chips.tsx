@@ -55,6 +55,8 @@ export function CategoryChips({
   // 挂载后测一次：内容宽度可能小于视口，此时两端都不该渐隐
   React.useEffect(() => {
     const el = viewportEl();
+    // 挂载后必须量一次 DOM（内容宽度只有挂载后才知道）；滚动时同一函数走事件回调，不受影响
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (el) syncEdges(el);
   }, [viewportEl, syncEdges, groups.length]);
 
