@@ -44,7 +44,9 @@ export function AppSidebar({
   const { isMobile, setOpenMobile } = useSidebar();
   const { entries } = useHistory();
 
-  // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容
+  // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容。
+  // 注意：抽屉是 Radix Dialog（Sheet），onOpenChange(false) 会在退出动画后卸载内容并解除
+  // body 滚动锁；这里同步关，避免与分类切换的 View Transition 抢时序。
   function select(slug: string) {
     onSelect(slug);
     if (isMobile) setOpenMobile(false);

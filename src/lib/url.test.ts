@@ -27,4 +27,18 @@ describe("replaceUrlQuietly", () => {
     expect(() => replaceUrlQuietly("/")).not.toThrow();
     expect(window.location.pathname).toBe("/");
   });
+
+  it("派发 redbot:replacestate 自定义事件（供焦点管理等联动使用）", () => {
+    const events: string[] = [];
+    const onReplace = (event: Event) => {
+      events.push((event as CustomEvent<{ url: string }>).detail.url);
+    };
+    window.addEventListener("redbot:replacestate", onReplace);
+    try {
+      replaceUrlQuietly("/topics/news/");
+      expect(events).toEqual(["/topics/news/"]);
+    } finally {
+      window.removeEventListener("redbot:replacestate", onReplace);
+    }
+  });
 });

@@ -44,7 +44,7 @@ export function ShellHeader({
   });
 
   return (
-    <div className={isHome ? "pt-10 pb-6" : "border-b border-border/70 pt-10 pb-6"}>
+    <div className="pt-10 pb-6">
       <div className="flex items-start gap-4">
         <div
           aria-hidden
