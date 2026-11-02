@@ -113,7 +113,7 @@ export function LinkPill({
         <span className="min-w-0 flex-1 truncate text-left">{item.name}</span>
         <ArrowUpRight
           aria-hidden
-          className="size-3.5 shrink-0 text-muted-foreground/35 transition-colors group-hover:text-primary"
+          className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
         />
       </a>
     </Button>

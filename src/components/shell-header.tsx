@@ -73,7 +73,7 @@ export function ShellHeader({
             {isHome ? site.subtitle : meta.subtitle}
           </p>
           {isHome ? (
-            <p className="mt-2 text-xs leading-5 text-muted-foreground/70">{site.trust}</p>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">{site.trust}</p>
           ) : null}
         </div>
         {view !== "topics" && !searching ? (
@@ -84,7 +84,7 @@ export function ShellHeader({
             >
               {groups.length} 个主题
             </Link>
-            <p className="mt-1 text-2xs text-muted-foreground/60 tabular-nums">更新于 {updated}</p>
+            <p className="mt-1 text-2xs text-muted-foreground tabular-nums">更新于 {updated}</p>
           </div>
         ) : null}
       </div>

@@ -24,3 +24,17 @@ export function replaceUrlQuietly(url: string) {
   // 注意 dispatchEvent 不会触发 Next 的 patch（那是 history 方法级别的拦截）。
   window.dispatchEvent(new CustomEvent("redbot:replacestate", { detail: { url } }));
 }
+
+/**
+ * 静默**新增**一条历史记录（同样绕过 Next 的 patch）。
+ *
+ * 只在「从分类页迈出第一步搜索」时用：这样历史是
+ * `… → /topics/finance/ → /search/?q=…`，按后退能回到来源分类；
+ * 若全程 replace，来源分类那条会被搜索页替换掉，后退就跳过头了。
+ *
+ * 刻意不派发 `redbot:replacestate`：焦点移交的语义只属于「页面真的换了」的时机，
+ * 用户正打字时不能抢焦点。
+ */
+export function pushUrlQuietly(url: string) {
+  window.history.pushState({ __NA: true, _N: true } as never, "", url);
+}

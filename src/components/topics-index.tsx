@@ -12,7 +12,7 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
     <div className="flex flex-col gap-10">
       {[...buckets.entries()].map(([groupName, items]) => (
         <section key={groupName}>
-          <h2 className="mb-3 text-2xs font-medium tracking-[0.08em] text-muted-foreground/60">
+          <h2 className="mb-3 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
             {groupName}
           </h2>
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -31,7 +31,7 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline gap-2">
                       <span className="text-md font-medium">{item.label}</span>
-                      <span className="text-2xs text-muted-foreground/60 tabular-nums">
+                      <span className="text-2xs text-muted-foreground tabular-nums">
                         {item.items.length}
                       </span>
                     </span>
@@ -41,7 +41,7 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
                   </span>
                   <ArrowUpRight
                     aria-hidden
-                    className="mt-1 size-3.5 shrink-0 text-muted-foreground/25 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+                    className="mt-1 size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-primary"
                   />
                 </Link>
               </li>
