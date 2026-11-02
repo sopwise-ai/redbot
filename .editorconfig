@@ -1,7 +1,9 @@
 root = true
 
-# 换行、缩进、编码的单一事实源。
-# 行宽不在这里配置：max_line_length 不在 EditorConfig 规范（0.17.x）的属性表里，
+# 编辑器侧的换行、缩进、编码以本文件为准。
+# git 侧另由 .gitattributes 保证检出为 LF；Prettier 也会读这份文件，但 .prettierrc
+# 里的同名项（如 endOfLine）优先级更高 —— 三处保持一致，不要只改其中一处。
+# 行宽不在这里配置：max_line_length 不在 EditorConfig 规范（0.17.2）的属性表里，
 # 而 Prettier 3 会读它并映射成 printWidth —— 写在这里等于给行宽多开一个入口。
 # 行宽只由 .prettierrc 的 printWidth 决定（*.md 另有 200 的 override）。
 

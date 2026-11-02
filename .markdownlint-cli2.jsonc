@@ -11,8 +11,22 @@
     "MD007": { "indent": 2 },
     "MD013": false, // 中文按字符计却占两列，80 列对中文无意义；Prettier 不重排 Markdown 正文（proseWrap 默认 preserve）
     "MD024": { "siblings_only": true }, // CHANGELOG 每个版本都会重复「### 新增」；同级标题仍会被抓重
-    "MD041": false, // .github/PULL_REQUEST_TEMPLATE.md 首行是二级标题；CLAUDE.md 全文只有一行 @AGENTS.md 导入
     "MD035": { "style": "---" },
+    "MD041": false, // .github/PULL_REQUEST_TEMPLATE.md 首行是二级标题；CLAUDE.md 全文只有一行 @AGENTS.md 导入
+    // 统一官方产品名大小写；code_blocks 关掉，命令与 URL 里的写法不受约束
+    "MD044": {
+      "names": [
+        "GitHub",
+        "Next.js",
+        "Node.js",
+        "ESLint",
+        "Prettier",
+        "Tailwind CSS",
+        "TypeScript",
+        "shadcn/ui",
+      ],
+      "code_blocks": false,
+    },
     "MD046": { "style": "fenced" },
   },
   "ignores": [

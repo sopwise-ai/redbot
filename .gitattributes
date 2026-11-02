@@ -8,12 +8,15 @@
 *.jpeg binary
 *.gif binary
 *.webp binary
+*.avif binary
 *.ico binary
-*.svg text eol=lf
 *.woff binary
 *.woff2 binary
 *.ttf binary
 *.otf binary
+
+# SVG 是文本：已在上面的 `* text=auto eol=lf` 覆盖，这里显式列出是让评审一眼确认它没被当二进制
+*.svg text eol=lf
 
 # 脚本必须保持 LF，否则 Windows 克隆后 shebang 换行会破坏执行
 *.sh text eol=lf

@@ -1,11 +1,17 @@
 # 依赖
 node_modules/
 
-# 构建产物
+# Next.js 生成物与构建产物
+# next-env.d.ts 由 Next 管理，官方要求忽略（docs/app/api-reference/config/typescript#next-envdts）；
+# 新鲜克隆不含它时 tsc 仍可通过，next dev / build 会按需重建。
 .next/
 out/
 *.tsbuildinfo
 next-env.d.ts
+
+# 测试产物
+coverage/
+.eslintcache
 
 # 环境变量（本项目当前不需要任何环境变量，保留规则以防后续引入）
 .env
@@ -17,16 +23,19 @@ next-env.d.ts
 
 # 编辑器与系统
 .DS_Store
+Thumbs.db
 .idea/
 *.swp
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 
+# AI 协作工具的本地设置（团队规则在 AGENTS.md / CLAUDE.md，不进仓库）
+.claude/settings.local.json
+
 # 本地缓存、日志与密钥
 *.log*
 *.pem
-coverage/
 
 # git worktree 工作区（隔离开发用）
 .worktrees/

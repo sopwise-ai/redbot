@@ -1,8 +1,13 @@
 {
-  // 推荐安装而非强制：克隆者没有这些插件也能正常开发，只是少了保存时格式化与 class 补全
+  // 推荐安装而非强制：克隆者没有这些插件也能正常开发，只是少了保存时格式化、
+  // class 补全与文档检查。插件 ID 均为 Marketplace 上可解析的正式 ID。
   "recommendations": [
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    // 让 .editorconfig（换行/缩进/编码的单一事实源）在编辑器里也生效
+    "EditorConfig.EditorConfig",
+    // 与 npm run lint:md 同源：读仓库根目录的 .markdownlint-cli2.jsonc
+    "DavidAnson.vscode-markdownlint"
   ]
 }

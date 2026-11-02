@@ -1,9 +1,14 @@
 # 依赖与构建产物
+# 与 .gitignore 的重复是有意的：Prettier 默认同时读 ./.gitignore 与 ./.prettierignore，
+# 但显式传 --ignore-path 会覆盖这两个默认值，届时只有这份文件还能挡住构建产物。
 node_modules/
 .next/
 out/
 *.tsbuildinfo
 next-env.d.ts
+
+# 测试覆盖率报告：v8 输出 HTML/JS，属于生成物，不应参与格式化
+coverage/
 
 # git worktree 隔离工作区（每份都带完整 node_modules）
 .worktrees/

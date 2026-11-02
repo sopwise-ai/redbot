@@ -1,28 +1,51 @@
 {
-  // 目标：克隆即得与 CI 一致的行为——保存即 Prettier 格式化 + ESLint 修复，
-  // Tailwind class 补全认得本仓库的 v4 CSS-first 配置。
-  // 刻意不锁 editorconfig 类通用偏好（字号/主题），那些是个人设置。
+  // 装了 .vscode/extensions.json 的推荐插件后，保存即与 CI 对齐：先 Prettier 格式化，再 ESLint 修复。
+  // 通用的字号/主题等个人偏好不在这里锁。
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  // ESLint 9 起 flat config 是默认（插件对该版本本来就默认开启），显式写出来是为了读配置的人不用猜
   "eslint.useFlatConfig": true,
+  // 类型检查用仓库锁定的 TypeScript（见 devDependencies），避免 VSCode 自带版本与 CI 产生不同诊断
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "files.eol": "\n",
   "files.trimFinalNewlines": true,
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
-  // Markdown 行尾双空格是硬换行，交给 .editorconfig 的 [*.md] 段处理
+  // VSCode 不读 .editorconfig（那要装 EditorConfig 插件），这里与它的 [*.md] 段保持一致：
+  // Markdown 行尾双空格是硬换行，不能被保存时裁掉
   "[markdown]": {
     "files.trimTrailingWhitespace": false
   },
+  // Tailwind v4 CSS-first 的 @theme / @custom-variant / @apply 不是标准 CSS，
+  // 内置 CSS 校验会报 unknown at rule；关掉这一条，其余 CSS 检查照常
+  "css.lint.unknownAtRules": "ignore",
   // Tailwind CSS IntelliSense：v4 没有 tailwind.config，插件自动读 globals.css 的 @theme
-  "tailwindCSS.files.exclude": ["**/.git/**", "**/node_modules/**", "**/.next/**", "**/out/**"],
+  "tailwindCSS.files.exclude": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/out/**",
+    "**/coverage/**",
+    "**/.worktrees/**"
+  ],
+  // 搜索与文件监听都跳过生成物：.next/out 每次构建重写，监听它们纯烧 CPU
   "search.exclude": {
     "**/node_modules": true,
     "**/.next": true,
     "**/out": true,
+    "**/coverage": true,
+    "**/.worktrees": true,
     "**/package-lock.json": true,
     "**/tsconfig.tsbuildinfo": true
+  },
+  "files.watcherExclude": {
+    "**/.next/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true,
+    "**/.worktrees/**": true
   }
 }
