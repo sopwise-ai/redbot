@@ -16,17 +16,15 @@ import { TopicsIndex } from "@/components/topics-index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { buildHueMap } from "@/lib/groups";
+import { ALL, parseRoute } from "@/lib/route-state";
 import type { CategoryGroup } from "@/lib/schema";
 import { createSearchIndex } from "@/lib/search";
 import { site } from "@/lib/site";
 import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
-import { replaceUrlQuietly } from "@/lib/url";
+import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
 import { useHistory } from "@/lib/use-history";
-
-const ALL = "all";
 
 export type ShellView = "wall" | "topics" | "search" | "history";
 
@@ -63,6 +61,11 @@ export function AppShell({
   // 进入搜索前所在的路径，清空搜索时回到这里
   const originPath = React.useRef<string>("/");
   const trackedOrigin = React.useRef(false);
+  // 首帧「URL → state」是否已同步完成。同步之前不许回写地址栏，
+  // 否则直链 /search/?q=新闻 会被下面的回写 effect 改写成 /（P0-1 的根因）
+  const urlSynced = React.useRef(false);
+  // 本次搜索是否已经在历史里留下过一条记录（第一次进入搜索要 push，之后只 replace）
+  const searchEntryPushed = React.useRef(false);
 
   const searching = query.trim().length > 0;
   const activeGroup = groups.find((group) => group.slug === active) ?? null;
@@ -110,16 +113,46 @@ export function AppShell({
     }
   }, [searching]);
 
+  // 首帧把 URL 上的搜索词读进 state（「URL 是状态」的读侧）。
+  // 静态导出没有服务端注入，只能挂载后读一次；urlSynced 同时充当「只跑一次」的守卫，
+  // 避免 groups 变化（未来的热更新）时把用户正在输入的内容覆盖掉。
+  React.useEffect(() => {
+    if (urlSynced.current) return;
+    const route = parseRoute(
+      window.location.pathname,
+      window.location.search,
+      groups.map((group) => group.slug),
+    );
+    if (route.query) setQuery(route.query);
+    // 直链/刷新进来时这条 URL 本来就在历史里，后续输入只 replace 不再 push
+    if (route.isSearch) searchEntryPushed.current = true;
+    urlSynced.current = true;
+  }, [groups]);
+
   // 地址栏：搜索时是 /search/?q=，清空后回到来源页。
   // 必须用 replaceUrlQuietly（绕过 Next 的 replaceState patch）：
   // patch 会让每次改 URL 都 dispatch ACTION_RESTORE → router state 变化 →
   // <main id="content"> 抢走焦点，输入框每打一个字就失焦
   React.useEffect(() => {
+    // 首帧还没读完 URL：这一轮 state 里的 query 还是空串，
+    // 此时回写会把直链的 q 冲掉，必须跳过
+    if (!urlSynced.current) return;
     if (searching) {
-      const q = new URLSearchParams({ q: query.trim() }).toString();
-      replaceUrlQuietly(`/search/?${q}`);
+      const target = `/search/?${new URLSearchParams({ q: query.trim() }).toString()}`;
+      // 内容相同就不写：首帧读入 query 会再触发一次本 effect，
+      // 不加这层判断会多写一次历史记录
+      if (window.location.pathname + window.location.search === target) return;
+      // 第一次进入搜索用 push：后退能回到来源分类，而不是把来源页替换掉。
+      // 之后每打一个字只 replace，否则历史里会堆满「豆」「豆瓣」「豆瓣电」…
+      if (!searchEntryPushed.current) {
+        pushUrlQuietly(target);
+        searchEntryPushed.current = true;
+      } else {
+        replaceUrlQuietly(target);
+      }
       return;
     }
+    searchEntryPushed.current = false;
     if (window.location.pathname.startsWith("/search")) {
       const back = trackedOrigin.current ? originPath.current : "/";
       replaceUrlQuietly(back);
@@ -133,14 +166,20 @@ export function AppShell({
     if (window.location.pathname !== path) replaceUrlQuietly(path);
   }, [active, searching, view]);
 
-  // 浏览器前进/后退
+  // 浏览器前进/后退：把地址栏重新读成 state（与首帧读 URL 用同一个解析器）
   React.useEffect(() => {
     function onPopState() {
-      const match = /^\/topics\/([a-z0-9-]+)\/?$/.exec(window.location.pathname);
-      if (match) {
-        setQuery("");
-        setActive(groups.some((group) => group.slug === match[1]) ? match[1] : ALL);
-      }
+      const route = parseRoute(
+        window.location.pathname,
+        window.location.search,
+        groups.map((group) => group.slug),
+      );
+      // 后退/前进到搜索页：把 q 读回来；离开搜索页则清空，即「退出搜索态」
+      setQuery(route.query);
+      // 搜索页这条 URL 已经在历史里了，之后打字只 replace
+      if (route.isSearch) searchEntryPushed.current = true;
+      // 搜索页是全站的，没有当前分类；只有离开搜索页才恢复分类高亮
+      if (!route.isSearch) setActive(route.active);
     }
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -383,19 +422,14 @@ export function AppShell({
             </div>
           </header>
 
-          {/* 移动端：把主题筛选从抽屉里拉出来 */}
+          {/* 移动端：把主题筛选从抽屉里拉出来（横滑、跟随选中项在 CategoryChips 内） */}
           <div className="sticky top-14 z-20 border-b bg-background/85 backdrop-blur-md md:hidden">
-            <ScrollArea className="w-full">
-              <div className="px-4 py-2">
-                <CategoryChips
-                  groups={groups}
-                  total={total}
-                  active={active}
-                  onSelect={switchCategory}
-                  className="w-max"
-                />
-              </div>
-            </ScrollArea>
+            <CategoryChips
+              groups={groups}
+              total={total}
+              active={active}
+              onSelect={switchCategory}
+            />
           </div>
 
           <main id="content" tabIndex={-1} className="flex-1 px-5 pb-12 outline-none lg:px-8">

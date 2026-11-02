@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, expect, it, vi } from "vitest";
 
-import { replaceUrlQuietly } from "@/lib/url";
+import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
 
 describe("replaceUrlQuietly", () => {
   it("调用原生 replaceState 并带上 __NA 标记（绕过 Next 的 patch）", () => {
@@ -37,6 +37,40 @@ describe("replaceUrlQuietly", () => {
     try {
       replaceUrlQuietly("/topics/news/");
       expect(events).toEqual(["/topics/news/"]);
+    } finally {
+      window.removeEventListener("redbot:replacestate", onReplace);
+    }
+  });
+});
+
+describe("pushUrlQuietly", () => {
+  it("带 __NA 标记走原生 pushState（历史长度 +1）", () => {
+    const native = vi.fn();
+    const original = History.prototype.pushState;
+    window.history.pushState = function patched(data, _unused, url) {
+      if ((data as { __NA?: boolean } | null)?.__NA) return native(data, _unused, url);
+      throw new Error("should not dispatch ACTION_RESTORE");
+    };
+    try {
+      pushUrlQuietly("/search/?q=x");
+      expect(native).toHaveBeenCalledTimes(1);
+      expect(native.mock.calls[0][2]).toBe("/search/?q=x");
+    } finally {
+      window.history.pushState = original;
+    }
+  });
+
+  it("在真实 history 上新增条目，且不派发焦点事件", () => {
+    const before = window.history.length;
+    const events: string[] = [];
+    const onReplace = () => events.push("fired");
+    window.addEventListener("redbot:replacestate", onReplace);
+    try {
+      pushUrlQuietly("/history/");
+      expect(window.location.pathname).toBe("/history/");
+      expect(window.history.length).toBe(before + 1);
+      // 打字时不能抢焦点：push 不该触发那套监听
+      expect(events).toEqual([]);
     } finally {
       window.removeEventListener("redbot:replacestate", onReplace);
     }

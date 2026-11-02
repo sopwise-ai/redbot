@@ -124,7 +124,7 @@ export function AppSidebar({
                       🐾
                     </span>
                     <span className="truncate">足迹</span>
-                    <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
+                    <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
                       {entries.length}
                     </span>
                   </SidebarMenuButton>
@@ -144,7 +144,7 @@ export function AppSidebar({
                       🗂️
                     </span>
                     <span className="truncate">全部</span>
-                    <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
+                    <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
                       {total}
                     </span>
                   </SidebarMenuButton>
@@ -155,17 +155,15 @@ export function AppSidebar({
         </SidebarGroup>
 
         <div className="sticky top-0 z-10 flex items-center gap-2 bg-sidebar px-3 pt-3 pb-1 group-data-[collapsible=icon]:hidden">
-          <span className="text-2xs font-medium tracking-[0.08em] text-muted-foreground/60">
-            主题
-          </span>
-          <span className="ml-auto text-2xs text-muted-foreground/40 tabular-nums">
+          <span className="text-2xs font-medium tracking-[0.08em] text-muted-foreground">主题</span>
+          <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
             {groups.length}
           </span>
         </div>
 
         {[...buckets.entries()].map(([groupName, items]) => (
           <SidebarGroup key={groupName} className="py-0">
-            <SidebarGroupLabel className="h-6 px-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground/60">
+            <SidebarGroupLabel className="h-6 px-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
               {groupName}
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -186,7 +184,7 @@ export function AppSidebar({
                         {group.emoji}
                       </span>
                       <span className="truncate">{group.label}</span>
-                      <span className="ml-auto text-2xs text-muted-foreground/50 tabular-nums">
+                      <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
                         {group.items.length}
                       </span>
                     </SidebarMenuButton>
@@ -217,7 +215,7 @@ export function AppSidebar({
               >
                 <GitPullRequestIcon />
                 <span>提交收录</span>
-                <ArrowUpRight className="ml-auto size-3.5 opacity-50" />
+                <ArrowUpRight className="ml-auto size-3.5" />
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

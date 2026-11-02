@@ -39,7 +39,7 @@ export function SiteFooter({
           <p className="tabular-nums">
             {total} 个信息源 · {categories} 个主题 · 更新于 {updated}
           </p>
-          <span aria-hidden className="text-muted-foreground/40">
+          <span aria-hidden className="text-muted-foreground">
             ·
           </span>
           <a
