@@ -2,7 +2,7 @@
   "name": "redbot",
   "version": "0.1.0",
   "private": true,
-  "description": "中文互联网精选网站清单：挑过的，分好的，点得开的。免费开源、人工精选、无广告无跟踪。",
+  "description": "中文互联网精选网站清单：一页按钮直达各站榜单与列表页，支持按主题浏览、全站搜索与本地足迹。免费开源、无广告无跟踪。",
   "license": "MIT",
   "author": "SopwiseAI (https://redbot.cc)",
   "homepage": "https://redbot.cc",
@@ -14,11 +14,16 @@
     "url": "https://github.com/sopwise-ai/redbot/issues"
   },
   "keywords": [
-    "directory",
-    "information-source",
+    "website-directory",
+    "navigation",
+    "bookmarks",
+    "curated-list",
+    "hot-list",
+    "chinese-web",
+    "中文互联网",
     "nextjs",
     "static-site",
-    "中文互联网"
+    "tailwindcss"
   ],
   "engines": {
     "node": ">=26.0.0"
