@@ -36,6 +36,7 @@ export function mergeTopics(entries: TopicEntry[]): MergedCatalog {
         url: link.url,
         desc: link.desc,
         tags: [file.name, ...link.tags],
+        ...(link.aliases.length > 0 ? { aliases: link.aliases } : {}),
       });
     }
   }

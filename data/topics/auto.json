@@ -9,6 +9,7 @@
       "name": "汽车之家",
       "url": "https://www.autohome.com.cn/",
       "tags": ["评测"],
+      "aliases": ["autohome"],
       "desc": "车型库与车主口碑"
     },
     {
@@ -16,6 +17,7 @@
       "name": "易车",
       "url": "https://www.yiche.com/",
       "tags": ["评测"],
+      "aliases": ["yiche"],
       "desc": "报价与评测"
     },
     {
@@ -23,6 +25,7 @@
       "name": "懂车帝",
       "url": "https://www.dongchedi.com/",
       "tags": ["评测"],
+      "aliases": ["dongchedi"],
       "desc": "实测与拆解"
     },
     {
@@ -37,6 +40,7 @@
       "name": "42号车库",
       "url": "https://www.42how.com/",
       "tags": ["新能源"],
+      "aliases": ["42how"],
       "desc": "智能电动车的深度内容"
     },
     {
@@ -44,6 +48,7 @@
       "name": "太平洋汽车",
       "url": "https://www.pcauto.com.cn/",
       "tags": ["评测"],
+      "aliases": ["pcauto"],
       "desc": "老牌汽车门户"
     },
     {
@@ -51,6 +56,7 @@
       "name": "盖世汽车",
       "url": "https://auto.gasgoo.com/",
       "tags": ["产业"],
+      "aliases": ["gasgoo"],
       "desc": "供应链与产业新闻"
     }
   ]

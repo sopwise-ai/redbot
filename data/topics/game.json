@@ -58,6 +58,7 @@
       "name": "米游社",
       "url": "https://www.miyoushe.com/",
       "tags": ["手游"],
+      "aliases": ["miyoushe"],
       "desc": "米哈游玩家社区"
     },
     {
@@ -65,6 +66,7 @@
       "name": "游研社",
       "url": "https://www.yystv.cn/",
       "tags": ["文化"],
+      "aliases": ["yystv"],
       "desc": "游戏背后的故事"
     },
     {

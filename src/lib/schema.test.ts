@@ -73,6 +73,19 @@ describe("topicLinkSchema — tags", () => {
   });
 });
 
+describe("topicLinkSchema — aliases", () => {
+  it("最多 5 个", () => {
+    const aliases = ["a", "b", "c", "d", "e", "f"];
+    expect(topicLinkSchema.safeParse(link({ aliases })).success).toBe(false);
+  });
+
+  it("不能重复", () => {
+    expect(issues(topicLinkSchema.safeParse(link({ aliases: ["wb", "WB"] })))).toContain(
+      "aliases：别名不能重复",
+    );
+  });
+});
+
 describe("topicLinkSchema — url", () => {
   it("只接受 https，并给出可读提示", () => {
     expect(issues(topicLinkSchema.safeParse(link({ url: "http://example.com/hot" })))).toContain(

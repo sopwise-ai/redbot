@@ -84,6 +84,30 @@ describe("checkData — 主题与标签", () => {
     expect(errors.some((e) => e.includes("开发") && e.includes("没有任何条目"))).toBe(true);
   });
 
+  it("别名与另一个站点的名称冲突时报错", () => {
+    const { errors } = run([
+      link({ name: "微博热搜", aliases: ["weibo"], url: "https://a.com/x" }),
+      link({ id: "b", name: "Weibo", aliases: [], url: "https://b.com/x" }),
+    ]);
+    expect(errors.some((e) => e.includes("别名") && e.includes("名称冲突"))).toBe(true);
+  });
+
+  it("别名被两个站点使用时报错", () => {
+    const { errors } = run([
+      link({ id: "a", name: "微博热搜", aliases: ["wb"], url: "https://a.com/x" }),
+      link({ id: "b", name: "微博", aliases: ["wb"], url: "https://b.com/x" }),
+    ]);
+    expect(errors.some((e) => e.includes("已被另一个站点使用"))).toBe(true);
+  });
+
+  it("别名与自己的名字重复时报错", () => {
+    const { errors } = run([
+      link({ name: "微博热搜", aliases: ["微博热搜"], url: "https://a.com/x" }),
+      link({ id: "b", url: "https://b.com/x" }),
+    ]);
+    expect(errors.some((e) => e.includes("与自己的名字重复"))).toBe(true);
+  });
+
   it("主题 name 重复时报错，并指名两个文件", () => {
     const { errors } = run(
       [link({ url: "https://a.com/x" }), link({ id: "b", url: "https://b.com/x" })],

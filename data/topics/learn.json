@@ -16,6 +16,7 @@
       "name": "中国大学MOOC",
       "url": "https://www.icourse163.org/",
       "tags": ["课程"],
+      "aliases": ["mooc", "icourse163"],
       "desc": "国内高校的慕课集合"
     },
     {
@@ -23,6 +24,7 @@
       "name": "慕课网",
       "url": "https://www.imooc.com/",
       "tags": ["课程"],
+      "aliases": ["imooc"],
       "desc": "程序员的实战课"
     },
     {
@@ -30,6 +32,7 @@
       "name": "极客时间",
       "url": "https://time.geekbang.org/",
       "tags": ["课程"],
+      "aliases": ["geekbang"],
       "desc": "技术人的付费专栏"
     },
     {
@@ -37,6 +40,7 @@
       "name": "得到",
       "url": "https://www.dedao.cn/",
       "tags": [],
+      "aliases": ["dedao"],
       "desc": "通识与自我提升"
     },
     {
@@ -44,6 +48,7 @@
       "name": "网易公开课",
       "url": "https://open.163.com/",
       "tags": ["课程"],
+      "aliases": ["open163"],
       "desc": "TED 与名校公开课"
     },
     {
@@ -51,6 +56,7 @@
       "name": "学堂在线",
       "url": "https://www.xuetangx.com/",
       "tags": ["课程"],
+      "aliases": ["xuetangx"],
       "desc": "清华发起的慕课平台"
     },
     {
@@ -58,6 +64,7 @@
       "name": "可汗学院",
       "url": "https://zh.khanacademy.org/",
       "tags": ["课程"],
+      "aliases": ["khan"],
       "desc": "从零补基础的最佳选择"
     },
     {

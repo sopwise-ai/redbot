@@ -9,6 +9,7 @@
       "name": "果壳",
       "url": "https://www.guokr.com/",
       "tags": ["科普"],
+      "aliases": ["guokr"],
       "desc": "把科学讲成人话"
     },
     {
@@ -44,6 +45,7 @@
       "name": "Quanta Magazine",
       "url": "https://www.quantamagazine.org/",
       "tags": ["科普"],
+      "aliases": ["quanta"],
       "desc": "数学与物理的深度叙事"
     },
     {
@@ -51,6 +53,7 @@
       "name": "MIT科技评论",
       "url": "https://www.technologyreview.com/",
       "tags": ["科普"],
+      "aliases": ["mit tr", "technology review"],
       "desc": "技术如何改变社会"
     },
     {

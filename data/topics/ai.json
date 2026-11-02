@@ -9,6 +9,7 @@
       "name": "量子位",
       "url": "https://www.qbitai.com/",
       "tags": ["资讯"],
+      "aliases": ["qbitai"],
       "desc": "AI 进展的日常追踪"
     },
     {
@@ -16,6 +17,7 @@
       "name": "机器之心",
       "url": "https://www.jiqizhixin.com/",
       "tags": ["深度"],
+      "aliases": ["jiqizhixin"],
       "desc": "AI 技术与产业解读"
     },
     {
@@ -30,6 +32,7 @@
       "name": "Hugging Face",
       "url": "https://huggingface.co/",
       "tags": ["模型"],
+      "aliases": ["hf"],
       "desc": "模型与数据集的仓库"
     },
     {
@@ -51,6 +54,7 @@
       "name": "OpenAI",
       "url": "https://openai.com/news/",
       "tags": ["资讯"],
+      "aliases": ["gpt"],
       "desc": "第一手的模型发布"
     },
     {
@@ -58,6 +62,7 @@
       "name": "Google DeepMind",
       "url": "https://deepmind.google/discover/blog/",
       "tags": ["论文"],
+      "aliases": ["deepmind"],
       "desc": "前沿研究的一手博客"
     },
     {

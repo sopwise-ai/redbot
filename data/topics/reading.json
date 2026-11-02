@@ -9,6 +9,7 @@
       "name": "豆瓣读书",
       "url": "https://book.douban.com/",
       "tags": ["书评"],
+      "aliases": ["douban book", "dbds"],
       "desc": "选书之前先看评分"
     },
     {
@@ -16,6 +17,7 @@
       "name": "微信读书",
       "url": "https://weread.qq.com/",
       "tags": [],
+      "aliases": ["weread"],
       "desc": "社交化的阅读器"
     },
     {
@@ -23,6 +25,7 @@
       "name": "起点中文网",
       "url": "https://www.qidian.com/",
       "tags": ["网文"],
+      "aliases": ["qidian"],
       "desc": "网络文学的第一站"
     },
     {
@@ -30,6 +33,7 @@
       "name": "晋江文学城",
       "url": "https://www.jjwxc.net/",
       "tags": ["网文"],
+      "aliases": ["jjwxc"],
       "desc": "女性向网文的主场"
     },
     {
@@ -37,6 +41,7 @@
       "name": "豆瓣阅读",
       "url": "https://read.douban.com/",
       "tags": [],
+      "aliases": ["douban read"],
       "desc": "原创作品与电子书"
     },
     {
@@ -51,6 +56,7 @@
       "name": "孔夫子旧书网",
       "url": "https://www.kongfz.com/",
       "tags": [],
+      "aliases": ["kongfz"],
       "desc": "绝版书的最后希望"
     },
     {
@@ -72,6 +78,7 @@
       "name": "Project Gutenberg",
       "url": "https://www.gutenberg.org/",
       "tags": [],
+      "aliases": ["gutenberg"],
       "desc": "六万本公版书"
     }
   ]

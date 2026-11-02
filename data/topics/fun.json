@@ -9,6 +9,7 @@
       "name": "哔哩哔哩",
       "url": "https://www.bilibili.com/v/popular/rank/all",
       "tags": ["视频"],
+      "aliases": ["bilibili", "blbl", "b站"],
       "desc": "全站排行榜"
     },
     {
@@ -16,6 +17,7 @@
       "name": "抖音",
       "url": "https://www.douyin.com/hot",
       "tags": ["视频"],
+      "aliases": ["douyin", "dy", "tiktok"],
       "desc": "短视频热榜"
     },
     {
@@ -23,6 +25,7 @@
       "name": "快手",
       "url": "https://www.kuaishou.com/",
       "tags": ["视频"],
+      "aliases": ["kuaishou", "ks"],
       "desc": "另一个短视频宇宙"
     },
     {
@@ -30,6 +33,7 @@
       "name": "小红书",
       "url": "https://www.xiaohongshu.com/",
       "tags": ["生活"],
+      "aliases": ["xiaohongshu", "xhs"],
       "desc": "生活方式的风向标"
     },
     {

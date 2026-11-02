@@ -9,6 +9,7 @@
       "name": "微博热搜",
       "url": "https://s.weibo.com/top/summary",
       "tags": ["热榜"],
+      "aliases": ["weibo", "wb"],
       "desc": "十分钟前的全网议题"
     },
     {
@@ -16,6 +17,7 @@
       "name": "知乎热榜",
       "url": "https://www.zhihu.com/hot",
       "tags": ["热榜"],
+      "aliases": ["zhihu", "zh"],
       "desc": "讨论质量最高的热榜"
     },
     {
@@ -30,6 +32,7 @@
       "name": "澎湃新闻",
       "url": "https://www.thepaper.cn/",
       "tags": ["深度"],
+      "aliases": ["thepaper"],
       "desc": "时政原创新闻第一现场"
     },
     {
@@ -107,6 +110,7 @@
       "name": "联合早报",
       "url": "https://www.zaobao.com.sg/",
       "tags": ["国际"],
+      "aliases": ["zaobao"],
       "desc": "东南亚视角的中文报道"
     },
     {
@@ -114,6 +118,7 @@
       "name": "BBC中文",
       "url": "https://www.bbc.com/zhongwen/simp",
       "tags": ["国际"],
+      "aliases": ["bbc"],
       "desc": "外部视角看中国"
     },
     {

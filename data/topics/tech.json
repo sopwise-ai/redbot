@@ -9,6 +9,7 @@
       "name": "IT之家",
       "url": "https://www.ithome.com/",
       "tags": ["数码"],
+      "aliases": ["ithome"],
       "desc": "科技数码的快讯流水线"
     },
     {
@@ -16,6 +17,7 @@
       "name": "少数派",
       "url": "https://sspai.com/",
       "tags": ["效率"],
+      "aliases": ["sspai"],
       "desc": "值得花时间的生活方式"
     },
     {
@@ -23,6 +25,7 @@
       "name": "爱范儿",
       "url": "https://www.ifanr.com/",
       "tags": [],
+      "aliases": ["ifanr"],
       "desc": "科技与商业的交叉口"
     },
     {
@@ -37,6 +40,7 @@
       "name": "虎嗅",
       "url": "https://www.huxiu.com/",
       "tags": ["商业"],
+      "aliases": ["huxiu"],
       "desc": "商业科技的观点场"
     },
     {
@@ -44,6 +48,7 @@
       "name": "极客公园",
       "url": "https://www.geekpark.net/",
       "tags": ["创业"],
+      "aliases": ["geekpark"],
       "desc": "创新产品的早期信号"
     },
     {
@@ -51,6 +56,7 @@
       "name": "品玩",
       "url": "https://www.pingwest.com/",
       "tags": [],
+      "aliases": ["pingwest"],
       "desc": "科技消费的长期观察者"
     },
     {
@@ -72,6 +78,7 @@
       "name": "数字尾巴",
       "url": "https://www.dgtle.com/",
       "tags": ["数码"],
+      "aliases": ["dgtle"],
       "desc": "数码生活的内容社区"
     },
     {
@@ -79,6 +86,7 @@
       "name": "威锋",
       "url": "https://www.feng.com/",
       "tags": ["数码"],
+      "aliases": ["feng"],
       "desc": "苹果生态的第一现场"
     },
     {
@@ -86,6 +94,7 @@
       "name": "快科技",
       "url": "https://www.mydrivers.com/",
       "tags": ["硬件"],
+      "aliases": ["mydrivers"],
       "desc": "硬件资讯的快枪手"
     },
     {
@@ -93,6 +102,7 @@
       "name": "太平洋电脑网",
       "url": "https://www.pconline.com.cn/",
       "tags": ["硬件"],
+      "aliases": ["pconline"],
       "desc": "装机与硬件的老牌参考"
     },
     {
@@ -100,6 +110,7 @@
       "name": "中关村在线",
       "url": "https://www.zol.com.cn/",
       "tags": ["硬件"],
+      "aliases": ["zol"],
       "desc": "硬件参数与报价大全"
     },
     {
@@ -114,6 +125,7 @@
       "name": "差评",
       "url": "https://chaping.cn/",
       "tags": ["评测"],
+      "aliases": ["chaping"],
       "desc": "数码评测与互联网吐槽"
     }
   ]

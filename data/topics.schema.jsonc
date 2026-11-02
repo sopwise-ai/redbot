@@ -54,6 +54,14 @@
           "items": { "type": "string", "minLength": 1 },
           "description": "副标签，0–2 个，可省略（默认空数组），取自 LIMITS.subtags 白名单。主分类由「所在文件」决定，这里不写；同一个链接的副标签不能重复。",
         },
+        "aliases": {
+          "type": "array",
+          "maxItems": 5,
+          "uniqueItems": true,
+          "default": [],
+          "items": { "type": "string", "minLength": 1, "maxLength": 20 },
+          "description": "搜索别名，0–5 个：用户会打、但名字里没有的写法（英文名 / 拼音首字母 / 旧名 / 同义说法）。只用于搜索召回，不展示；必须全局唯一，且不能与任何站点的名称相同。",
+        },
         "desc": {
           "type": "string",
           "minLength": 1,
@@ -120,7 +128,8 @@
 // 2. 文件名 = slug：data/topics/ai.json 的 slug 就是 "ai"，不允许文件内另写 slug。
 // 3. 主分类 = 所在文件：链接写在 ai.json 就属于「AI」，因此 tags 只写副标签。
 // 4. 全局唯一：id / url（归一化后）/ name 跨所有主题文件唯一，重复即构建失败；
-//    name 也必须全局唯一（它是合并后的分组键，重复会静默串组）。
+//    name 也必须全局唯一（它是合并后的分组键，重复会静默串组）；aliases 同样全局唯一，
+//    且不能与任何站点的 name 相同（否则搜索会指向两个站）。
 // 5. 配额：每个主题 1–20 条；主题总数 ≤20（见 LIMITS.perCategory / LIMITS.categories）。
 // 6. 发布后不可改：slug 决定 URL 与主题文件路径，id 是统计锚点；改名 = 断链。
 // 7. 副标签白名单：LIMITS.subtags（src/lib/schema.ts），未登记的新标签先加白名单再用。

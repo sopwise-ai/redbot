@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { normalizeKeyword } from "@/lib/keyword";
+
 /**
  * 唯一数据契约（规范见 data/topics.schema.jsonc）。
  * 站点渲染、构建校验、README 生成、CI 全部复用这一份 schema，
@@ -103,6 +105,15 @@ export const topicLinkSchema = z.strictObject({
     .max(2, "副标签最多 2 个")
     .refine((tags) => new Set(tags).size === tags.length, "副标签不能重复")
     .default([]),
+  /** 用户会打、但名字里没有的写法：英文名、拼音首字母、旧名、同义说法。只用于搜索召回。 */
+  aliases: z
+    .array(z.string().min(1).max(20, "别名最多 20 个字符"))
+    .max(5, "别名最多 5 个")
+    .refine(
+      (aliases) => new Set(aliases.map(normalizeKeyword)).size === aliases.length,
+      "别名不能重复",
+    )
+    .default([]),
   desc: z.string().min(1).max(28, "desc 最多 28 个字"),
 });
 
@@ -135,6 +146,8 @@ export interface LinkItem {
   url: string;
   /** 全部标签：`tags[0]` 是主分类（由所在主题文件补上），其余是副标签 */
   tags: string[];
+  /** 搜索别名（可选；为空时不下发） */
+  aliases?: string[];
   desc: string;
 }
 

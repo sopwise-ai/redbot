@@ -1,3 +1,4 @@
+import { normalizeKeyword } from "../../src/lib/keyword";
 import { LIMITS } from "../../src/lib/schema";
 import type { Catalog, Category } from "../../src/lib/schema";
 
@@ -67,6 +68,40 @@ export function checkData(
       errors.push(`名称重复：「${link.name}」(${link.id}) 与「${seenName.get(nameKey)}」`);
     } else {
       seenName.set(nameKey, `${link.name} (${link.id})`);
+    }
+  }
+
+  // ── 别名（搜索召回的第二写入口，必须防止歧义）─────────────
+  const linkNameOwner = new Map<string, string>();
+  for (const link of catalog.links) linkNameOwner.set(normalizeKeyword(link.name), link.id);
+
+  const aliasOwner = new Map<string, string>();
+  for (const link of catalog.links) {
+    const seen = new Set<string>();
+    for (const alias of link.aliases ?? []) {
+      const key = normalizeKeyword(alias);
+      if (key === normalizeKeyword(link.name)) {
+        errors.push(`「${link.name}」(${link.id}) 的别名「${alias}」与自己的名字重复`);
+        continue;
+      }
+      if (seen.has(key)) {
+        errors.push(`「${link.name}」(${link.id}) 的别名「${alias}」重复`);
+        continue;
+      }
+      seen.add(key);
+
+      const nameHit = linkNameOwner.get(key);
+      if (nameHit && nameHit !== link.id) {
+        errors.push(`「${link.name}」(${link.id}) 的别名「${alias}」与另一个站点的名称冲突`);
+        continue;
+      }
+
+      const aliasHit = aliasOwner.get(key);
+      if (aliasHit && aliasHit !== link.id) {
+        errors.push(`「${link.name}」(${link.id}) 的别名「${alias}」已被另一个站点使用`);
+        continue;
+      }
+      aliasOwner.set(key, link.id);
     }
   }
 

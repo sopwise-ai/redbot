@@ -9,6 +9,7 @@
       "name": "豆瓣电影",
       "url": "https://movie.douban.com/chart",
       "tags": ["榜单"],
+      "aliases": ["douban movie", "dbdy"],
       "desc": "选片之前先看榜单"
     },
     {
@@ -51,6 +52,7 @@
       "name": "猫眼电影",
       "url": "https://www.maoyan.com/",
       "tags": ["榜单"],
+      "aliases": ["maoyan"],
       "desc": "票房与排片实时数据"
     },
     {
@@ -58,6 +60,7 @@
       "name": "时光网",
       "url": "https://www.mtime.com/",
       "tags": ["影评"],
+      "aliases": ["mtime"],
       "desc": "影评与电影资料"
     }
   ]

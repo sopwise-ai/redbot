@@ -9,6 +9,7 @@
       "name": "即刻",
       "url": "https://web.okjike.com/",
       "tags": ["兴趣"],
+      "aliases": ["jike"],
       "desc": "互联网人的朋友圈"
     },
     {
@@ -16,6 +17,7 @@
       "name": "百度贴吧",
       "url": "https://tieba.baidu.com/",
       "tags": ["兴趣"],
+      "aliases": ["tieba"],
       "desc": "兴趣聚落的老地盘"
     },
     {
@@ -30,6 +32,7 @@
       "name": "抽屉新热榜",
       "url": "https://www.chouti.com/",
       "tags": ["热榜"],
+      "aliases": ["chouti"],
       "desc": "编辑手工挑选的热点"
     },
     {
@@ -37,6 +40,7 @@
       "name": "喷嚏网",
       "url": "https://www.dapenti.com/",
       "tags": [],
+      "aliases": ["dapenti"],
       "desc": "一天里的图与话"
     },
     {
@@ -51,6 +55,7 @@
       "name": "豆瓣小组",
       "url": "https://www.douban.com/group/",
       "tags": ["兴趣"],
+      "aliases": ["douban", "db"],
       "desc": "中文互联网的兴趣长尾"
     },
     {
@@ -58,6 +63,7 @@
       "name": "宽带山",
       "url": "https://www.kdslife.com/",
       "tags": [],
+      "aliases": ["kds"],
       "desc": "上海本地生活社区"
     },
     {
@@ -65,6 +71,7 @@
       "name": "酷安",
       "url": "https://www.coolapk.com/",
       "tags": ["数码"],
+      "aliases": ["coolapk"],
       "desc": "数码爱好者的聚集地"
     },
     {
@@ -72,6 +79,7 @@
       "name": "脉脉",
       "url": "https://maimai.cn/",
       "tags": ["职场"],
+      "aliases": ["maimai"],
       "desc": "职场八卦与匿名区"
     }
   ]

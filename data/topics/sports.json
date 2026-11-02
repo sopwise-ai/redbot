@@ -9,6 +9,7 @@
       "name": "虎扑",
       "url": "https://bbs.hupu.com/bxj",
       "tags": ["篮球"],
+      "aliases": ["hupu"],
       "desc": "步行街，不止于体育"
     },
     {
@@ -16,6 +17,7 @@
       "name": "直播吧",
       "url": "https://www.zhibo8.cc/",
       "tags": [],
+      "aliases": ["zhibo8"],
       "desc": "比分与赛程的集散地"
     },
     {
@@ -23,6 +25,7 @@
       "name": "懂球帝",
       "url": "https://www.dongqiudi.com/",
       "tags": ["足球"],
+      "aliases": ["dongqiudi"],
       "desc": "足球资讯与球迷社区"
     },
     {

@@ -9,6 +9,7 @@
       "name": "36氪快讯",
       "url": "https://36kr.com/newsflashes",
       "tags": ["快讯"],
+      "aliases": ["36kr"],
       "desc": "创投圈的实时快讯"
     },
     {
@@ -23,6 +24,7 @@
       "name": "财联社",
       "url": "https://www.cls.cn/telegraph",
       "tags": ["快讯"],
+      "aliases": ["cls"],
       "desc": "A 股盘中的电报流"
     },
     {
@@ -51,6 +53,7 @@
       "name": "钛媒体",
       "url": "https://www.tmtpost.com/",
       "tags": ["商业"],
+      "aliases": ["tmtpost"],
       "desc": "科技商业的产业视角"
     },
     {
@@ -72,6 +75,7 @@
       "name": "雪球",
       "url": "https://xueqiu.com/today",
       "tags": ["投资"],
+      "aliases": ["xueqiu"],
       "desc": "投资者的今日话题"
     },
     {
@@ -79,6 +83,7 @@
       "name": "东方财富",
       "url": "https://www.eastmoney.com/",
       "tags": ["市场"],
+      "aliases": ["eastmoney"],
       "desc": "行情与资讯的合流处"
     },
     {
@@ -86,6 +91,7 @@
       "name": "同花顺",
       "url": "https://www.10jqka.com.cn/",
       "tags": ["市场"],
+      "aliases": ["10jqka"],
       "desc": "看盘工具与财经资讯"
     },
     {

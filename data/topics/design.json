@@ -9,6 +9,7 @@
       "name": "Product Hunt",
       "url": "https://www.producthunt.com/",
       "tags": ["产品"],
+      "aliases": ["ph"],
       "desc": "每天一个新产品"
     },
     {
@@ -37,6 +38,7 @@
       "name": "站酷",
       "url": "https://www.zcool.com.cn/",
       "tags": ["作品集"],
+      "aliases": ["zcool"],
       "desc": "国内设计师的主场"
     },
     {
@@ -51,6 +53,7 @@
       "name": "花瓣",
       "url": "https://huaban.com/",
       "tags": ["灵感"],
+      "aliases": ["huaban"],
       "desc": "灵感采集的老牌图库"
     },
     {
@@ -72,6 +75,7 @@
       "name": "Figma Community",
       "url": "https://www.figma.com/community",
       "tags": ["资源"],
+      "aliases": ["figma"],
       "desc": "可直接复用的设计文件"
     },
     {

@@ -16,10 +16,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { recordVisit } from "@/lib/history";
 import { buildHueMap } from "@/lib/groups";
 import { ALL, parseRoute } from "@/lib/route-state";
 import type { CategoryGroup } from "@/lib/schema";
-import { createSearchIndex } from "@/lib/search";
+import { createSearchIndex, createTopicIndex } from "@/lib/search";
 import { site } from "@/lib/site";
 import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
 import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
@@ -69,13 +70,25 @@ export function AppShell({
   const searching = query.trim().length > 0;
   const activeGroup = groups.find((group) => group.slug === active) ?? null;
 
-  const fuse = React.useMemo(
+  const searchIndex = React.useMemo(
     () => createSearchIndex(groups.flatMap((group) => group.items)),
     [groups],
   );
   const results = React.useMemo(
-    () => (searching ? fuse.search(query.trim()).map((result) => result.item) : []),
-    [fuse, query, searching],
+    () => (searching ? searchIndex.search(query) : []),
+    [searchIndex, query, searching],
+  );
+  const nearMisses = React.useMemo(
+    () => (searching && results.length === 0 ? searchIndex.nearMisses(query) : []),
+    [searchIndex, query, searching, results.length],
+  );
+  const topicIndex = React.useMemo(() => createTopicIndex(groups), [groups]);
+  const topicSuggestions = React.useMemo(
+    () =>
+      searching && results.length === 0
+        ? topicIndex.search(query, { limit: 3 }).map((result) => result.item)
+        : [],
+    [topicIndex, query, searching, results.length],
   );
 
   const hueByLabel = React.useMemo(() => buildHueMap(groups), [groups]);
@@ -460,9 +473,43 @@ export function AppShell({
                       <span className="text-muted-foreground">「{query.trim()}」</span>
                       的信息源
                     </p>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      换个关键词试试，或者把这个源提交给社区。
-                    </p>
+                    {nearMisses.length > 0 ? (
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        你是不是想找：
+                        {nearMisses.map((item, index) => (
+                          <React.Fragment key={item.id}>
+                            {index > 0 ? "、" : ""}
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => recordVisit(item.id)}
+                              className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
+                            >
+                              {item.name}
+                            </a>
+                          </React.Fragment>
+                        ))}
+                      </p>
+                    ) : null}
+                    {topicSuggestions.length > 0 ? (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        或者去这些主题看看：
+                        {topicSuggestions.map((topic, index) => (
+                          <React.Fragment key={topic.slug}>
+                            {index > 0 ? "、" : ""}
+                            <Link
+                              href={`/topics/${topic.slug}/`}
+                              className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
+                            >
+                              {topic.emoji} {topic.name}
+                            </Link>
+                          </React.Fragment>
+                        ))}
+                      </p>
+                    ) : (
+                      <p className="mt-2 text-sm text-muted-foreground">换个关键词试试。</p>
+                    )}
                     <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
                       <Button
                         size="sm"
@@ -475,8 +522,15 @@ export function AppShell({
                         清除搜索
                       </Button>
                       <Button asChild variant="outline" size="sm" className="rounded-full">
+                        <Link href="/topics/">按主题浏览</Link>
+                      </Button>
+                      <Button asChild variant="outline" size="sm" className="rounded-full">
                         <a
-                          href={`${site.repo}/issues/new?labels=link-suggestion`}
+                          href={`${site.repo}/issues/new?${new URLSearchParams({
+                            labels: "link-suggestion",
+                            title: `收录建议：${query.trim()}`,
+                            body: `我搜索「${query.trim()}」没有找到合适的信息源。\n\n建议收录：\n- 名称：\n- 链接：\n- 主题：\n- 推荐理由：`,
+                          }).toString()}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

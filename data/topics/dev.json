@@ -9,6 +9,7 @@
       "name": "GitHub Trending",
       "url": "https://github.com/trending",
       "tags": ["开源"],
+      "aliases": ["github", "gh"],
       "desc": "每天值得看的开源项目"
     },
     {
@@ -16,6 +17,7 @@
       "name": "掘金热榜",
       "url": "https://juejin.cn/hot",
       "tags": [],
+      "aliases": ["juejin"],
       "desc": "中文开发者的当日热榜"
     },
     {
@@ -23,6 +25,7 @@
       "name": "V2EX",
       "url": "https://www.v2ex.com/?tab=hot",
       "tags": [],
+      "aliases": ["v2"],
       "desc": "技术人的闲聊与真话"
     },
     {
@@ -30,6 +33,7 @@
       "name": "Hacker News",
       "url": "https://news.ycombinator.com/",
       "tags": [],
+      "aliases": ["hn"],
       "desc": "全球技术圈的头条"
     },
     {
@@ -37,6 +41,7 @@
       "name": "阮一峰周刊",
       "url": "https://github.com/ruanyf/weekly",
       "tags": ["周刊"],
+      "aliases": ["ruanyf"],
       "desc": "每周五的技术与人文精选"
     },
     {
@@ -44,6 +49,7 @@
       "name": "开源中国",
       "url": "https://www.oschina.net/",
       "tags": ["开源"],
+      "aliases": ["oschina"],
       "desc": "国内开源项目集散地"
     },
     {
@@ -58,6 +64,7 @@
       "name": "Stack Overflow",
       "url": "https://stackoverflow.com/",
       "tags": ["问答"],
+      "aliases": ["so"],
       "desc": "问题的标准答案在这里"
     },
     {
@@ -65,6 +72,7 @@
       "name": "SegmentFault",
       "url": "https://segmentfault.com/",
       "tags": ["问答"],
+      "aliases": ["sf"],
       "desc": "中文技术问答社区"
     },
     {
@@ -72,6 +80,7 @@
       "name": "博客园",
       "url": "https://www.cnblogs.com/",
       "tags": [],
+      "aliases": ["cnblogs"],
       "desc": "老派程序员的博客地盘"
     },
     {
@@ -93,6 +102,7 @@
       "name": "HelloGitHub",
       "url": "https://hellogithub.com/",
       "tags": ["开源"],
+      "aliases": ["hg"],
       "desc": "每月精选有趣的开源项目"
     },
     {
