@@ -4,9 +4,9 @@ import { checkTopicSet, mergeTopics, type TopicEntry } from "@/lib/merge-topics"
 import type { TopicFile } from "@/lib/schema";
 
 const file = (over: Partial<TopicFile> = {}): TopicFile => ({
-  label: "AI",
+  name: "AI",
   emoji: "🤖",
-  blurb: "模型、论文与新工具",
+  desc: "模型、论文与新工具",
   updated: "2026-10-28",
   links: [
     {
@@ -25,9 +25,9 @@ const entries: TopicEntry[] = [
   {
     slug: "news",
     file: file({
-      label: "新闻",
+      name: "新闻",
       emoji: "📰",
-      blurb: "今天发生了什么",
+      desc: "今天发生了什么",
       updated: "2026-11-02",
       links: [
         {
@@ -48,9 +48,9 @@ describe("mergeTopics", () => {
     expect(categories.map((c) => c.slug)).toEqual(["ai", "news"]);
     expect(categories[0]).toEqual({
       slug: "ai",
-      label: "AI",
+      name: "AI",
       emoji: "🤖",
-      blurb: "模型、论文与新工具",
+      desc: "模型、论文与新工具",
     });
   });
 

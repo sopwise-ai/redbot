@@ -1,7 +1,7 @@
 {
-  "label": "AI",
+  "name": "AI",
   "emoji": "🤖",
-  "blurb": "模型、论文与新工具",
+  "desc": "模型、论文与新工具",
   "updated": "2026-10-28",
   "links": [
     {

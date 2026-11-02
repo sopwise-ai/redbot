@@ -22,12 +22,12 @@ export async function generateMetadata({
   if (!category) return {};
 
   return {
-    title: category.label,
-    description: `${category.label} · ${category.blurb}。${site.description}`,
+    title: category.name,
+    description: `${category.name} · ${category.desc}。${site.description}`,
     alternates: { canonical: `/topics/${category.slug}/` },
     openGraph: {
-      title: `${category.label} · ${site.name}`,
-      description: category.blurb,
+      title: `${category.name} · ${site.name}`,
+      description: category.desc,
       url: `${site.url}/topics/${category.slug}/`,
     },
   };

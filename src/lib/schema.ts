@@ -108,10 +108,10 @@ export const topicLinkSchema = z.strictObject({
 
 /** 一个主题文件：data/topics/<slug>.json，slug 由文件名决定，不写在文件里。 */
 export const topicFileSchema = z.strictObject({
-  label: z.string().min(1).max(6, "label 最多 6 个字"),
+  name: z.string().min(1).max(6, "name 最多 6 个字"),
   /** 侧栏与主题索引用的 emoji 图标，必须是一个字形 */
   emoji: emojiSchema,
-  blurb: z.string().min(1).max(24, "blurb 最多 24 个字"),
+  desc: z.string().min(1).max(24, "desc 最多 24 个字"),
   updated: isoDateSchema,
   links: z
     .array(topicLinkSchema)
@@ -146,9 +146,9 @@ export interface Catalog {
 
 export interface Category {
   slug: string;
-  label: string;
+  name: string;
   emoji: string;
-  blurb: string;
+  desc: string;
 }
 
 /** 一组链接的展示模型：分类元信息 + 属于它的条目（顺序即优先级）。 */

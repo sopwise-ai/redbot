@@ -1,7 +1,7 @@
 // RedBot 数据规范（规范性文件）
 //
 // 适用两类数据：
-//   1) data/topics/<slug>.json —— 一个主题的全部内容（label / emoji / blurb / updated / links）
+//   1) data/topics/<slug>.json —— 一个主题的全部内容（name / emoji / desc / updated / links）
 //   2) data/topics.json        —— 有序主题清单（slug 数组），决定全站顺序
 //
 // 本文件是「规范」：字段、类型、上限、跨文件约束都以这里为准。
@@ -66,9 +66,9 @@
     "topicFile": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["label", "emoji", "blurb", "updated", "links"],
+      "required": ["name", "emoji", "desc", "updated", "links"],
       "properties": {
-        "label": {
+        "name": {
           "type": "string",
           "minLength": 1,
           "maxLength": 6,
@@ -80,7 +80,7 @@
           "maxLength": 8,
           "description": "侧栏与主题索引的图标，必须是一个字形（⌨️、👨‍👩‍👧‍👦 都算一个）。",
         },
-        "blurb": {
+        "desc": {
           "type": "string",
           "minLength": 1,
           "maxLength": 24,
@@ -120,7 +120,7 @@
 // 2. 文件名 = slug：data/topics/ai.json 的 slug 就是 "ai"，不允许文件内另写 slug。
 // 3. 主分类 = 所在文件：链接写在 ai.json 就属于「AI」，因此 tags 只写副标签。
 // 4. 全局唯一：id / url（归一化后）/ name 跨所有主题文件唯一，重复即构建失败；
-//    label 也必须全局唯一（它是合并后的分组键，重复会静默串组）。
+//    name 也必须全局唯一（它是合并后的分组键，重复会静默串组）。
 // 5. 配额：每个主题 1–20 条；主题总数 ≤20（见 LIMITS.perCategory / LIMITS.categories）。
 // 6. 发布后不可改：slug 决定 URL 与主题文件路径，id 是统计锚点；改名 = 断链。
 // 7. 副标签白名单：LIMITS.subtags（src/lib/schema.ts），未登记的新标签先加白名单再用。

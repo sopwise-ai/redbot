@@ -166,7 +166,7 @@ export function AppSidebar({
                     isActive={active === group.slug}
                     aria-current={active === group.slug ? "true" : undefined}
                     onClick={() => select(group.slug)}
-                    tooltip={group.label}
+                    tooltip={group.name}
                     className={itemClass}
                   >
                     <span
@@ -175,7 +175,7 @@ export function AppSidebar({
                     >
                       {group.emoji}
                     </span>
-                    <span className="truncate">{group.label}</span>
+                    <span className="truncate">{group.name}</span>
                     <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
                       {group.items.length}
                     </span>

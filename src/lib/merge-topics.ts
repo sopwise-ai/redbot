@@ -26,7 +26,7 @@ export function mergeTopics(entries: TopicEntry[]): MergedCatalog {
   let updated = "";
 
   for (const { slug, file } of entries) {
-    categories.push({ slug, label: file.label, emoji: file.emoji, blurb: file.blurb });
+    categories.push({ slug, name: file.name, emoji: file.emoji, desc: file.desc });
     if (file.updated > updated) updated = file.updated;
 
     for (const link of file.links) {
@@ -35,7 +35,7 @@ export function mergeTopics(entries: TopicEntry[]): MergedCatalog {
         name: link.name,
         url: link.url,
         desc: link.desc,
-        tags: [file.label, ...link.tags],
+        tags: [file.name, ...link.tags],
       });
     }
   }

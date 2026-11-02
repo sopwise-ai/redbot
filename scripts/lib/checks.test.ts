@@ -6,8 +6,8 @@ import { checkData, normalizeUrl } from "./checks";
 const LIMITS = { perCategory: 3, categories: 2, subtags: ["热榜", "深度"] };
 
 const categories: Category[] = [
-  { slug: "news", label: "新闻", emoji: "📰", blurb: "今天发生了什么" },
-  { slug: "dev", label: "开发", emoji: "📰", blurb: "写代码的人在看什么" },
+  { slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么" },
+  { slug: "dev", name: "开发", emoji: "📰", desc: "写代码的人在看什么" },
 ];
 
 const link = (over: Partial<Catalog["links"][number]> = {}) => ({
@@ -60,6 +60,14 @@ describe("checkData — 主题与标签", () => {
     expect(errors.some((e) => e.includes("主分类"))).toBe(true);
   });
 
+  it("副标签重复写主分类时报错", () => {
+    const { errors } = run([
+      link({ tags: ["新闻", "新闻"] }),
+      link({ id: "b", url: "https://b.com/x" }),
+    ]);
+    expect(errors.some((e) => e.includes("重复写了主分类"))).toBe(true);
+  });
+
   it("副标签不在白名单时报错", () => {
     const { errors } = run([
       link({ tags: ["新闻", "野标签"] }),
@@ -76,15 +84,15 @@ describe("checkData — 主题与标签", () => {
     expect(errors.some((e) => e.includes("开发") && e.includes("没有任何条目"))).toBe(true);
   });
 
-  it("主题 label 重复时报错，并指名两个文件", () => {
+  it("主题 name 重复时报错，并指名两个文件", () => {
     const { errors } = run(
       [link({ url: "https://a.com/x" }), link({ id: "b", url: "https://b.com/x" })],
-      [categories[0], { ...categories[1], label: "新闻" }],
+      [categories[0], { ...categories[1], name: "新闻" }],
     );
     expect(
       errors.some(
         (e) =>
-          e.includes("主题 label 重复") &&
+          e.includes("主题 name 重复") &&
           e.includes("data/topics/news.json") &&
           e.includes("data/topics/dev.json"),
       ),
@@ -107,7 +115,7 @@ describe("checkData — 配额", () => {
   it("主题数量超过上限时报错", () => {
     const { errors } = run(
       [link({ url: "https://a.com/x" }), link({ id: "b", url: "https://b.com/x" })],
-      [...categories, { slug: "ai", label: "AI", emoji: "📰", blurb: "模型" }],
+      [...categories, { slug: "ai", name: "AI", emoji: "📰", desc: "模型" }],
     );
     expect(errors.some((e) => e.includes("主题过多"))).toBe(true);
   });

@@ -10,5 +10,5 @@ export function hueFor(index: number) {
 
 /** 分类主标签 → 色相。色点、文字色都查这张表。 */
 export function buildHueMap(groups: CategoryGroup[]): Map<string, number> {
-  return new Map(groups.map((group, index) => [group.label, hueFor(index)]));
+  return new Map(groups.map((group, index) => [group.name, hueFor(index)]));
 }

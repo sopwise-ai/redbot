@@ -26,20 +26,20 @@ export function checkData(
   const homepageLinks: string[] = [];
   const perCategory = new Map<string, number>();
 
-  const labels = new Set(categories.map((category) => category.label));
+  const names = new Set(categories.map((category) => category.name));
   const subtags = new Set<string>(limits.subtags);
 
   // ── 主题 ────────────────────────────────────────────────
   // label 是合并后链接的分组依据（catalog.ts 用 label 建索引），重复会让两组静默并进同一组
-  const labelOwner = new Map<string, string>();
+  const nameOwner = new Map<string, string>();
   for (const category of categories) {
-    const owner = labelOwner.get(category.label);
+    const owner = nameOwner.get(category.name);
     if (owner) {
       errors.push(
-        `主题 label 重复：「${category.label}」（data/topics/${owner}.json 与 data/topics/${category.slug}.json）`,
+        `主题 name 重复：「${category.name}」（data/topics/${owner}.json 与 data/topics/${category.slug}.json）`,
       );
     } else {
-      labelOwner.set(category.label, category.slug);
+      nameOwner.set(category.name, category.slug);
     }
   }
 
@@ -74,14 +74,18 @@ export function checkData(
   for (const link of catalog.links) {
     const [primary, ...rest] = link.tags;
 
-    if (!labels.has(primary)) {
+    if (!names.has(primary)) {
       errors.push(`「${link.name}」的主分类「${primary}」没有对应的主题文件（data/topics/）`);
     } else {
       perCategory.set(primary, (perCategory.get(primary) ?? 0) + 1);
     }
 
     for (const tag of rest) {
-      if (!subtags.has(tag)) {
+      if (tag === primary) {
+        errors.push(
+          `「${link.name}」(${link.id}) 的副标签重复写了主分类「${primary}」，主题文件里只写副标签`,
+        );
+      } else if (!subtags.has(tag)) {
         errors.push(
           `「${link.name}」(${link.id}) 使用了未登记的副标签「${tag}」，请先在 schema.ts 的 LIMITS.subtags 中登记`,
         );
@@ -95,11 +99,11 @@ export function checkData(
   }
 
   for (const category of categories) {
-    const count = perCategory.get(category.label) ?? 0;
-    if (count === 0) errors.push(`主题「${category.label}」没有任何条目`);
+    const count = perCategory.get(category.name) ?? 0;
+    if (count === 0) errors.push(`主题「${category.name}」没有任何条目`);
     if (count > limits.perCategory) {
       errors.push(
-        `主题「${category.label}」有 ${count} 条，超过上限 ${limits.perCategory} 条 —— 请先下架旧的，再加新的`,
+        `主题「${category.name}」有 ${count} 条，超过上限 ${limits.perCategory} 条 —— 请先下架旧的，再加新的`,
       );
     }
   }

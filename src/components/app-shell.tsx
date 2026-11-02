@@ -441,7 +441,7 @@ export function AppShell({
                 {searching
                   ? `找到 ${results.length} 个结果`
                   : view === "wall"
-                    ? `当前分类：${activeGroup?.label ?? "全部"}，共 ${visibleCount} 个信息源`
+                    ? `当前分类：${activeGroup?.name ?? "全部"}，共 ${visibleCount} 个信息源`
                     : `共 ${visibleCount} 个信息源`}
               </p>
 
@@ -449,7 +449,7 @@ export function AppShell({
                 results.length > 0 ? (
                   <div className="animate-in duration-200 fade-in-0">
                     <PillWall
-                      groups={[{ slug: "search", label: "search", items: results }]}
+                      groups={[{ slug: "search", name: "search", items: results }]}
                       hueByLabel={hueByLabel}
                     />
                   </div>

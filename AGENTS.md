@@ -40,7 +40,7 @@ npm run format       # prettier 全量格式化（shadcn 覆盖过 ui/ 之后要
 
 ```text
 data/topics.json      有序主题清单（slug 数组）—— 顺序即全站顺序
-data/topics/<slug>.json  一个主题的全部内容：label / emoji / blurb / updated / links
+data/topics/<slug>.json  一个主题的全部内容：name / emoji / desc / updated / links
 data/topics.schema.jsonc 数据规范（字段、上限、跨文件约束）—— 改规则先改这里
 src/app/              layout / page / globals.css / manifest / not-found / icon
                       + topics/（索引与 [slug]）/ search/ / history/ 三个路由
@@ -65,14 +65,14 @@ scripts/lib/readme.ts README 渲染本身（纯函数），有单测
 
 ```text
 data/topics.json           ["news", "tech", "ai", …]        有序清单
-data/topics/ai.json        { label, emoji, blurb, updated, links: […] }   一个主题
+data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个主题
 ```
 
 主题文件：
 
-- `label`：主题名，≤6 字；**同时是该主题下所有链接的主分类**
+- `name`：主题名，≤6 字；**同时是该主题下所有链接的主分类**，全局唯一
 - `emoji`：单个 emoji，侧栏与主题索引用
-- `blurb`：≤24 字，主题卡片与主题页副标题
+- `desc`：≤24 字，主题卡片与主题页副标题
 - `updated`：`YYYY-MM-DD`，改这个文件时改成当天；全站「更新于」取所有主题的最大值，**没有全局日期字段**
 - `links`：1–20 条，顺序即优先级
 
@@ -88,7 +88,7 @@ data/topics/ai.json        { label, emoji, blurb, updated, links: […] }   一�
 - `tags`：**0–2 个副标签**，必须在 `LIMITS.subtags` 白名单内；主分类由所在文件决定，这里不写
 - `desc`：≤28 字，写「推荐理由」而不是百科介绍
 
-跨文件规则（`npm run validate` 强制）：清单 ↔ 目录双向一一对应、文件名 = slug、每条链接归入且只归入所在主题、id/url/name 全局唯一、每主题 1–20 条、主题 ≤20 个。**发布后 slug 与 id 都不可改**（slug 决定 URL 与文件路径）。
+跨文件规则（`npm run validate` 强制）：清单 ↔ 目录双向一一对应、文件名 = slug、每条链接归入且只归入所在主题、链接的 id/url/name 全局唯一、每主题 1–20 条、主题 ≤20 个。**发布后 slug 与 id 都不可改**（slug 决定 URL 与文件路径）。
 
 新增主题 = 新建 `data/topics/<slug>.json` + 在 `data/topics.json` 登记一行；两处不一致会直接报错。
 
@@ -123,7 +123,7 @@ data/topics/ai.json        { label, emoji, blurb, updated, links: […] }   一�
 | `trust`    | 免费、开源、人工精选。无广告、无跟踪、不用注册。 | 首页副行下的信任行、README、分享文案      |
 
 - `tagline` 是**名词短语**，不是句子。改成「一个按钮直达…」这类句子会让品类消失，回到「看不出这是什么站」。
-- 分类页 H1 用分类名、副行用 `blurb`；品牌三层**只在首页**出现（`isHome`）。
+- 分类页 H1 用分类名、副行用 `desc`；品牌三层**只在首页**出现（`isHome`）。
 - 首页 H1 是 11 个字，移动端已降到 `text-xl`，桌面上限 `text-3xl`；再加长要先量 390px。
 - 条目 `desc` 写使用时机（「查公司股权和诉讼，先看这里」），不写公司简介。
 

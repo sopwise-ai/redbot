@@ -6,18 +6,18 @@ import type { CategoryGroup } from "@/lib/schema";
 function group(partial: Partial<CategoryGroup>): CategoryGroup {
   return {
     slug: "x",
-    label: "X",
+    name: "X",
     emoji: "🗂️",
-    blurb: "x",
+    desc: "x",
     items: [],
     ...partial,
   };
 }
 
 const groups = [
-  group({ slug: "news", label: "新闻", items: [{ id: "a" } as never] }),
-  group({ slug: "tech", label: "技术" }),
-  group({ slug: "fun", label: "好玩" }),
+  group({ slug: "news", name: "新闻", items: [{ id: "a" } as never] }),
+  group({ slug: "tech", name: "技术" }),
+  group({ slug: "fun", name: "好玩" }),
 ];
 
 describe("hueFor", () => {
@@ -41,7 +41,7 @@ describe("buildHueMap", () => {
   });
 
   it("超过 8 个分类时色相循环（与 hueFor 一致）", () => {
-    const many = Array.from({ length: 10 }, (_, i) => group({ label: `类${i}` }));
+    const many = Array.from({ length: 10 }, (_, i) => group({ name: `类${i}` }));
     const map = buildHueMap(many);
     expect(map.get("类8")).toBe(hueFor(8));
     expect(map.get("类9")).toBe(hueFor(9));

@@ -18,13 +18,13 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
             </span>
             <span className="min-w-0 flex-1">
               <span className="flex items-baseline gap-2">
-                <span className="text-md font-medium">{item.label}</span>
+                <span className="text-md font-medium">{item.name}</span>
                 <span className="text-2xs text-muted-foreground tabular-nums">
                   {item.items.length}
                 </span>
               </span>
               <span className="mt-0.5 block truncate text-sm text-muted-foreground">
-                {item.blurb}
+                {item.desc}
               </span>
             </span>
             <ArrowUpRight

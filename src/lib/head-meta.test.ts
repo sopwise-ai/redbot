@@ -6,9 +6,9 @@ import type { CategoryGroup } from "@/lib/schema";
 
 const activeGroup = {
   slug: "news",
-  label: "新闻",
+  name: "新闻",
   emoji: "📰",
-  blurb: "正在发生的事",
+  desc: "正在发生的事",
   items: [{ id: "weibo-hot" }],
 } as unknown as CategoryGroup;
 
@@ -28,7 +28,7 @@ describe("headMeta", () => {
     });
   });
 
-  it("wall + 选中分类：报头变成分类的 emoji/label/blurb", () => {
+  it("wall + 选中分类：报头变成分类的 emoji/name/desc", () => {
     expect(headMeta({ ...options, activeGroup })).toEqual({
       emoji: "📰",
       title: "新闻",

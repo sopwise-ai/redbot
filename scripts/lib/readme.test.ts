@@ -16,8 +16,8 @@ const site = {
 };
 
 const categories: Category[] = [
-  { slug: "news", label: "新闻", emoji: "📰", blurb: "今天发生了什么" },
-  { slug: "ai", label: "AI", emoji: "📰", blurb: "模型与工具" },
+  { slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么" },
+  { slug: "ai", name: "AI", emoji: "📰", desc: "模型与工具" },
 ];
 
 const catalog: Catalog = {
@@ -44,11 +44,11 @@ describe("buildReadme", () => {
     expect(md).not.toContain("(#AI)");
   });
 
-  it("每个分类恰好一个 ### 标题，且标题不含 blurb", () => {
+  it("每个分类恰好一个 ### 标题，且标题不含 desc", () => {
     const md = render();
     const headings = md.match(/^### .+$/gm) ?? [];
     expect(headings).toEqual(["### 新闻", "### AI"]);
-    // 标题里混入 blurb 会让锚点失效（MD051 回归）
+    // 标题里混入 desc 会让锚点失效（MD051 回归）
     expect(md).not.toMatch(/^### 新闻 ·/m);
   });
 

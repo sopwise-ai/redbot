@@ -22,21 +22,21 @@ const entries: TopicEntry[] = topicFiles.map(({ slug, data }) => {
 const merged = mergeTopics(entries);
 
 // label 是 getGroups 的分组键：重复会让两组静默并进同一组，必须在构建期拦下
-const labelOwner = new Map<string, string>();
+const nameOwner = new Map<string, string>();
 for (const category of merged.categories) {
-  const owner = labelOwner.get(category.label);
+  const owner = nameOwner.get(category.name);
   if (owner) {
     throw new Error(
-      `主题 label 重复：「${category.label}」（data/topics/${owner}.json 与 data/topics/${category.slug}.json）`,
+      `主题 name 重复：「${category.name}」（data/topics/${owner}.json 与 data/topics/${category.slug}.json）`,
     );
   }
-  labelOwner.set(category.label, category.slug);
+  nameOwner.set(category.name, category.slug);
 }
 
 export const catalog: Catalog = { updated: merged.updated, links: merged.links };
 export const categories: Category[] = merged.categories;
 
-const categoryByLabel = new Map(categories.map((category) => [category.label, category]));
+const categoryByName = new Map(categories.map((category) => [category.name, category]));
 
 export function getGroups(): CategoryGroup[] {
   const groups: CategoryGroup[] = categories.map((category) => ({
@@ -46,7 +46,7 @@ export function getGroups(): CategoryGroup[] {
   const index = new Map(groups.map((group) => [group.slug, group]));
 
   for (const link of catalog.links) {
-    const primary = categoryByLabel.get(link.tags[0]);
+    const primary = categoryByName.get(link.tags[0]);
     if (!primary) {
       throw new Error(
         `链接 ${link.id} 的主分类「${link.tags[0]}」没有对应的主题文件，请检查 data/topics/。`,

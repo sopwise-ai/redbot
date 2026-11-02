@@ -32,7 +32,7 @@ describe("getGroups", () => {
     expect(total).toBe(catalog.links.length);
     for (const group of groups) {
       for (const item of group.items) {
-        expect(item.tags[0]).toBe(categories.find((c) => c.slug === group.slug)!.label);
+        expect(item.tags[0]).toBe(categories.find((c) => c.slug === group.slug)!.name);
       }
     }
   });

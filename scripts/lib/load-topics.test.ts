@@ -9,9 +9,9 @@ import { loadTopics } from "./load-topics";
 const dirs: string[] = [];
 
 const topic = (over: Record<string, unknown> = {}) => ({
-  label: "AI",
+  name: "AI",
   emoji: "🤖",
-  blurb: "模型、论文与新工具",
+  desc: "模型、论文与新工具",
   updated: "2026-10-28",
   links: [
     {
@@ -52,13 +52,13 @@ describe("loadTopics", () => {
   it("按清单顺序读取主题，并原样返回解析结果", () => {
     const dir = makeData(["ai", "news"], {
       ai: topic(),
-      news: topic({ label: "新闻", emoji: "📰", blurb: "今天发生了什么" }),
+      news: topic({ name: "新闻", emoji: "📰", desc: "今天发生了什么" }),
     });
 
     const { entries, errors } = loadTopics(dir);
     expect(errors).toEqual([]);
     expect(entries.map((entry) => entry.slug)).toEqual(["ai", "news"]);
-    expect(entries[0].file.label).toBe("AI");
+    expect(entries[0].file.name).toBe("AI");
     expect(entries[1].file.links[0].id).toBe("qbitai");
   });
 
@@ -87,11 +87,11 @@ describe("loadTopics", () => {
   });
 
   it("主题不符合 schema → 报错里带文件路径与字段路径", () => {
-    const dir = makeData(["ai"], { ai: topic({ label: "这个主题名字太长了" }) });
+    const dir = makeData(["ai"], { ai: topic({ name: "这个主题名字太长了" }) });
 
     const { entries, errors } = loadTopics(dir);
     expect(entries).toEqual([]);
-    expect(errors.some((error) => error.startsWith("data/topics/ai.json → label："))).toBe(true);
+    expect(errors.some((error) => error.startsWith("data/topics/ai.json → name："))).toBe(true);
   });
 
   it("目录里有不合规文件名 → 明确报错，而不是静默忽略", () => {

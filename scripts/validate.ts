@@ -73,7 +73,7 @@ console.log(
 console.log(
   "  " +
     categories
-      .map((category) => `${category.label} ${perCategory.get(category.label) ?? 0}`)
+      .map((category) => `${category.name} ${perCategory.get(category.name) ?? 0}`)
       .join(" · "),
 );
 

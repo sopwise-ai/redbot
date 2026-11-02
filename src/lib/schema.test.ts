@@ -11,9 +11,9 @@ const link = (over: Record<string, unknown> = {}) => ({
 });
 
 const file = (over: Record<string, unknown> = {}) => ({
-  label: "阅读",
+  name: "阅读",
   emoji: "📚",
-  blurb: "书与长文字",
+  desc: "书与长文字",
   updated: "2026-11-02",
   links: [link()],
   ...over,

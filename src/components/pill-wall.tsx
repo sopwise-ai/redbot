@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 export interface PillGroup {
   slug: string;
-  label: string;
+  name: string;
   items: LinkItem[];
 }
 
@@ -35,7 +35,7 @@ export function PillWall({
           className="pill-group"
         >
           <ul
-            aria-label={group.label}
+            aria-label={group.name}
             className="flex flex-wrap gap-2 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]"
           >
             {group.items.map((item) => (

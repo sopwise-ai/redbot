@@ -52,8 +52,8 @@ export function headMeta(options: {
       return activeGroup
         ? {
             emoji: activeGroup.emoji,
-            title: activeGroup.label,
-            subtitle: activeGroup.blurb,
+            title: activeGroup.name,
+            subtitle: activeGroup.desc,
           }
         : {
             emoji: "🗂️",
