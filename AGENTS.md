@@ -25,7 +25,7 @@
 ```bash
 npm run dev          # 开发服务器 http://localhost:3000（predev 生成主题入口与搜索语料）
 npm run gen          # 由 data/ 生成 src/generated/topics.ts（改完主题文件要重跑，CI 会校验）
-npm run corpus       # 由 data/ 生成 public/search-corpus.json（构建期产物，已 gitignore）
+npm run corpus       # 由 data/ 生成 public/search-corpus.json（dev 改完数据要重跑）
 npm run build        # 生成入口 / 搜索语料 → 校验数据 → 生成 README → 静态导出
 npm run verify       # 格式 + Markdown + ESLint + 生成一致性 + 数据 + README + 单测 + 类型
 npm run lint         # ESLint（next/core-web-vitals + next/typescript，flat config）
@@ -109,7 +109,8 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
    清空是两步确认，避免误触。
 5. **数据按路由切片，任何一页都不拿全量**。首页只带每个主题前 6 条（`homeSections`）；
    主题页只带当前主题（`getTopic`）；`/topics/`、`/search/`、`/history/` 只带 20 来个摘要；
-   搜索 / 足迹 / 书签导出首次使用时按需拉 `public/search-corpus.json`。
+   搜索 / 足迹 / 书签导出首次使用时按需拉 `public/search-corpus.json`；
+   dev 下改完 `data/` 要重跑 `npm run gen`（主题入口）和 `npm run corpus`（搜索语料），否则页面/搜索会读到旧数据。
    **不要把 `getGroups()` 再传进 `AppShell`**——那等于把全站数据塞回每一页。
 6. **分类在路径里，搜索是状态**。`/topics/<slug>/` 是静态页；切主题是 `router.push` / `<Link>` 导航，
    不再用 `setActive` + `history.replaceState`，也不套 View Transition。
