@@ -21,12 +21,9 @@ export interface PillGroup {
 export function PillWall({
   groups,
   hueByLabel,
-  showDesc = false,
 }: {
   groups: PillGroup[];
   hueByLabel: Map<string, number>;
-  /** 移动端在按钮下方显示推荐理由（主题页用；首页 189 条不展开） */
-  showDesc?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-8">
@@ -42,17 +39,8 @@ export function PillWall({
             className="flex flex-wrap gap-2 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]"
           >
             {group.items.map((item) => (
-              <li key={item.id} className={showDesc ? "w-full md:w-auto" : undefined}>
-                <LinkPill
-                  item={item}
-                  hue={hueByLabel.get(item.tags[0]) ?? 0}
-                  fullWidth={showDesc}
-                />
-                {showDesc ? (
-                  <p className="mt-1 px-1 text-xs leading-5 text-muted-foreground md:hidden">
-                    {item.desc}
-                  </p>
-                ) : null}
+              <li key={item.id}>
+                <LinkPill item={item} hue={hueByLabel.get(item.tags[0]) ?? 0} />
               </li>
             ))}
           </ul>
@@ -68,7 +56,6 @@ export function LinkPill({
   variant = "browse",
   selected = false,
   onToggle,
-  fullWidth = false,
 }: {
   item: LinkItem;
   hue: number;
@@ -76,8 +63,6 @@ export function LinkPill({
   variant?: "browse" | "manage";
   selected?: boolean;
   onToggle?: (id: string) => void;
-  /** 移动端占满一行（主题页显示说明时用） */
-  fullWidth?: boolean;
 }) {
   if (variant === "manage") {
     return (
@@ -110,10 +95,7 @@ export function LinkPill({
       asChild
       variant="outline"
       size="sm"
-      className={cn(
-        "group h-9 justify-between gap-2.5 rounded-lg border-border bg-card px-3 text-base font-normal text-foreground/90 shadow-xs transition-[background-color,border-color,box-shadow,color] duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-ring/25 hover:bg-accent hover:text-foreground hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-offset-0 lg:w-full",
-        fullWidth && "w-full md:w-auto",
-      )}
+      className="group h-9 justify-between gap-2.5 rounded-lg border-border bg-card px-3 text-base font-normal text-foreground/90 shadow-xs transition-[background-color,border-color,box-shadow,color] duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-ring/25 hover:bg-accent hover:text-foreground hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-offset-0 lg:w-full"
     >
       <a
         href={item.url}

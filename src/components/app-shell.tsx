@@ -117,14 +117,6 @@ export function AppShell({
     [active, searching, view, router],
   );
 
-  // 主题页底部的「换一个主题」：随机挑一个不是当前主题的，走与侧栏相同的切换逻辑
-  const switchToAnotherTopic = React.useCallback(() => {
-    const others = groups.filter((group) => group.slug !== active);
-    if (others.length === 0) return;
-    const next = others[Math.floor(Math.random() * others.length)];
-    switchCategory(next.slug);
-  }, [groups, active, switchCategory]);
-
   // 记录「搜索从哪儿来」：第一次输入时抓一次当前地址
   React.useEffect(() => {
     if (!searching && !window.location.pathname.startsWith("/search")) {
@@ -564,34 +556,7 @@ export function AppShell({
                   。
                 </p>
               ) : (
-                <>
-                  <PillWall
-                    groups={visibleGroups}
-                    hueByLabel={hueByLabel}
-                    showDesc={Boolean(activeGroup) && !searching}
-                  />
-                  {activeGroup && !searching ? (
-                    <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-sm">
-                      <Link
-                        href="/topics/"
-                        className="text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-                      >
-                        全部主题
-                      </Link>
-                      <span aria-hidden className="text-muted-foreground">
-                        ·
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 rounded-full px-3 text-muted-foreground"
-                        onClick={switchToAnotherTopic}
-                      >
-                        换一个主题
-                      </Button>
-                    </div>
-                  ) : null}
-                </>
+                <PillWall groups={visibleGroups} hueByLabel={hueByLabel} />
               )}
             </div>
           </main>
