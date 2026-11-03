@@ -233,12 +233,12 @@ export function HistoryView({
                 variant={managing ? "manage" : "browse"}
                 selected={managing && selected.has(item.id)}
                 onToggle={toggle}
+                meta={
+                  !managing && entry
+                    ? `点过 ${entry.count} 次 · ${formatRelativeTime(entry.at)}`
+                    : undefined
+                }
               />
-              {!managing && entry ? (
-                <p className="mt-1 px-1 text-xs text-muted-foreground">
-                  点过 {entry.count} 次 · {formatRelativeTime(entry.at)}
-                </p>
-              ) : null}
             </li>
           );
         })}

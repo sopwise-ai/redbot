@@ -55,7 +55,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { loadCorpus } from "@/lib/corpus";
-import { buildHueMap } from "@/lib/groups";
+import { buildHueMap, hueFor } from "@/lib/groups";
 import { recordVisit } from "@/lib/history";
 import { clearRecentSearches, readRecentSearches, rememberSearch } from "@/lib/recent-searches";
 import { ALL, parseRoute } from "@/lib/route-state";
@@ -858,6 +858,11 @@ export function AppShell({
                     total={total}
                     searchCount={results.length}
                     historyCount={historyEntries.length}
+                    hue={
+                      activeGroup && topics.some((topic) => topic.slug === activeGroup.slug)
+                        ? hueFor(topics.findIndex((topic) => topic.slug === activeGroup.slug))
+                        : undefined
+                    }
                   />
 
                   {activeGroup && !searching && hasGroups ? (
@@ -940,14 +945,18 @@ function TopicPager({ topics, slug }: { topics: TopicSummary[]; slug: string }) 
   return (
     <nav
       aria-label="切换主题"
-      className="mt-10 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-5"
+      className="mt-10 grid gap-3 border-t border-border/70 pt-6 sm:grid-cols-2"
     >
-      <Button asChild variant="ghost" className="h-auto justify-start gap-2.5 px-2 py-2">
+      <Button
+        asChild
+        variant="outline"
+        className="h-auto w-full justify-start gap-3 rounded-xl px-4 py-3"
+      >
         <Link href={`/topics/${prev.slug}/`}>
           <ArrowLeftIcon data-icon="inline-start" className="text-muted-foreground" />
-          <span className="flex flex-col items-start leading-tight">
-            <span className="text-xs text-muted-foreground">上一个主题</span>
-            <span className="text-sm font-medium">
+          <span className="flex min-w-0 flex-col items-start leading-tight">
+            <span className="text-xs font-normal text-muted-foreground">上一个主题</span>
+            <span className="max-w-full truncate text-sm font-medium">
               <span aria-hidden className="mr-1.5">
                 {prev.emoji}
               </span>
@@ -956,11 +965,16 @@ function TopicPager({ topics, slug }: { topics: TopicSummary[]; slug: string }) 
           </span>
         </Link>
       </Button>
-      <Button asChild variant="ghost" className="h-auto justify-end gap-2.5 px-2 py-2">
+
+      <Button
+        asChild
+        variant="outline"
+        className="h-auto w-full justify-end gap-3 rounded-xl px-4 py-3"
+      >
         <Link href={`/topics/${next.slug}/`}>
-          <span className="flex flex-col items-end leading-tight">
-            <span className="text-xs text-muted-foreground">下一个主题</span>
-            <span className="text-sm font-medium">
+          <span className="flex min-w-0 flex-col items-end leading-tight">
+            <span className="text-xs font-normal text-muted-foreground">下一个主题</span>
+            <span className="max-w-full truncate text-sm font-medium">
               {next.name}
               <span aria-hidden className="ml-1.5">
                 {next.emoji}

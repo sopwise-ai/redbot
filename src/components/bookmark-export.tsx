@@ -4,6 +4,7 @@ import { DownloadIcon } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { loadCorpus } from "@/lib/corpus";
 import type { LinkItem } from "@/lib/schema";
 import { site } from "@/lib/site";
@@ -64,7 +65,7 @@ export function BookmarkExport({ total }: { total: number }) {
   }
 
   return (
-    <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t pt-6">
+    <Card className="mt-8 flex-col gap-3 p-4 py-4 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-xs text-muted-foreground">
         把 {total} 个信息源按主题导出，可导入 Chrome / Safari / Edge 的书签栏。
       </p>
@@ -78,6 +79,6 @@ export function BookmarkExport({ total }: { total: number }) {
         <DownloadIcon aria-hidden className="size-3.5" />
         {busy ? "准备中…" : "导出书签"}
       </Button>
-    </div>
+    </Card>
   );
 }

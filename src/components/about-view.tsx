@@ -17,10 +17,19 @@ const linkClass =
   "text-foreground underline underline-offset-4 transition-colors hover:text-primary";
 
 /** 关于页：这是什么 / 收录标准 / FAQ / 隐私 / 条款 / 许可，单页分段。 */
+const toc = [
+  { id: "what", label: "这是什么" },
+  { id: "criteria", label: "收录标准" },
+  { id: "faq", label: "常见问题" },
+  { id: "privacy", label: "隐私" },
+  { id: "terms", label: "使用条款" },
+  { id: "license", label: "许可与联系" },
+];
+
 export function AboutView() {
   return (
-    <div className="max-w-3xl">
-      <div className="flex flex-col gap-8">
+    <div className="flex items-start gap-14">
+      <div className="flex max-w-3xl min-w-0 flex-1 flex-col gap-8">
         <section id="what" className={sectionClass}>
           <h2 className={headingClass}>这是什么</h2>
           <p className={bodyClass}>
@@ -191,6 +200,25 @@ export function AboutView() {
           <p className="text-xs text-muted-foreground">最后更新：{site.legalUpdated}</p>
         </section>
       </div>
+
+      <nav
+        aria-label="本页目录"
+        className="sticky top-24 hidden w-40 shrink-0 flex-col gap-3 xl:flex"
+      >
+        <p className="text-xs font-medium tracking-wide text-muted-foreground">本页目录</p>
+        <ul className="flex flex-col gap-1 border-l border-border">
+          {toc.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className="-ml-px block border-l border-transparent py-1 pl-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   );
 }

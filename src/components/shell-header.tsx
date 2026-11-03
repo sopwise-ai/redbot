@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { headCount, headMeta } from "@/lib/head-meta";
 import { site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import type { CategoryGroup } from "@/lib/schema";
 import type { ShellView } from "@/components/app-shell";
 
@@ -21,6 +22,7 @@ export function ShellHeader({
   total,
   searchCount,
   historyCount,
+  hue,
 }: {
   view: ShellView;
   searching: boolean;
@@ -28,6 +30,8 @@ export function ShellHeader({
   total: number;
   searchCount: number;
   historyCount: number;
+  /** 当前主题的色相（主题页才有），用来给图标块上淡色 */
+  hue?: number;
 }) {
   const meta = headMeta({ view, searching, activeGroup, total });
   const count = headCount({
@@ -44,7 +48,12 @@ export function ShellHeader({
       <div className="flex min-w-0 items-start gap-4">
         <span
           aria-hidden
-          className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border/80 bg-card text-[24px] leading-none shadow-xs sm:size-12"
+          style={hue === undefined ? undefined : { ["--tile-hue" as string]: hue }}
+          className={cn(
+            "flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border/80 bg-card text-2xl leading-none shadow-xs sm:size-12",
+            hue !== undefined &&
+              "bg-[oklch(0.96_0.035_var(--tile-hue))] dark:bg-[oklch(0.28_0.03_var(--tile-hue))]",
+          )}
         >
           {meta.emoji}
         </span>

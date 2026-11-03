@@ -2,6 +2,7 @@
 
 import { ArrowUpRight, CheckIcon } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -42,9 +43,9 @@ export function PillWall({
           {showHeading ? (
             <div className="flex items-baseline gap-2">
               <h2 className="text-sm font-medium">{group.name}</h2>
-              <span className="text-xs text-muted-foreground tabular-nums">
+              <Badge variant="secondary" className="h-5 px-1.5 text-xs tabular-nums">
                 {group.items.length}
-              </span>
+              </Badge>
             </div>
           ) : null}
           <ul aria-label={group.name} className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -72,6 +73,7 @@ export function LinkPill({
   item,
   hue,
   showDescription = false,
+  meta,
   variant = "browse",
   selected = false,
   onToggle,
@@ -80,6 +82,8 @@ export function LinkPill({
   item: LinkItem;
   hue: number;
   showDescription?: boolean;
+  /** 卡片内的第二行元信息（足迹的点击数 / 时间）；给了就不再显示 desc */
+  meta?: string;
   /** browse：链接（默认）；manage：选中态复选按钮（足迹管理模式） */
   variant?: "browse" | "manage";
   selected?: boolean;
@@ -109,7 +113,9 @@ export function LinkPill({
 
       <ItemContent className="gap-0.5">
         <ItemTitle className="max-w-full truncate">{item.name}</ItemTitle>
-        {showDescription ? (
+        {meta ? (
+          <ItemDescription className="line-clamp-1 text-xs">{meta}</ItemDescription>
+        ) : showDescription ? (
           <ItemDescription className="line-clamp-1 text-xs">{item.desc}</ItemDescription>
         ) : null}
       </ItemContent>
@@ -127,7 +133,7 @@ export function LinkPill({
 
   const shell = cn(
     "group/link h-full flex-nowrap gap-3 rounded-xl border-border/80 bg-card px-3 py-2.5 shadow-xs transition-[background-color,border-color,box-shadow] duration-150 hover:border-ring/25 hover:bg-accent/60 hover:shadow-sm",
-    showDescription && "items-start py-3",
+    (showDescription || meta) && "items-start py-3",
   );
 
   if (variant === "manage") {
