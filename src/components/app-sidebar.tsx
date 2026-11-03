@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowUpRight, BookOpenIcon, GitPullRequestIcon, ShuffleIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -182,6 +183,24 @@ export function AppSidebar({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="全部主题" className={itemClass}>
+                  <Link
+                    href="/topics/"
+                    onClick={() => {
+                      if (isMobile) setOpenMobile(false);
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      className="w-[18px] shrink-0 text-center text-base leading-none"
+                    >
+                      🧭
+                    </span>
+                    <span className="truncate">全部主题</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
