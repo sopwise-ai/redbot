@@ -50,6 +50,14 @@ const items = [
     aliases: ["hn"],
   }),
   item({
+    id: "zhihu",
+    name: "知乎热榜",
+    url: "https://www.zhihu.com/hot",
+    desc: "正在讨论的问题",
+    tags: ["新闻", "问答"],
+    aliases: ["zhihu", "zh"],
+  }),
+  item({
     id: "github",
     name: "GitHub Trending",
     desc: "今天涨星最快的仓库",
@@ -79,6 +87,14 @@ describe("createSearchIndex — 名称与正文", () => {
   it("能按副标签命中", () => {
     expect(ids("论文")).toContain("arxiv");
     expect(ids("论文")).not.toContain("weibo");
+  });
+
+  it("按域名命中：zhihu.com → 知乎热榜", () => {
+    expect(ids("zhihu.com")).toEqual(["zhihu"]);
+  });
+
+  it("直接粘 URL 也能按域名命中", () => {
+    expect(ids("https://www.zhihu.com/hot")).toEqual(["zhihu"]);
   });
 
   it("无匹配返回空数组", () => {

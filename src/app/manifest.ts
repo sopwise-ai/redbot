@@ -16,6 +16,26 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#ffffff",
     theme_color: "#c62a2f",
     lang: "zh-CN",
+    shortcuts: [
+      {
+        name: "搜索信息源",
+        short_name: "搜索",
+        url: "/search/",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "全部主题",
+        short_name: "主题",
+        url: "/topics/",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "我的足迹",
+        short_name: "足迹",
+        url: "/history/",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+    ],
     icons: [
       {
         src: "/icon.svg",

@@ -33,6 +33,7 @@ npm run validate     # 只跑数据校验
 npm run check:links  # 数据校验 + 逐个探测 URL 可达性（慢，改过 url 才需要）
 npm run test         # 单元测试（数据规则、README 渲染）
 npm run readme       # 从 data/ 重新生成 README.md
+npm run stats        # 数据概览：条数、首页占比、别名覆盖、搜索命中率
 npm run format       # prettier 全量格式化（shadcn 覆盖过 ui/ 之后要跑）
 ```
 
@@ -153,7 +154,8 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 - 色点色相来自 `hueFor(index)`（8 个色相循环，index 是分类顺序）——
   **调整分类顺序会改变全站配色**，这不是 bug。深色模式走单独的 `dark:` 分支（L=0.75），不要复用浅色明度。
 - 报头是「图标锚点 + 标题 + 右侧统计」：`pt-10 pb-6`（无底部边框），左侧 44px 圆角方块放分类 emoji，
-  右侧只放「N 个主题 / 更新于」——**不要把这个计数再写一遍**。页头 `h-14`（移动）/ `h-16`（桌面）。
+  右侧放「N 个主题 / 更新于」；主题页额外有「分享 / 在 GitHub 编辑」两个图标按钮。
+  **不要把这个计数再写一遍**。页头 `h-14`（移动）/ `h-16`（桌面）。
 
 ## 容易踩的坑
 

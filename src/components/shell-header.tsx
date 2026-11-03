@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { PencilIcon } from "lucide-react";
 
+import { ShareButton } from "@/components/share-button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { headMeta, headCount } from "@/lib/head-meta";
 import { site } from "@/lib/site";
 import type { ShellView } from "@/components/app-shell";
@@ -76,17 +79,37 @@ export function ShellHeader({
             <p className="mt-2 text-xs leading-5 text-muted-foreground">{site.trust}</p>
           ) : null}
         </div>
-        {view !== "topics" && !searching ? (
-          <div className="hidden shrink-0 text-right md:block">
-            <Link
-              href="/topics/"
-              className="text-xs text-muted-foreground tabular-nums transition-colors hover:text-foreground hover:underline hover:underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
-            >
-              {groups.length} 个主题
-            </Link>
-            <p className="mt-1 text-2xs text-muted-foreground tabular-nums">更新于 {updated}</p>
-          </div>
-        ) : null}
+        <div className="flex shrink-0 items-center gap-1">
+          {activeGroup ? (
+            <>
+              <ShareButton
+                title={`${site.name} · ${activeGroup.name}`}
+                url={`${site.url}/topics/${activeGroup.slug}/`}
+              />
+              <Button asChild variant="ghost" size="icon-sm" className="text-muted-foreground">
+                <a
+                  href={`${site.repo}/edit/main/data/topics/${activeGroup.slug}.json`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`在 GitHub 编辑「${activeGroup.name}」`}
+                >
+                  <PencilIcon aria-hidden />
+                </a>
+              </Button>
+            </>
+          ) : null}
+          {view !== "topics" && !searching ? (
+            <div className="hidden text-right md:block">
+              <Link
+                href="/topics/"
+                className="text-xs text-muted-foreground tabular-nums transition-colors hover:text-foreground hover:underline hover:underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+              >
+                {groups.length} 个主题
+              </Link>
+              <p className="mt-1 text-2xs text-muted-foreground tabular-nums">更新于 {updated}</p>
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
