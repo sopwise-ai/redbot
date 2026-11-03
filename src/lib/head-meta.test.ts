@@ -41,12 +41,13 @@ describe("headMeta", () => {
     expect(headMeta({ ...options, view: "topics", searching: true }).emoji).toBe("🔍");
   });
 
-  it("topics / search / history 三个视图各有固定文案", () => {
+  it("topics / search / history / about 各有固定文案", () => {
     expect(headMeta({ ...options, view: "topics" }).title).toBe("全部主题");
     expect(headMeta({ ...options, view: "search" }).title).toBe("搜索");
     expect(headMeta({ ...options, view: "history" }).subtitle).toBe(
       "你点过的信息源，按最近使用排序",
     );
+    expect(headMeta({ ...options, view: "about" }).title).toBe("关于");
   });
 });
 
@@ -72,9 +73,10 @@ describe("headCount", () => {
     expect(headCount({ ...counts, searching: true })).toBe(3);
   });
 
-  it("topics / search → 0（计数徽章不渲染）", () => {
+  it("topics / search / about → 0（计数徽章不渲染）", () => {
     expect(headCount({ ...counts, view: "topics" })).toBe(0);
     expect(headCount({ ...counts, view: "search" })).toBe(0);
+    expect(headCount({ ...counts, view: "about" })).toBe(0);
   });
 
   it("history → 足迹条数", () => {

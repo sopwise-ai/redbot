@@ -48,6 +48,12 @@ export function headMeta(options: {
         title: "足迹",
         subtitle: "你点过的信息源，按最近使用排序",
       };
+    case "about":
+      return {
+        emoji: "ℹ️",
+        title: "关于",
+        subtitle: "这个站是什么、怎么收录、如何联系",
+      };
     case "wall":
       return activeGroup
         ? {
@@ -77,5 +83,6 @@ export function headCount(options: {
   if (view === "topics") return 0;
   if (view === "search") return 0;
   if (view === "history") return historyCount;
+  if (view === "about") return 0;
   return activeGroupCount ?? total;
 }

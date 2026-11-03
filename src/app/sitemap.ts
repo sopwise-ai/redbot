@@ -22,6 +22,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    {
+      url: `${site.url}/about/`,
+      lastModified: new Date(`${site.legalUpdated}T00:00:00+08:00`),
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
     ...categories.map((category) => ({
       url: `${site.url}/topics/${category.slug}/`,
       lastModified,

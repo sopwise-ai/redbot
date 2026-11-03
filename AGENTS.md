@@ -43,7 +43,7 @@ data/topics.json      有序主题清单（slug 数组）—— 顺序即全站�
 data/topics/<slug>.json  一个主题的全部内容：name / emoji / desc / updated / links
 data/topics.schema.jsonc 数据规范（字段、上限、跨文件约束）—— 改规则先改这里
 src/app/              layout / page / globals.css / manifest / not-found / icon
-                      + topics/（索引与 [slug]）/ search/ / history/ 三个路由
+                      + topics/（索引与 [slug]）/ search/ / history/ / about/
 src/components/       app-shell（状态与布局）、app-sidebar、pill-wall（按钮墙）、
                       history-view（足迹）、topics-index、site-footer
 src/components/ui/    shadcn 生成物，改样式前先看这里有没有现成变体

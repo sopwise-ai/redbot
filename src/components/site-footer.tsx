@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowUpIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export function SiteFooter({
           <div className="grid leading-tight">
             <span className="text-sm font-medium">{site.name}</span>
             <span className="text-xs text-muted-foreground">{site.tagline}</span>
+            <span className="text-2xs text-muted-foreground">© 2026 {site.name}</span>
           </div>
         </div>
 
@@ -50,6 +52,15 @@ export function SiteFooter({
           >
             {site.license}
           </a>
+          <span aria-hidden className="text-muted-foreground">
+            ·
+          </span>
+          <Link
+            href="/about/"
+            className="rounded-sm underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+          >
+            关于
+          </Link>
           <Button
             type="button"
             variant="ghost"

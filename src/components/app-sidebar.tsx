@@ -222,10 +222,15 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm" className="text-sm text-muted-foreground">
-              <a href={`${site.repo}#收录标准`} target="_blank" rel="noopener noreferrer">
+              <Link
+                href="/about/#criteria"
+                onClick={() => {
+                  if (isMobile) setOpenMobile(false);
+                }}
+              >
                 <BookOpenIcon />
                 <span>收录标准</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>

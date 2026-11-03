@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowUpRight, SearchIcon, XIcon } from "lucide-react";
 
+import { AboutView } from "@/components/about-view";
 import { AppSidebar } from "@/components/app-sidebar";
 import { HistoryView } from "@/components/history-view";
 import { PillWall } from "@/components/pill-wall";
@@ -34,7 +35,7 @@ import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
 import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
 import { useHistory } from "@/lib/use-history";
 
-export type ShellView = "wall" | "topics" | "search" | "history";
+export type ShellView = "wall" | "topics" | "search" | "history" | "about";
 
 /** 让 <html data-tag> 与当前分类保持一致（样式钩子与调试用） */
 function syncTagAttribute(slug: string) {
@@ -611,6 +612,8 @@ export function AppShell({
                   </Link>
                   。
                 </p>
+              ) : view === "about" ? (
+                <AboutView />
               ) : (
                 <PillWall groups={visibleGroups} hueByLabel={hueByLabel} />
               )}

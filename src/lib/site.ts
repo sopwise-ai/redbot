@@ -13,5 +13,7 @@ export const site = {
   repo: "https://github.com/sopwise-ai/redbot",
   repoPath: "sopwise-ai/redbot",
   license: "MIT",
+  /** 法律/说明类文案的最后更新日期（关于页展示） */
+  legalUpdated: "2026-11-03",
   author: "SopwiseAI",
 } as const;
