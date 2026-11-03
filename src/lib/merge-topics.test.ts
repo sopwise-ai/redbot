@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { checkTopicSet, mergeTopics, type TopicEntry } from "@/lib/merge-topics";
+import { checkTopicGroups, checkTopicSet, mergeTopics, type TopicEntry } from "@/lib/merge-topics";
 import type { TopicFile } from "@/lib/schema";
 
 const file = (over: Partial<TopicFile> = {}): TopicFile => ({
@@ -8,6 +8,7 @@ const file = (over: Partial<TopicFile> = {}): TopicFile => ({
   emoji: "🤖",
   desc: "模型、论文与新工具",
   updated: "2026-10-28",
+  groups: [],
   links: [
     {
       id: "qbitai",
@@ -53,6 +54,7 @@ describe("mergeTopics", () => {
       name: "AI",
       emoji: "🤖",
       desc: "模型、论文与新工具",
+      groups: [],
     });
   });
 
@@ -90,5 +92,127 @@ describe("checkTopicSet", () => {
 
   it("清单内重复 → 报错", () => {
     expect(checkTopicSet(["ai", "ai"], ["ai"])).toEqual(["data/topics.json 里重复登记了「ai」"]);
+  });
+});
+
+describe("主题内分组", () => {
+  const grouped = (): TopicEntry => ({
+    slug: "auto",
+    file: file({
+      name: "汽车",
+      emoji: "🚗",
+      desc: "车与出行",
+      groups: [
+        { slug: "news", name: "汽车资讯" },
+        { slug: "brand", name: "品牌官网" },
+      ],
+      links: [
+        {
+          id: "autohome",
+          name: "汽车之家",
+          url: "https://www.autohome.com.cn/",
+          group: "news",
+          tags: [],
+          aliases: [],
+          desc: "看车",
+        },
+        {
+          id: "bmw",
+          name: "宝马中国",
+          url: "https://www.bmw.com.cn/",
+          group: "brand",
+          tags: [],
+          aliases: [],
+          desc: "官网",
+        },
+        {
+          id: "misc",
+          name: "未分组站",
+          url: "https://example.com/misc",
+          tags: [],
+          aliases: [],
+          desc: "没有分组",
+        },
+      ],
+    }),
+  });
+
+  it("把 group 元信息挂到链接上；未分组不挂", () => {
+    const { categories, links } = mergeTopics([grouped()]);
+    expect(categories[0].groups).toHaveLength(2);
+    expect(links[0].group).toEqual({ slug: "news", name: "汽车资讯" });
+    expect(links[2].group).toBeUndefined();
+  });
+
+  it("引用未定义的分组直接抛错", () => {
+    expect(() =>
+      mergeTopics([
+        {
+          slug: "bad",
+          file: file({
+            links: [
+              {
+                id: "x",
+                name: "X",
+                url: "https://example.com/x",
+                group: "missing",
+                tags: [],
+                aliases: [],
+                desc: "x",
+              },
+            ],
+          }),
+        },
+      ]),
+    ).toThrow(/未定义的分组/);
+  });
+});
+
+describe("checkTopicGroups", () => {
+  it("正常分组无错误", () => {
+    expect(
+      checkTopicGroups(
+        file({
+          groups: [{ slug: "news", name: "资讯" }],
+          links: [
+            {
+              id: "a",
+              name: "A",
+              url: "https://example.com/a",
+              group: "news",
+              tags: [],
+              aliases: [],
+              desc: "a",
+            },
+          ],
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("空分组、重复、保留字、未知引用都会报错", () => {
+    const errors = checkTopicGroups(
+      file({
+        groups: [
+          { slug: "all", name: "资讯" },
+          { slug: "all", name: "资讯" },
+        ],
+        links: [
+          {
+            id: "a",
+            name: "A",
+            url: "https://example.com/a",
+            group: "missing",
+            tags: [],
+            aliases: [],
+            desc: "a",
+          },
+        ],
+      }),
+    );
+    expect(errors.some((item) => item.includes("保留字"))).toBe(true);
+    expect(errors.some((item) => item.includes("重复"))).toBe(true);
+    expect(errors.some((item) => item.includes("未定义"))).toBe(true);
+    expect(errors.some((item) => item.includes("没有任何条目"))).toBe(true);
   });
 });

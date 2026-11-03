@@ -362,16 +362,33 @@ RedBot 是一份**能点的网站清单**：每个主题只留最值得去的几
 
 搜索与软件发现
 
+#### 搜索
+
 | 名称 | 说明 | 域名 |
 | --- | --- | --- |
 | [百度](https://www.baidu.com/) | 中文搜索的默认项 | `www.baidu.com` |
 | [必应](https://www.bing.com/) | 少一点干扰的搜索 | `www.bing.com` |
 | [搜狗微信](https://weixin.sogou.com/) | 搜公众号文章的唯一入口 | `weixin.sogou.com` |
+
+#### 软件发现
+
+| 名称 | 说明 | 域名 |
+| --- | --- | --- |
 | [小众软件](https://www.appinn.com/) | 发现没人告诉你的好工具 | `www.appinn.com` |
 | [异次元软件](https://www.iplaysoft.com/) | 软件与互联网产品推荐 | `www.iplaysoft.com` |
 | [AlternativeTo](https://alternativeto.net/) | 找一个软件的替代品 | `alternativeto.net` |
+
+#### 数据与查询
+
+| 名称 | 说明 | 域名 |
+| --- | --- | --- |
 | [Wolfram Alpha](https://www.wolframalpha.com/) | 能算数的知识引擎 | `www.wolframalpha.com` |
 | [国家统计局](https://www.stats.gov.cn/) | 一切宏观数据的源头 | `www.stats.gov.cn` |
+
+#### 未分组
+
+| 名称 | 说明 | 域名 |
+| --- | --- | --- |
 | [中国天气](https://www.weather.com.cn/) | 官方气象数据 | `www.weather.com.cn` |
 
 ## 收录标准
@@ -387,7 +404,7 @@ RedBot 是一份**能点的网站清单**：每个主题只留最值得去的几
 
 **软性参考**：更新频率、内容独家性、界面广告密度、是否为该领域的事实标准。
 
-**配额**：每个主题最多 20 个。想加新的，请先提议下架旧的 —— 这条规则是为了防止目录退化成 hao123。
+**配额**：每个主题最多 500 个。想加新的，请先提议下架旧的 —— 这条规则是为了防止目录退化成 hao123。
 
 ## 贡献
 

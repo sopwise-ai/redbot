@@ -21,9 +21,12 @@ export interface PillGroup {
 export function PillWall({
   groups,
   hueByLabel,
+  showHeading = false,
 }: {
   groups: PillGroup[];
   hueByLabel: Map<string, number>;
+  /** 主题页有分组时，每组前显示小标题 */
+  showHeading?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-8">
@@ -34,6 +37,12 @@ export function PillWall({
           data-search={group.slug === "search" ? "" : undefined}
           className="pill-group"
         >
+          {showHeading ? (
+            <h2 className="mb-3 flex items-baseline gap-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
+              {group.name}
+              <span className="tabular-nums">{group.items.length}</span>
+            </h2>
+          ) : null}
           <ul
             aria-label={group.name}
             className="flex flex-wrap gap-2 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]"

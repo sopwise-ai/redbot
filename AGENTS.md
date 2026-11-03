@@ -41,7 +41,7 @@ npm run format       # prettier 全量格式化（shadcn 覆盖过 ui/ 之后要
 
 ```text
 data/topics.json      有序主题清单（slug 数组）—— 顺序即全站顺序
-data/topics/<slug>.json  一个主题的全部内容：name / emoji / desc / updated / links
+data/topics/<slug>.json  一个主题的全部内容：name / emoji / desc / updated / groups / links
 data/topics.schema.jsonc 数据规范（字段、上限、跨文件约束）—— 改规则先改这里
 src/app/              layout / page / globals.css / manifest / not-found / icon
                       + topics/（索引与 [slug]）/ search/ / history/ / about/
@@ -75,7 +75,8 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 - `emoji`：单个 emoji，侧栏与主题索引用
 - `desc`：≤24 字，主题卡片与主题页副标题
 - `updated`：`YYYY-MM-DD`，改这个文件时改成当天；全站「更新于」取所有主题的最大值，**没有全局日期字段**
-- `links`：1–20 条，顺序即优先级
+- `groups`：可选的主题内分组（`slug` / `name` / 可选 `desc`），数组顺序即展示顺序；不分组就省略或写 `[]`
+- `links`：1–500 条，顺序即优先级
 
 链接（写在主题文件里）：
 
@@ -87,10 +88,11 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 - `name`：按钮文案，硬上限 20 字符；超过 12 只在 `npm run validate` 里出「会被截断」的提醒，不阻断
 - `url`：必须 https。指向榜单 / 快讯 / 列表页；首页只在「首页本身就是信息流」时接受
 - `tags`：**0–2 个副标签**，必须在 `LIMITS.subtags` 白名单内；主分类由所在文件决定，这里不写
+- `group`：可选，引用本主题 `groups` 里的 slug；不写 = 未分组，渲染在最后
 - `aliases`：可选 0–5 个，写用户会打但名字里没有的写法（英文名 / 拼音首字母 / 旧名）；只影响搜索召回，不展示；必须全局唯一，且不能与任何站点的名称相同
 - `desc`：≤28 字，写「推荐理由」而不是百科介绍
 
-跨文件规则（`npm run validate` 强制）：清单 ↔ 目录双向一一对应、文件名 = slug、每条链接归入且只归入所在主题、链接的 id/url/name 全局唯一、每主题 1–20 条、主题 ≤20 个。**发布后 slug 与 id 都不可改**（slug 决定 URL 与文件路径）。
+跨文件规则（`npm run validate` 强制）：清单 ↔ 目录双向一一对应、文件名 = slug、每条链接归入且只归入所在主题、链接的 id/url/name 全局唯一、每主题 1–500 条、每分组 1–100 条、主题 ≤20 个。分组引用必须存在，空分组报错；`all` / `ungrouped` 是 URL 保留字。**发布后 slug 与 id 都不可改**（slug 决定 URL 与文件路径）。
 
 新增主题 = 新建 `data/topics/<slug>.json` + 在 `data/topics.json` 登记一行；两处不一致会直接报错。
 
@@ -155,6 +157,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
   **调整分类顺序会改变全站配色**，这不是 bug。深色模式走单独的 `dark:` 分支（L=0.75），不要复用浅色明度。
 - 报头是「图标锚点 + 标题 + 右侧统计」：`pt-10 pb-6`（无底部边框），左侧 44px 圆角方块放分类 emoji，
   右侧放「N 个主题 / 更新于」；主题页额外有「分享 / 在 GitHub 编辑」两个图标按钮。
+  主题有 `groups` 时，标题下出现「全部 / 分组 / 未分组」筛选条，选中状态写进 `?group=`；只有一组时不显示。
   **不要把这个计数再写一遍**。页头 `h-14`（移动）/ `h-16`（桌面）。
 
 ## 容易踩的坑

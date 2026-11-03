@@ -27,6 +27,12 @@ export function SearchResults({
           />
           <p className="mt-1 line-clamp-2 px-1 text-2xs leading-4 text-muted-foreground">
             <span className="text-foreground/70">{item.tags[0]}</span>
+            {item.group ? (
+              <>
+                <span aria-hidden> · </span>
+                <span>{item.group.name}</span>
+              </>
+            ) : null}
             <span aria-hidden> · </span>
             {item.desc}
           </p>

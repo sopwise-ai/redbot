@@ -9,6 +9,7 @@ function group(partial: Partial<CategoryGroup>): CategoryGroup {
     name: "X",
     emoji: "🗂️",
     desc: "x",
+    groups: [],
     items: [],
     ...partial,
   };

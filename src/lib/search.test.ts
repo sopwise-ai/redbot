@@ -146,8 +146,8 @@ describe("createSearchIndex — 近义词与主题建议", () => {
 
   it("主题索引能按名称/说明推荐主题", () => {
     const topics = createTopicIndex([
-      { slug: "fun", name: "娱乐", emoji: "🎬", desc: "打发时间的正确方式" },
-      { slug: "ai", name: "AI", emoji: "🤖", desc: "模型、论文与新工具" },
+      { slug: "fun", name: "娱乐", emoji: "🎬", desc: "打发时间的正确方式", groups: [] },
+      { slug: "ai", name: "AI", emoji: "🤖", desc: "模型、论文与新工具", groups: [] },
     ]);
     expect(topics.search("模型").map((result) => result.item.slug)).toEqual(["ai"]);
   });

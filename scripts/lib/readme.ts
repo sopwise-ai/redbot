@@ -24,24 +24,45 @@ const cell = (value: string) => value.replace(/\|/g, "\\|");
 
 /** 从数据渲染 README。纯函数：不读文件、不写文件，便于单测锚点与标题。 */
 export function buildReadme({ catalog, categories, site, limits }: ReadmeInput): string {
-  const sections = categories.map((category) => {
-    const items = catalog.links.filter((link) => link.tags[0] === category.name);
+  const table = (items: typeof catalog.links) => {
     const rows = items
       .map(
         (link) =>
           `| [${cell(link.name)}](${link.url}) | ${cell(link.desc)} | \`${new URL(link.url).host}\` |`,
       )
       .join("\n");
+    return `| 名称 | 说明 | 域名 |
+| --- | --- | --- |
+${rows}`;
+  };
+
+  const sections = categories.map((category) => {
+    const items = catalog.links.filter((link) => link.tags[0] === category.name);
 
     // 标题保持纯分类名：README 目录里的锚点是 `#分类名`，
     // 一旦把 desc 拼进标题，锚点就会变成 `#分类名--desc`，目录全部失效（MD051 抓到过）。
+    if (category.groups.length === 0) {
+      return `### ${category.name}
+
+${category.desc}
+
+${table(items)}`;
+    }
+
+    const blocks = category.groups.map((group) => {
+      const groupItems = items.filter((link) => link.group?.slug === group.slug);
+      return `#### ${group.name}
+
+${table(groupItems)}`;
+    });
+    const ungrouped = items.filter((link) => !link.group);
+    if (ungrouped.length > 0) blocks.push(`#### 未分组\n\n${table(ungrouped)}`);
+
     return `### ${category.name}
 
 ${category.desc}
 
-| 名称 | 说明 | 域名 |
-| --- | --- | --- |
-${rows}`;
+${blocks.join("\n\n")}`;
   });
 
   // GitHub 的标题锚点会转小写：`### AI` 的锚点是 `#ai`，写成 `#AI` 目录就点不动（MD051 抓到过）

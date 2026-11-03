@@ -1,7 +1,7 @@
 // RedBot 数据规范（规范性文件）
 //
 // 适用两类数据：
-//   1) data/topics/<slug>.json —— 一个主题的全部内容（name / emoji / desc / updated / links）
+//   1) data/topics/<slug>.json —— 一个主题的全部内容（name / emoji / desc / updated / groups / links）
 //   2) data/topics.json        —— 有序主题清单（slug 数组），决定全站顺序
 //
 // 本文件是「规范」：字段、类型、上限、跨文件约束都以这里为准。
@@ -22,6 +22,31 @@
       "type": "string",
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
       "description": "主题标识：小写 kebab-case。必须与文件名一致（data/topics/<slug>.json），同时是 /topics/<slug>/ 路由。发布后不可修改。",
+    },
+
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slug", "name"],
+      "properties": {
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "分组标识，主题内唯一；all / ungrouped 是保留字。",
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8,
+          "description": "分组名，展示在筛选条与小标题上。",
+        },
+        "desc": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24,
+          "description": "可选的一句话说明。",
+        },
+      },
     },
 
     "link": {
@@ -45,6 +70,11 @@
           "format": "uri",
           "pattern": "^https://",
           "description": "必须 https。指向该站信息密度最高的页面：榜单 / 快讯 / 列表页 / 广场；站点首页仅在首页本身就是信息流时接受。",
+        },
+        "group": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "所属分组 slug，必须出现在本主题的 groups 里；省略 = 未分组，渲染在最后。",
         },
         "tags": {
           "type": "array",
@@ -100,10 +130,17 @@
           "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
           "description": "本文件最后一次修改的日期（YYYY-MM-DD，必须是真实存在的日期）。全站「更新于」取所有主题的最大值，不需要单独维护全局日期。",
         },
+        "groups": {
+          "type": "array",
+          "maxItems": 12,
+          "default": [],
+          "items": { "$ref": "#/$defs/group" },
+          "description": "主题内分组，数组顺序即展示顺序；空数组表示不分组。分组只影响展示与筛选，不产生新路由。",
+        },
         "links": {
           "type": "array",
           "minItems": 1,
-          "maxItems": 20,
+          "maxItems": 500,
           "items": { "$ref": "#/$defs/link" },
           "description": "顺序即优先级：越靠前越常用，按钮墙按此顺序渲染。",
         },
@@ -130,7 +167,9 @@
 // 4. 全局唯一：id / url（归一化后）/ name 跨所有主题文件唯一，重复即构建失败；
 //    name 也必须全局唯一（它是合并后的分组键，重复会静默串组）；aliases 同样全局唯一，
 //    且不能与任何站点的 name 相同（否则搜索会指向两个站）。
-// 5. 配额：每个主题 1–20 条；主题总数 ≤20（见 LIMITS.perCategory / LIMITS.categories）。
+// 5. 配额：每个主题 1–500 条；单个分组 ≤100 条；每个主题 ≤12 个分组；主题总数 ≤20。
 // 6. 发布后不可改：slug 决定 URL 与主题文件路径，id 是统计锚点；改名 = 断链。
 // 7. 副标签白名单：LIMITS.subtags（src/lib/schema.ts），未登记的新标签先加白名单再用。
 // 8. updated：每个主题文件记录自己的修改日期，全站取最大值；改数据时把该文件的 updated 改成当天。
+// 9. 分组：link.group 必须出现在本主题的 groups 中；每组至少 1 条；未写 group 的链接归入「未分组」，
+//    永远排最后；all / ungrouped 作为 URL 状态保留字，不能用作分组 slug。

@@ -9,6 +9,7 @@ const activeGroup = {
   name: "新闻",
   emoji: "📰",
   desc: "正在发生的事",
+  groups: [],
   items: [{ id: "weibo-hot" }],
 } as unknown as CategoryGroup;
 

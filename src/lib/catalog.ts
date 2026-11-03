@@ -1,6 +1,6 @@
 import { topicFiles } from "@/generated/topics";
 
-import { mergeTopics, type TopicEntry } from "@/lib/merge-topics";
+import { checkTopicGroups, mergeTopics, type TopicEntry } from "@/lib/merge-topics";
 import { topicFileSchema, type Catalog, type Category, type CategoryGroup } from "@/lib/schema";
 
 /**
@@ -16,6 +16,13 @@ const entries: TopicEntry[] = topicFiles.map(({ slug, data }) => {
       .join("\n");
     throw new Error(`data/topics/${slug}.json 不合法：\n${issues}`);
   }
+  const groupErrors = checkTopicGroups(parsed.data);
+  if (groupErrors.length > 0) {
+    throw new Error(
+      `data/topics/${slug}.json：\n${groupErrors.map((item) => `  - ${item}`).join("\n")}`,
+    );
+  }
+
   return { slug, file: parsed.data };
 });
 

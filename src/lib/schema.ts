@@ -11,7 +11,11 @@ import { normalizeKeyword } from "@/lib/keyword";
 /** 全局约束，校验脚本与文档共用。 */
 export const LIMITS = {
   /** 单个主题的条目上限：想加新的，先下架旧的。 */
-  perCategory: 20,
+  perCategory: 500,
+  /** 单个分组的上限。 */
+  perGroup: 100,
+  /** 单个主题的分组数上限。 */
+  groupsPerTopic: 12,
   /** 主题总数上限，超过则过滤栏会失控。 */
   categories: 20,
   /** 副标签白名单，防止标签野蛮生长。 */
@@ -91,6 +95,13 @@ const emojiSchema = z
   .min(1, "emoji 不能为空")
   .refine((value) => [...segmenter.segment(value)].length === 1, "emoji 必须是单个字符");
 
+/** 主题内分组：只影响展示与筛选，不是独立主题、不产生新路由。 */
+export const topicGroupSchema = z.strictObject({
+  slug: slugSchema,
+  name: z.string().min(1).max(8, "分组名最多 8 个字"),
+  desc: z.string().min(1).max(24, "分组说明最多 24 个字").optional(),
+});
+
 /**
  * 主题文件里的条目：主分类由所在文件决定，`tags` 只写 0–2 个副标签。
  * 合并进 catalog 时会被补上主分类（见 mergeTopics）。
@@ -100,6 +111,8 @@ export const topicLinkSchema = z.strictObject({
   name: z.string().min(1).max(20, "name 最多 20 个字符"),
   // 只接受 https：让契约本身成立，dev 与裸 `next build`（跳过 scripts/validate）也拦得住
   url: z.url({ protocol: /^https$/, error: "url 必须是 https 地址" }),
+  /** 所属分组 slug；省略 = 未分组，渲染在最后 */
+  group: slugSchema.optional(),
   tags: z
     .array(z.string().min(1))
     .max(2, "副标签最多 2 个")
@@ -124,6 +137,11 @@ export const topicFileSchema = z.strictObject({
   emoji: emojiSchema,
   desc: z.string().min(1).max(24, "desc 最多 24 个字"),
   updated: isoDateSchema,
+  /** 主题内分组；数组顺序即展示顺序。空数组表示不分组。 */
+  groups: z
+    .array(topicGroupSchema)
+    .max(LIMITS.groupsPerTopic, `每个主题最多 ${LIMITS.groupsPerTopic} 个分组`)
+    .default([]),
   links: z
     .array(topicLinkSchema)
     .min(1, "每个主题至少 1 条链接")
@@ -138,6 +156,7 @@ export const topicsManifestSchema = z
 
 export type TopicLink = z.infer<typeof topicLinkSchema>;
 export type TopicFile = z.infer<typeof topicFileSchema>;
+export type GroupMeta = z.infer<typeof topicGroupSchema>;
 
 /** 合并后的展示模型（运行时不再有 zod 校验：数据在构建期已按主题校验过）。 */
 export interface LinkItem {
@@ -146,6 +165,8 @@ export interface LinkItem {
   url: string;
   /** 全部标签：`tags[0]` 是主分类（由所在主题文件补上），其余是副标签 */
   tags: string[];
+  /** 所属分组（未分组时不存在） */
+  group?: GroupMeta;
   /** 搜索别名（可选；为空时不下发） */
   aliases?: string[];
   desc: string;
@@ -162,6 +183,8 @@ export interface Category {
   name: string;
   emoji: string;
   desc: string;
+  /** 主题内分组；空数组表示不分组 */
+  groups: GroupMeta[];
 }
 
 /** 一组链接的展示模型：分类元信息 + 属于它的条目（顺序即优先级）。 */

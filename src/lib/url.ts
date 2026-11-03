@@ -16,13 +16,16 @@
  * 对本项目无影响——外壳不读这两个 hook 的值来渲染搜索状态，
  * URL 只是给用户复制/刷新用的展示层（刷新由服务端渲染正确分类）。
  */
-export function replaceUrlQuietly(url: string) {
+export function replaceUrlQuietly(url: string, options: { silent?: boolean } = {}) {
   // __NA 是 Next 内部「原生导航」标记；_N 是 pages router 的等价标记。
   // 带上它：patch 短路 → 原 History.prototype.replaceState 直接执行。
   window.history.replaceState({ __NA: true, _N: true } as never, "", url);
   // 自定义事件：usePathname 不感知这次变化，需要联动的地方（路由后焦点管理）靠它。
   // 注意 dispatchEvent 不会触发 Next 的 patch（那是 history 方法级别的拦截）。
-  window.dispatchEvent(new CustomEvent("redbot:replacestate", { detail: { url } }));
+  // 页内筛选（?group=）用 silent：URL 变了，但不该把焦点从 chip 上抢走。
+  if (!options.silent) {
+    window.dispatchEvent(new CustomEvent("redbot:replacestate", { detail: { url } }));
+  }
 }
 
 /**

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { checkTopicSet, type TopicEntry } from "../../src/lib/merge-topics";
+import { checkTopicGroups, checkTopicSet, type TopicEntry } from "../../src/lib/merge-topics";
 import { topicFileSchema, topicsManifestSchema } from "../../src/lib/schema";
 
 export interface LoadTopicsResult {
@@ -85,6 +85,12 @@ export function loadTopics(dataDir: string): LoadTopicsResult {
           `data/topics/${slug}.json → ${issue.path.join(".") || "(root)"}：${issue.message}`,
         );
       }
+      continue;
+    }
+
+    const groupErrors = checkTopicGroups(parsed.data);
+    if (groupErrors.length > 0) {
+      for (const error of groupErrors) errors.push(`data/topics/${slug}.json → ${error}`);
       continue;
     }
 

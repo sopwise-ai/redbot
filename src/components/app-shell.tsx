@@ -7,8 +7,9 @@ import { ArrowUpRight, HistoryIcon, SearchIcon, XIcon } from "lucide-react";
 
 import { AboutView } from "@/components/about-view";
 import { AppSidebar } from "@/components/app-sidebar";
+import { GroupFilter, UNGROUPED_GROUP } from "@/components/group-filter";
 import { HistoryView } from "@/components/history-view";
-import { PillWall } from "@/components/pill-wall";
+import { PillWall, type PillGroup } from "@/components/pill-wall";
 import { SearchResults } from "@/components/search-results";
 import { ShellHeader } from "@/components/shell-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -66,6 +67,7 @@ export function AppShell({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [active, setActive] = React.useState<string>(initialActive);
   const [query, setQuery] = React.useState("");
+  const [groupFilter, setGroupFilter] = React.useState("");
   const [recentSearches, setRecentSearches] = React.useState<string[]>([]);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
@@ -88,6 +90,28 @@ export function AppShell({
 
   const searching = query.trim().length > 0;
   const activeGroup = groups.find((group) => group.slug === active) ?? null;
+
+  // 主题页的分组筛选：?group= 是状态，首帧与切换主题时读回
+  React.useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("group") ?? "";
+    const available = activeGroup?.groups ?? [];
+    const valid =
+      requested === "" ||
+      requested === UNGROUPED_GROUP ||
+      available.some((group) => group.slug === requested);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGroupFilter(valid ? requested : "");
+  }, [active, activeGroup]);
+
+  const changeGroupFilter = React.useCallback(
+    (next: string) => {
+      setGroupFilter(next);
+      if (!activeGroup) return;
+      const suffix = next ? `?group=${encodeURIComponent(next)}` : "";
+      replaceUrlQuietly(`/topics/${activeGroup.slug}/${suffix}`, { silent: true });
+    },
+    [activeGroup],
+  );
 
   const searchIndex = React.useMemo(
     () => createSearchIndex(groups.flatMap((group) => group.items)),
@@ -212,7 +236,16 @@ export function AppShell({
       // 搜索页这条 URL 已经在历史里了，之后打字只 replace
       if (route.isSearch) searchEntryPushed.current = true;
       // 搜索页是全站的，没有当前分类；只有离开搜索页才恢复分类高亮
-      if (!route.isSearch) setActive(route.active);
+      if (!route.isSearch) {
+        setActive(route.active);
+        const requested = new URLSearchParams(window.location.search).get("group") ?? "";
+        const target = groups.find((group) => group.slug === route.active);
+        const valid =
+          requested === "" ||
+          requested === UNGROUPED_GROUP ||
+          (target?.groups ?? []).some((group) => group.slug === requested);
+        setGroupFilter(valid ? requested : "");
+      }
     }
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -425,12 +458,51 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [searching, shortcutsOpen, results, query]);
 
-  const visibleGroups = activeGroup && !searching ? [activeGroup] : groups;
+  const hasGroups = (activeGroup?.groups.length ?? 0) > 0;
+
+  const wallGroups: PillGroup[] = React.useMemo(() => {
+    if (!activeGroup || searching) return groups;
+    if (activeGroup.groups.length === 0) return [activeGroup];
+
+    const itemsOf = (slug: string) =>
+      activeGroup.items.filter((item) =>
+        slug === UNGROUPED_GROUP ? !item.group : item.group?.slug === slug,
+      );
+
+    if (groupFilter) {
+      const match = activeGroup.groups.find((group) => group.slug === groupFilter);
+      return [
+        {
+          slug: `${activeGroup.slug}-${groupFilter}`,
+          name: match?.name ?? "未分组",
+          items: itemsOf(groupFilter),
+        },
+      ];
+    }
+
+    const list: PillGroup[] = activeGroup.groups.map((group) => ({
+      slug: `${activeGroup.slug}-${group.slug}`,
+      name: group.name,
+      items: itemsOf(group.slug),
+    }));
+    const ungrouped = itemsOf(UNGROUPED_GROUP);
+    if (ungrouped.length > 0) {
+      list.push({
+        slug: `${activeGroup.slug}-${UNGROUPED_GROUP}`,
+        name: "未分组",
+        items: ungrouped,
+      });
+    }
+    return list;
+  }, [activeGroup, groups, searching, groupFilter]);
+
   const visibleCount = searching
     ? results.length
     : view === "history"
       ? historyEntries.length
-      : (activeGroup?.items.length ?? total);
+      : activeGroup
+        ? wallGroups.reduce((sum, group) => sum + group.items.length, 0)
+        : total;
 
   // 首页＝按钮墙 + 无分类 + 非搜索：只有这里展示品牌标语与信任行
   const isHome = !searching && view === "wall" && !activeGroup;
@@ -571,6 +643,15 @@ export function AppShell({
                 isHome={isHome}
               />
 
+              {activeGroup && !searching && hasGroups ? (
+                <GroupFilter
+                  groups={activeGroup.groups}
+                  items={activeGroup.items}
+                  value={groupFilter}
+                  onChange={changeGroupFilter}
+                />
+              ) : null}
+
               <p className="sr-only" aria-live="polite">
                 {searching
                   ? `找到 ${results.length} 个结果`
@@ -680,7 +761,7 @@ export function AppShell({
               ) : view === "about" ? (
                 <AboutView />
               ) : (
-                <PillWall groups={visibleGroups} hueByLabel={hueByLabel} />
+                <PillWall groups={wallGroups} hueByLabel={hueByLabel} showHeading={hasGroups} />
               )}
             </div>
           </main>

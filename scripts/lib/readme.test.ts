@@ -16,8 +16,8 @@ const site = {
 };
 
 const categories: Category[] = [
-  { slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么" },
-  { slug: "ai", name: "AI", emoji: "📰", desc: "模型与工具" },
+  { slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么", groups: [] },
+  { slug: "ai", name: "AI", emoji: "📰", desc: "模型与工具", groups: [] },
 ];
 
 const catalog: Catalog = {
@@ -36,6 +36,43 @@ const catalog: Catalog = {
 };
 
 const render = () => buildReadme({ catalog, categories, site, limits: { perCategory: 20 } });
+
+describe("buildReadme — 分组", () => {
+  it("有分组时渲染 #### 子标题，未分组排最后", () => {
+    const groupedCategories: Category[] = [
+      { ...categories[0], groups: [{ slug: "flash", name: "快讯" }] },
+    ];
+    const groupedCatalog: Catalog = {
+      updated: "2026-10-28",
+      links: [
+        {
+          id: "a",
+          name: "快讯站",
+          url: "https://a.com/x",
+          tags: ["新闻"],
+          desc: "一句话",
+          group: { slug: "flash", name: "快讯" },
+        },
+        {
+          id: "b",
+          name: "未分组站",
+          url: "https://b.com/x",
+          tags: ["新闻"],
+          desc: "一句话",
+        },
+      ],
+    };
+    const md = buildReadme({
+      catalog: groupedCatalog,
+      categories: groupedCategories,
+      site,
+      limits: { perCategory: 500 },
+    });
+    expect(md).toContain("#### 快讯");
+    expect(md).toContain("#### 未分组");
+    expect(md.indexOf("#### 快讯")).toBeLessThan(md.indexOf("#### 未分组"));
+  });
+});
 
 describe("buildReadme", () => {
   it("目录锚点转小写，与 GitHub 的标题 slug 一致", () => {

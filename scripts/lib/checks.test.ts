@@ -6,8 +6,8 @@ import { checkData, normalizeUrl } from "./checks";
 const LIMITS = { perCategory: 3, categories: 2, subtags: ["热榜", "深度"] };
 
 const categories: Category[] = [
-  { slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么" },
-  { slug: "dev", name: "开发", emoji: "📰", desc: "写代码的人在看什么" },
+  { slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么", groups: [] },
+  { slug: "dev", name: "开发", emoji: "📰", desc: "写代码的人在看什么", groups: [] },
 ];
 
 const link = (over: Partial<Catalog["links"][number]> = {}) => ({
@@ -139,7 +139,7 @@ describe("checkData — 配额", () => {
   it("主题数量超过上限时报错", () => {
     const { errors } = run(
       [link({ url: "https://a.com/x" }), link({ id: "b", url: "https://b.com/x" })],
-      [...categories, { slug: "ai", name: "AI", emoji: "📰", desc: "模型" }],
+      [...categories, { slug: "ai", name: "AI", emoji: "📰", desc: "模型", groups: [] }],
     );
     expect(errors.some((e) => e.includes("主题过多"))).toBe(true);
   });
@@ -177,5 +177,20 @@ describe("checkData — 链接与质量", () => {
       link({ id: "b", name: "开发源", tags: ["开发", "深度"], url: "https://b.com/x" }),
     ]);
     expect(errors).toHaveLength(0);
+  });
+});
+
+describe("checkData — 分组配额", () => {
+  it("分组超过上限时报错", () => {
+    const cats: Category[] = [{ ...categories[0], groups: [{ slug: "g", name: "分组" }] }];
+    const links = [
+      link({ group: { slug: "g", name: "分组" }, url: "https://a.com/x" }),
+      link({ id: "b", group: { slug: "g", name: "分组" }, url: "https://b.com/x" }),
+    ];
+    const { errors } = checkData({ updated: "2026-10-28", links } as Catalog, cats, {
+      ...LIMITS,
+      perGroup: 1,
+    });
+    expect(errors.some((e) => e.includes("分组") && e.includes("超过上限"))).toBe(true);
   });
 });

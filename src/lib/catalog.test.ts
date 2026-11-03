@@ -27,6 +27,13 @@ describe("getGroups", () => {
     expect(groups.map((g) => g.slug)).toEqual(categories.map((c) => c.slug));
   });
 
+  it("工具主题的分组挂到条目上", () => {
+    const tools = groups.find((g) => g.slug === "tools")!;
+    expect(tools.groups.map((g) => g.slug)).toEqual(["search", "software", "data"]);
+    expect(tools.items.filter((item) => item.group).length).toBe(8);
+    expect(tools.items.filter((item) => !item.group).length).toBe(1);
+  });
+
   it("每条链接归入且只归入其主分类", () => {
     const total = groups.reduce((sum, g) => sum + g.items.length, 0);
     expect(total).toBe(catalog.links.length);

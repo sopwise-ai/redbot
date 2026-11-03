@@ -17,16 +17,25 @@ describe("websiteJsonLd", () => {
 
 describe("topicJsonLd", () => {
   it("按顺序生成 ItemList", () => {
-    const data = topicJsonLd({ slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么" }, [
-      {
-        id: "a",
-        name: "微博热搜",
-        url: "https://s.weibo.com/top/summary",
-        tags: ["新闻"],
-        desc: "十分钟前",
-      },
-      { id: "b", name: "知乎热榜", url: "https://www.zhihu.com/hot", tags: ["新闻"], desc: "讨论" },
-    ]);
+    const data = topicJsonLd(
+      { slug: "news", name: "新闻", emoji: "📰", desc: "今天发生了什么", groups: [] },
+      [
+        {
+          id: "a",
+          name: "微博热搜",
+          url: "https://s.weibo.com/top/summary",
+          tags: ["新闻"],
+          desc: "十分钟前",
+        },
+        {
+          id: "b",
+          name: "知乎热榜",
+          url: "https://www.zhihu.com/hot",
+          tags: ["新闻"],
+          desc: "讨论",
+        },
+      ],
+    );
     expect(data["@type"]).toBe("ItemList");
     expect(data.numberOfItems).toBe(2);
     expect(data.itemListElement[0]).toMatchObject({ position: 1, name: "微博热搜" });

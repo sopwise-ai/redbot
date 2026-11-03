@@ -44,6 +44,28 @@ describe("topicFileSchema — updated 必须是真实日期", () => {
   });
 });
 
+describe("topicFileSchema — groups", () => {
+  it("接受合法分组", () => {
+    expect(
+      topicFileSchema.safeParse(
+        file({
+          groups: [
+            { slug: "search", name: "搜索" },
+            { slug: "docs", name: "文档" },
+          ],
+        }),
+      ).success,
+    ).toBe(true);
+  });
+
+  it("分组名最多 8 个字", () => {
+    expect(
+      topicFileSchema.safeParse(file({ groups: [{ slug: "long", name: "这个分组名字太长了" }] }))
+        .success,
+    ).toBe(false);
+  });
+});
+
 describe("topicFileSchema — emoji 必须是单个字形", () => {
   it("接受带变体选择符的 emoji（⌨️ 是两个码元）", () => {
     expect(topicFileSchema.safeParse(file({ emoji: "⌨️" })).success).toBe(true);

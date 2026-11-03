@@ -20,12 +20,18 @@ export interface CheckResult {
 export function checkData(
   catalog: Catalog,
   categories: Category[],
-  limits: { perCategory: number; categories: number; subtags: readonly string[] } = LIMITS,
+  limits: {
+    perCategory: number;
+    perGroup?: number;
+    categories: number;
+    subtags: readonly string[];
+  } = LIMITS,
 ): CheckResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   const homepageLinks: string[] = [];
   const perCategory = new Map<string, number>();
+  const perGroup = new Map<string, number>();
 
   const names = new Set(categories.map((category) => category.name));
   const subtags = new Set<string>(limits.subtags);
@@ -115,6 +121,11 @@ export function checkData(
       perCategory.set(primary, (perCategory.get(primary) ?? 0) + 1);
     }
 
+    if (link.group) {
+      const key = `${primary}/${link.group.slug}`;
+      perGroup.set(key, (perGroup.get(key) ?? 0) + 1);
+    }
+
     for (const tag of rest) {
       if (tag === primary) {
         errors.push(
@@ -140,6 +151,16 @@ export function checkData(
       errors.push(
         `主题「${category.name}」有 ${count} 条，超过上限 ${limits.perCategory} 条 —— 请先下架旧的，再加新的`,
       );
+    }
+
+    const perGroupLimit = limits.perGroup ?? LIMITS.perGroup;
+    for (const group of category.groups) {
+      const groupCount = perGroup.get(`${category.name}/${group.slug}`) ?? 0;
+      if (groupCount > perGroupLimit) {
+        errors.push(
+          `主题「${category.name}」的分组「${group.name}」有 ${groupCount} 条，超过上限 ${perGroupLimit} 条`,
+        );
+      }
     }
   }
 
