@@ -164,6 +164,8 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 
 ## 容易踩的坑
 
+- **dev 下不启用 `output: "export"`**（见 `next.config.ts`）：否则访问已删除或未知的主题会抛
+  「missing param in generateStaticParams」，而不是 404。构建时仍按纯静态导出。
 - **skip link 必须「按需挂载」**：它平时不进 DOM，只在「焦点在 body 上按下第一次 Tab」时插入并聚焦。
   常驻 DOM 的话，路由切换后焦点会落到它身上，被 `:focus-visible` 点亮成一个盖在顶栏的按钮。
   另外路由变化时仍会把焦点交给 `#content`（`main.focus()`），作为第二道保险。

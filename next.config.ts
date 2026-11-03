@@ -13,7 +13,9 @@ const nextConfig: NextConfig = {
   //   4) src/app/layout.tsx 里 "/og.png" 这类 metadata 图片路径；
   //   5) src/app/robots.ts 的 disallow 前缀。
   // 缺一处就会出现资源 404 或 canonical / sitemap 指错域。
-  output: "export",
+  // dev 下不启用静态导出：Next 在 dev 里对「dynamicParams=false 的未知 slug」会抛
+  // 「missing param」而不是 404；构建（NODE_ENV=production）仍然走纯静态导出。
+  output: process.env.NODE_ENV === "production" ? "export" : undefined,
   trailingSlash: true,
   // 纯静态导出没有图片优化服务；本项目只有 public/og.png，保留这一行不影响产物
   images: { unoptimized: true },
