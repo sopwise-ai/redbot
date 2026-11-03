@@ -132,7 +132,7 @@ export function LinkPill({
   );
 
   const shell = cn(
-    "group/link h-full flex-nowrap gap-3 rounded-xl border-border/80 bg-card px-3 py-2.5 shadow-xs transition-[background-color,border-color,box-shadow] duration-150 hover:border-ring/25 hover:bg-accent/60 hover:shadow-sm",
+    "group/link h-full flex-nowrap gap-3 rounded-xl border-border/80 bg-card px-3 py-3 shadow-xs transition-[background-color,border-color,box-shadow] duration-150 hover:border-ring/25 hover:bg-accent/60 hover:shadow-sm",
     (showDescription || meta) && "items-start py-3",
   );
 

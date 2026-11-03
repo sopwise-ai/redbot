@@ -83,7 +83,7 @@
   --destructive: oklch(0.577 0.245 27.3);
   --border: oklch(0.906 0.005 264);
   --input: oklch(0.93 0.005 264);
-  --ring: oklch(0.545 0.19 27);
+  --ring: oklch(0.52 0.02 264);
 
   /* 阴影统一走低透明度冷灰，避免“发脏” */
   --shadow-color: 220 10% 35%;
@@ -95,7 +95,7 @@
   --sidebar-accent: oklch(0.945 0.004 264);
   --sidebar-accent-foreground: oklch(0.26 0.006 264);
   --sidebar-border: oklch(0.906 0.005 264);
-  --sidebar-ring: oklch(0.72 0.008 264);
+  --sidebar-ring: oklch(0.52 0.02 264);
 }
 
 .dark {
@@ -118,7 +118,7 @@
   --destructive: oklch(0.704 0.191 22.2);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.665 0.19 27);
+  --ring: oklch(0.72 0.02 264);
 
   --sidebar: oklch(0.178 0.003 264);
   --sidebar-foreground: oklch(0.96 0 0);
@@ -127,7 +127,7 @@
   --sidebar-accent: oklch(0.252 0.005 264);
   --sidebar-accent-foreground: oklch(0.96 0 0);
   --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.55 0.008 264);
+  --sidebar-ring: oklch(0.72 0.02 264);
 }
 
 @layer base {

@@ -543,7 +543,7 @@ export function AppShell({
       );
     } else if (corpusError) {
       body = (
-        <Empty className="rounded-2xl border border-dashed">
+        <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <TriangleAlertIcon />
@@ -570,7 +570,7 @@ export function AppShell({
       );
     } else {
       body = (
-        <Empty className="rounded-2xl border border-dashed">
+        <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <SearchXIcon />
@@ -653,7 +653,7 @@ export function AppShell({
     body = <TopicsIndex topics={topics} />;
   } else if (view === "search") {
     body = (
-      <Empty className="rounded-2xl border border-dashed">
+      <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <SearchIcon />
@@ -713,7 +713,9 @@ export function AppShell({
                 className="flex items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/30 md:hidden"
               >
                 <span aria-hidden className="size-2 rounded-full bg-primary" />
-                <span className="text-sm font-semibold tracking-tight">{site.name}</span>
+                <span className="hidden text-sm font-semibold tracking-tight sm:inline">
+                  {site.name}
+                </span>
               </Link>
 
               <div className="relative mx-auto w-full max-w-md min-w-0">

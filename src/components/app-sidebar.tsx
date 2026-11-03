@@ -237,7 +237,7 @@ export function AppSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="pb-3">
+      <SidebarFooter className="border-t border-sidebar-border/70 pt-3 pb-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm" className="text-muted-foreground">
