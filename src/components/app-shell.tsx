@@ -3,11 +3,21 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowUpRight, HistoryIcon, SearchIcon, XIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUpRight,
+  HistoryIcon,
+  SearchIcon,
+  SearchXIcon,
+  TriangleAlertIcon,
+  XIcon,
+} from "lucide-react";
 
 import { AboutView } from "@/components/about-view";
 import { AppSidebar } from "@/components/app-sidebar";
 import { GroupFilter, UNGROUPED_GROUP } from "@/components/group-filter";
+import { HomeHero } from "@/components/home-hero";
 import { HomeSections } from "@/components/home-sections";
 import { HistoryView } from "@/components/history-view";
 import { PillWall, type PillGroup } from "@/components/pill-wall";
@@ -16,7 +26,9 @@ import { ShellHeader } from "@/components/shell-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TopicsIndex } from "@/components/topics-index";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -24,17 +36,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Kbd } from "@/components/ui/kbd";
+import { Separator } from "@/components/ui/separator";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { loadCorpus } from "@/lib/corpus";
-import { recordVisit } from "@/lib/history";
 import { buildHueMap } from "@/lib/groups";
+import { recordVisit } from "@/lib/history";
+import { clearRecentSearches, readRecentSearches, rememberSearch } from "@/lib/recent-searches";
 import { ALL, parseRoute } from "@/lib/route-state";
 import type { CategoryGroup, HomeSection, LinkItem, RandomPick, TopicSummary } from "@/lib/schema";
 import { createSearchIndex, createTopicIndex } from "@/lib/search";
 import { site } from "@/lib/site";
-import { clearRecentSearches, readRecentSearches, rememberSearch } from "@/lib/recent-searches";
 import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
 import { useHistory } from "@/lib/use-history";
 
@@ -157,17 +184,10 @@ export function AppShell({
     [router],
   );
 
-  // 记录「搜索从哪儿来」：第一次输入时抓一次当前地址
-  React.useEffect(() => {
-    if (!searching && !window.location.pathname.startsWith("/search")) {
-      originPath.current = window.location.pathname + window.location.search;
-      trackedOrigin.current = true;
-    }
-  }, [searching]);
-
   // 首帧把 URL 上的搜索词读进 state（「URL 是状态」的读侧）。
   // 静态导出没有服务端注入，只能挂载后读一次；urlSynced 同时充当「只跑一次」的守卫，
   // 避免 groups 变化（未来的热更新）时把用户正在输入的内容覆盖掉。
+  // 排在「回写地址栏」的 effect 之前：先读后写，直链 /search/?q= 才不会被当成清空。
   React.useEffect(() => {
     if (urlSynced.current) return;
     const route = parseRoute(
@@ -183,42 +203,48 @@ export function AppShell({
     urlSynced.current = true;
   }, [topics]);
 
-  // 地址栏：搜索时是 /search/?q=，清空后回到来源页。
+  // 记录「搜索从哪儿来」：第一次输入时抓一次当前地址
+  React.useEffect(() => {
+    if (!searching && !window.location.pathname.startsWith("/search")) {
+      originPath.current = window.location.pathname + window.location.search;
+      trackedOrigin.current = true;
+    }
+  }, [searching]);
+
+  // 退出搜索：清空输入，并把地址栏还原到来源页。
+  // 放在事件回调里而不是 effect 里——StrictMode 会把挂载时的 effect 连跑两遍，
+  // 靠 ref 标记「首轮跳过」并不成立；「用户清空了」只有从交互入口才能确定。
+  const exitSearch = React.useCallback(() => {
+    searchEntryPushed.current = false;
+    setQuery("");
+    if (!window.location.pathname.startsWith("/search")) return;
+    const back = trackedOrigin.current ? originPath.current : "/";
+    // 直接打开 /search/?q= 时，页面本身就是搜索视图；只 replace URL 会留下
+    // 「地址是 /、内容还是搜索空态」的错位，必须真正导航回首页。
+    if (view === "search") router.push(back);
+    else replaceUrlQuietly(back);
+  }, [router, view]);
+
+  // 地址栏：只在「搜索中」回写 /search/?q=；清空由 exitSearch 负责。
   // 必须用 replaceUrlQuietly（绕过 Next 的 replaceState patch）：
   // patch 会让每次改 URL 都 dispatch ACTION_RESTORE → router state 变化 →
   // <main id="content"> 抢走焦点，输入框每打一个字就失焦
   React.useEffect(() => {
-    // 首帧还没读完 URL：这一轮 state 里的 query 还是空串，
-    // 此时回写会把直链的 q 冲掉，必须跳过
-    if (!urlSynced.current) return;
-    if (searching) {
-      const target = `/search/?${new URLSearchParams({ q: query.trim() }).toString()}`;
-      // 内容相同就不写：首帧读入 query 会再触发一次本 effect，
-      // 不加这层判断会多写一次历史记录
-      if (window.location.pathname + window.location.search === target) return;
-      // 第一次进入搜索用 push：后退能回到来源分类，而不是把来源页替换掉。
-      // 之后每打一个字只 replace，否则历史里会堆满「豆」「豆瓣」「豆瓣电」…
-      if (!searchEntryPushed.current) {
-        pushUrlQuietly(target);
-        searchEntryPushed.current = true;
-      } else {
-        replaceUrlQuietly(target);
-      }
-      return;
+    // 首帧还没读完 URL：这一轮 state 里的 query 还是空串，回写会把它冲掉
+    if (!urlSynced.current || !searching) return;
+    const target = `/search/?${new URLSearchParams({ q: query.trim() }).toString()}`;
+    // 内容相同就不写：首帧读入 query 会再触发一次本 effect，
+    // 不加这层判断会多写一次历史记录
+    if (window.location.pathname + window.location.search === target) return;
+    // 第一次进入搜索用 push：后退能回到来源分类，而不是把来源页替换掉。
+    // 之后每打一个字只 replace，否则历史里会堆满「豆」「豆瓣」「豆瓣电」…
+    if (!searchEntryPushed.current) {
+      pushUrlQuietly(target);
+      searchEntryPushed.current = true;
+    } else {
+      replaceUrlQuietly(target);
     }
-    const wasSearching = searchEntryPushed.current;
-    searchEntryPushed.current = false;
-    if (window.location.pathname.startsWith("/search")) {
-      const back = trackedOrigin.current ? originPath.current : "/";
-      // 直接打开 /search/?q= 时，页面本身就是搜索视图；只 replace URL 会留下
-      // 「地址是 /、内容还是搜索空态」的错位，必须真正导航回首页。
-      if (view === "search" && wasSearching) {
-        router.push(back);
-      } else {
-        replaceUrlQuietly(back);
-      }
-    }
-  }, [searching, query, view, router]);
+  }, [searching, query]);
 
   // 浏览器前进/后退：把地址栏重新读成 state（与首帧读 URL 用同一个解析器）
   React.useEffect(() => {
@@ -418,7 +444,7 @@ export function AppShell({
       }
 
       if (event.key === "Escape" && document.activeElement === inputRef.current) {
-        if (query.trim()) setQuery("");
+        if (query.trim()) exitSearch();
         else setSearchFocused(false);
         return;
       }
@@ -451,7 +477,7 @@ export function AppShell({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [searching, shortcutsOpen, results, query]);
+  }, [searching, shortcutsOpen, results, query, exitSearch]);
 
   const hasGroups = (activeGroup?.groups.length ?? 0) > 0;
 
@@ -504,6 +530,157 @@ export function AppShell({
   // 点搜索框、还没输入、且有历史时展示最近搜索
   const showRecent = searchFocused && !searching && recentSearches.length > 0;
 
+  let body: React.ReactNode;
+
+  if (searching) {
+    if (!corpus && !corpusError) {
+      body = (
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3" aria-busy aria-live="polite">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Skeleton key={index} className="h-[54px] rounded-xl" />
+          ))}
+        </div>
+      );
+    } else if (corpusError) {
+      body = (
+        <Empty className="rounded-2xl border border-dashed">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <TriangleAlertIcon />
+            </EmptyMedia>
+            <EmptyTitle>搜索语料加载失败</EmptyTitle>
+            <EmptyDescription>刷新页面再试一次。</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button size="sm" onClick={() => window.location.reload()}>
+              重新加载
+            </Button>
+          </EmptyContent>
+        </Empty>
+      );
+    } else if (results.length > 0) {
+      body = (
+        <div className="animate-in duration-200 fade-in-0">
+          <SearchResults
+            items={results}
+            hueByLabel={hueByLabel}
+            onOpen={() => setRecentSearches(rememberSearch(query))}
+          />
+        </div>
+      );
+    } else {
+      body = (
+        <Empty className="rounded-2xl border border-dashed">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SearchXIcon />
+            </EmptyMedia>
+            <EmptyTitle>没有找到「{query.trim()}」</EmptyTitle>
+            <EmptyDescription>
+              {nearMisses.length > 0 || topicSuggestions.length > 0
+                ? "换个写法，或者看看下面这些相近的结果。"
+                : "换个关键词试试，也可以按主题逛一遍。"}
+            </EmptyDescription>
+          </EmptyHeader>
+          {nearMisses.length > 0 || topicSuggestions.length > 0 ? (
+            <EmptyContent>
+              {nearMisses.length > 0 ? (
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  <span className="text-xs text-muted-foreground">你是不是想找</span>
+                  {nearMisses.map((item) => (
+                    <Badge key={item.id} variant="outline" asChild>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => recordVisit(item.id, item.topic?.slug)}
+                      >
+                        {item.name}
+                      </a>
+                    </Badge>
+                  ))}
+                </div>
+              ) : null}
+              {topicSuggestions.length > 0 ? (
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  <span className="text-xs text-muted-foreground">或者去这些主题</span>
+                  {topicSuggestions.map((topic) => (
+                    <Badge key={topic.slug} variant="secondary" asChild>
+                      <Link href={`/topics/${topic.slug}/`}>
+                        <span aria-hidden>{topic.emoji}</span>
+                        {topic.name}
+                      </Link>
+                    </Badge>
+                  ))}
+                </div>
+              ) : null}
+            </EmptyContent>
+          ) : null}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button
+              size="sm"
+              className="rounded-full"
+              onClick={() => {
+                exitSearch();
+                inputRef.current?.focus();
+              }}
+            >
+              清除搜索
+            </Button>
+            <Button asChild variant="outline" size="sm" className="rounded-full">
+              <Link href="/topics/">按主题浏览</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm" className="rounded-full">
+              <a
+                href={`${site.repo}/issues/new?${new URLSearchParams({
+                  labels: "link-suggestion",
+                  title: `收录建议：${query.trim()}`,
+                  body: `我搜索「${query.trim()}」没有找到合适的信息源。\n\n建议收录：\n- 名称：\n- 链接：\n- 主题：\n- 推荐理由：`,
+                }).toString()}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                建议收录
+              </a>
+            </Button>
+          </div>
+        </Empty>
+      );
+    }
+  } else if (view === "history") {
+    body = <HistoryView corpus={corpus} topics={topics} error={corpusError} />;
+  } else if (view === "topics") {
+    body = <TopicsIndex topics={topics} />;
+  } else if (view === "search") {
+    body = (
+      <Empty className="rounded-2xl border border-dashed">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <SearchIcon />
+          </EmptyMedia>
+          <EmptyTitle>搜索全部信息源</EmptyTitle>
+          <EmptyDescription>输入关键词开始搜索，名称、别名和推荐理由都会被检索。</EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button asChild size="sm" className="rounded-full">
+            <Link href="/topics/">按主题浏览</Link>
+          </Button>
+        </EmptyContent>
+      </Empty>
+    );
+  } else if (view === "about") {
+    body = <AboutView />;
+  } else {
+    body = (
+      <PillWall
+        groups={wallGroups}
+        hueByLabel={hueByLabel}
+        showHeading={hasGroups}
+        showDescription
+      />
+    );
+  }
+
   return (
     <>
       {skipReady ? (
@@ -528,55 +705,64 @@ export function AppShell({
         />
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-30 shrink-0 border-b border-border/70 bg-background/80 backdrop-blur-xl">
-            <div className="mx-auto flex h-14 w-full max-w-[1200px] items-center gap-3 px-5 md:h-16 lg:px-8">
+          <header className="sticky top-0 z-30 shrink-0 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+            <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
               <SidebarTrigger className="-ml-1 md:hidden" />
-              <span className="text-sm font-semibold md:hidden">{site.name}</span>
+              <Link
+                href="/"
+                className="flex items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/30 md:hidden"
+              >
+                <span aria-hidden className="size-2 rounded-full bg-primary" />
+                <span className="text-sm font-semibold tracking-tight">{site.name}</span>
+              </Link>
 
-              <div className="relative w-full max-w-sm min-w-0 flex-1">
-                <SearchIcon
-                  aria-hidden
-                  className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  ref={inputRef}
-                  value={query}
-                  onChange={(event) => {
-                    setQuery(event.target.value);
-                    if (event.target.value.trim()) requestCorpus();
-                  }}
-                  onFocus={() => {
-                    setSearchFocused(true);
-                    requestCorpus();
-                  }}
-                  onBlur={() => setSearchFocused(false)}
-                  aria-expanded={showRecent}
-                  aria-controls="recent-searches"
-                  placeholder="搜索全部信息源…"
-                  aria-label="搜索信息源"
-                  autoComplete="off"
-                  spellCheck={false}
-                  className="h-10 rounded-full border-transparent bg-muted/70 pl-10 shadow-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20 sm:pr-16"
-                />
-                {query ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => {
-                      setQuery("");
-                      inputRef.current?.focus();
+              <div className="relative mx-auto w-full max-w-md min-w-0">
+                <InputGroup className="h-10 rounded-full border-transparent bg-muted/60 shadow-none focus-within:bg-background has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/20">
+                  <InputGroupAddon>
+                    <SearchIcon aria-hidden />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    ref={inputRef}
+                    value={query}
+                    onChange={(event) => {
+                      const next = event.target.value;
+                      if (next.trim()) {
+                        setQuery(next);
+                        requestCorpus();
+                      } else {
+                        exitSearch();
+                      }
                     }}
-                    aria-label="清除搜索"
-                    className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground"
-                  >
-                    <XIcon />
-                  </Button>
-                ) : (
-                  <Kbd className="absolute top-1/2 right-3 hidden -translate-y-1/2 sm:inline-flex">
-                    ⌘K
-                  </Kbd>
-                )}
+                    onFocus={() => {
+                      setSearchFocused(true);
+                      requestCorpus();
+                    }}
+                    onBlur={() => setSearchFocused(false)}
+                    aria-expanded={showRecent}
+                    aria-controls="recent-searches"
+                    placeholder="搜索全部信息源…"
+                    aria-label="搜索信息源"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  <InputGroupAddon align="inline-end">
+                    {query ? (
+                      <InputGroupButton
+                        size="icon-xs"
+                        aria-label="清除搜索"
+                        onClick={() => {
+                          exitSearch();
+                          inputRef.current?.focus();
+                        }}
+                        className="text-muted-foreground"
+                      >
+                        <XIcon />
+                      </InputGroupButton>
+                    ) : (
+                      <Kbd className="hidden sm:inline-flex">⌘K</Kbd>
+                    )}
+                  </InputGroupAddon>
+                </InputGroup>
 
                 {showRecent ? (
                   <div
@@ -584,17 +770,19 @@ export function AppShell({
                     aria-label="最近搜索"
                     // 防止点面板时输入框先失焦，点击事件丢失
                     onMouseDown={(event) => event.preventDefault()}
-                    className="absolute top-full right-0 left-0 z-40 mt-2 rounded-xl border bg-popover p-1 shadow-md"
+                    className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border bg-popover p-1.5 shadow-lg"
                   >
-                    <div className="flex items-center justify-between px-2.5 py-1.5">
-                      <span className="text-2xs text-muted-foreground">最近搜索</span>
-                      <button
+                    <div className="flex items-center justify-between px-2 py-1">
+                      <span className="text-xs text-muted-foreground">最近搜索</span>
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="xs"
                         onClick={() => setRecentSearches(clearRecentSearches())}
-                        className="rounded px-1 text-2xs text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+                        className="text-xs text-muted-foreground"
                       >
                         清除
-                      </button>
+                      </Button>
                     </div>
                     {recentSearches.map((term) => (
                       <button
@@ -604,7 +792,7 @@ export function AppShell({
                           setQuery(term);
                           inputRef.current?.focus();
                         }}
-                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
                       >
                         <HistoryIcon aria-hidden className="size-3.5 shrink-0" />
                         <span className="truncate">{term}</span>
@@ -631,150 +819,70 @@ export function AppShell({
             </div>
           </header>
 
-          <main id="content" tabIndex={-1} className="flex-1 px-5 pb-12 outline-none lg:px-8">
+          <main
+            id="content"
+            tabIndex={-1}
+            className="flex-1 px-4 pb-16 outline-none sm:px-6 lg:px-8"
+          >
             <div className="mx-auto w-full max-w-[1160px]">
-              <ShellHeader
-                view={view}
-                searching={searching}
-                activeGroup={activeGroup}
-                topics={topics}
-                total={total}
-                updated={updated}
-                searchCount={results.length}
-                historyCount={historyEntries.length}
-                isHome={isHome}
-              />
-
-              {activeGroup && !searching && hasGroups ? (
-                <GroupFilter
-                  groups={activeGroup.groups}
-                  items={activeGroup.items}
-                  value={groupFilter}
-                  onChange={changeGroupFilter}
-                />
-              ) : null}
-
-              <p className="sr-only" aria-live="polite">
-                {searching
-                  ? `找到 ${results.length} 个结果`
-                  : view === "wall"
-                    ? `当前分类：${activeGroup?.name ?? "全部"}，共 ${visibleCount} 个信息源`
-                    : `共 ${visibleCount} 个信息源`}
-              </p>
-
-              {searching ? (
-                !corpus && !corpusError ? (
-                  <div className="rounded-xl border border-dashed px-6 py-16 text-center">
-                    <p className="text-sm text-muted-foreground">正在准备搜索…</p>
-                  </div>
-                ) : corpusError ? (
-                  <div className="rounded-xl border border-dashed px-6 py-16 text-center">
-                    <p className="text-md font-medium">搜索语料加载失败</p>
-                    <p className="mt-2 text-sm text-muted-foreground">刷新页面再试一次。</p>
-                  </div>
-                ) : results.length > 0 ? (
-                  <div className="animate-in duration-200 fade-in-0">
-                    <SearchResults
-                      items={results}
-                      hueByLabel={hueByLabel}
-                      onOpen={() => setRecentSearches(rememberSearch(query))}
-                    />
-                  </div>
-                ) : (
-                  <div className="rounded-xl border border-dashed px-6 py-16 text-center">
-                    <p className="text-md font-medium">
-                      没有匹配
-                      <span className="text-muted-foreground">「{query.trim()}」</span>
-                      的信息源
-                    </p>
-                    {nearMisses.length > 0 ? (
-                      <p className="mt-3 text-sm text-muted-foreground">
-                        你是不是想找：
-                        {nearMisses.map((item, index) => (
-                          <React.Fragment key={item.id}>
-                            {index > 0 ? "、" : ""}
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={() => recordVisit(item.id, item.topic?.slug)}
-                              className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
-                            >
-                              {item.name}
-                            </a>
-                          </React.Fragment>
-                        ))}
+              {isHome ? (
+                <div className="flex flex-col gap-12 pt-6 pb-4 sm:pt-10">
+                  <HomeHero
+                    total={total}
+                    topicCount={topics.length}
+                    updated={updated}
+                    randomPool={randomPool}
+                  />
+                  <HomeSections sections={homeSections} hueByLabel={hueByLabel} />
+                  <Card className="flex-col items-start justify-between gap-4 p-6 sm:flex-row sm:items-center">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-base font-medium">{topics.length} 个主题，按需切换</p>
+                      <p className="text-sm text-muted-foreground">
+                        主题索引里还有完整的分类说明与书签导出。
                       </p>
-                    ) : null}
-                    {topicSuggestions.length > 0 ? (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        或者去这些主题看看：
-                        {topicSuggestions.map((topic, index) => (
-                          <React.Fragment key={topic.slug}>
-                            {index > 0 ? "、" : ""}
-                            <Link
-                              href={`/topics/${topic.slug}/`}
-                              className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
-                            >
-                              {topic.emoji} {topic.name}
-                            </Link>
-                          </React.Fragment>
-                        ))}
-                      </p>
-                    ) : (
-                      <p className="mt-2 text-sm text-muted-foreground">换个关键词试试。</p>
-                    )}
-                    <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                      <Button
-                        size="sm"
-                        className="rounded-full"
-                        onClick={() => {
-                          setQuery("");
-                          inputRef.current?.focus();
-                        }}
-                      >
-                        清除搜索
-                      </Button>
-                      <Button asChild variant="outline" size="sm" className="rounded-full">
-                        <Link href="/topics/">按主题浏览</Link>
-                      </Button>
-                      <Button asChild variant="outline" size="sm" className="rounded-full">
-                        <a
-                          href={`${site.repo}/issues/new?${new URLSearchParams({
-                            labels: "link-suggestion",
-                            title: `收录建议：${query.trim()}`,
-                            body: `我搜索「${query.trim()}」没有找到合适的信息源。\n\n建议收录：\n- 名称：\n- 链接：\n- 主题：\n- 推荐理由：`,
-                          }).toString()}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          建议收录
-                        </a>
-                      </Button>
                     </div>
-                  </div>
-                )
-              ) : view === "history" ? (
-                <HistoryView corpus={corpus} topics={topics} error={corpusError} />
-              ) : view === "topics" ? (
-                <TopicsIndex topics={topics} />
-              ) : view === "search" ? (
-                <p className="text-sm text-muted-foreground">
-                  输入关键词开始搜索，或者{" "}
-                  <Link
-                    href="/topics/"
-                    className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
-                  >
-                    按主题浏览
-                  </Link>
-                  。
-                </p>
-              ) : view === "about" ? (
-                <AboutView />
-              ) : isHome ? (
-                <HomeSections sections={homeSections} hueByLabel={hueByLabel} />
+                    <Button asChild variant="outline" className="rounded-full">
+                      <Link href="/topics/">
+                        浏览全部主题
+                        <ArrowRightIcon data-icon="inline-end" />
+                      </Link>
+                    </Button>
+                  </Card>
+                </div>
               ) : (
-                <PillWall groups={wallGroups} hueByLabel={hueByLabel} showHeading={hasGroups} />
+                <>
+                  <ShellHeader
+                    view={view}
+                    searching={searching}
+                    activeGroup={activeGroup}
+                    total={total}
+                    searchCount={results.length}
+                    historyCount={historyEntries.length}
+                  />
+
+                  {activeGroup && !searching && hasGroups ? (
+                    <GroupFilter
+                      groups={activeGroup.groups}
+                      items={activeGroup.items}
+                      value={groupFilter}
+                      onChange={changeGroupFilter}
+                    />
+                  ) : null}
+
+                  <p className="sr-only" aria-live="polite">
+                    {searching
+                      ? `找到 ${results.length} 个结果`
+                      : view === "wall"
+                        ? `当前分类：${activeGroup?.name ?? "全部"}，共 ${visibleCount} 个信息源`
+                        : `共 ${visibleCount} 个信息源`}
+                  </p>
+
+                  {body}
+
+                  {activeGroup && !searching ? (
+                    <TopicPager topics={topics} slug={activeGroup.slug} />
+                  ) : null}
+                </>
               )}
             </div>
           </main>
@@ -788,34 +896,80 @@ export function AppShell({
               <DialogTitle>键盘快捷键</DialogTitle>
               <DialogDescription>不用离开键盘就能完成一次查找。</DialogDescription>
             </DialogHeader>
-            <dl className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 text-sm">
+            <Separator />
+            <dl className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 text-sm">
               <dt className="flex items-center gap-1">
                 <Kbd>⌘K</Kbd>
                 <span className="text-muted-foreground">/</span>
                 <Kbd>/</Kbd>
               </dt>
-              <dd>聚焦搜索框</dd>
+              <dd className="text-muted-foreground">聚焦搜索框</dd>
               <dt className="flex items-center gap-1">
                 <Kbd>↑</Kbd>
                 <Kbd>↓</Kbd>
               </dt>
-              <dd>在搜索结果间移动</dd>
+              <dd className="text-muted-foreground">在搜索结果间移动</dd>
               <dt>
                 <Kbd>Enter</Kbd>
               </dt>
-              <dd>打开当前结果</dd>
+              <dd className="text-muted-foreground">打开当前结果</dd>
               <dt>
                 <Kbd>Esc</Kbd>
               </dt>
-              <dd>清空搜索 / 回到来源页</dd>
+              <dd className="text-muted-foreground">清空搜索 / 回到来源页</dd>
               <dt>
                 <Kbd>?</Kbd>
               </dt>
-              <dd>打开这张表</dd>
+              <dd className="text-muted-foreground">打开这张表</dd>
             </dl>
           </DialogContent>
         </Dialog>
       </SidebarProvider>
     </>
+  );
+}
+
+/** 主题页底部：按 data/topics.json 的顺序前后翻，替代「回侧栏再点一次」。 */
+function TopicPager({ topics, slug }: { topics: TopicSummary[]; slug: string }) {
+  if (topics.length < 2) return null;
+  const index = topics.findIndex((topic) => topic.slug === slug);
+  if (index === -1) return null;
+  const prev = topics[(index - 1 + topics.length) % topics.length];
+  const next = topics[(index + 1) % topics.length];
+
+  return (
+    <nav
+      aria-label="切换主题"
+      className="mt-10 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-5"
+    >
+      <Button asChild variant="ghost" className="h-auto justify-start gap-2.5 px-2 py-2">
+        <Link href={`/topics/${prev.slug}/`}>
+          <ArrowLeftIcon data-icon="inline-start" className="text-muted-foreground" />
+          <span className="flex flex-col items-start leading-tight">
+            <span className="text-xs text-muted-foreground">上一个主题</span>
+            <span className="text-sm font-medium">
+              <span aria-hidden className="mr-1.5">
+                {prev.emoji}
+              </span>
+              {prev.name}
+            </span>
+          </span>
+        </Link>
+      </Button>
+      <Button asChild variant="ghost" className="h-auto justify-end gap-2.5 px-2 py-2">
+        <Link href={`/topics/${next.slug}/`}>
+          <span className="flex flex-col items-end leading-tight">
+            <span className="text-xs text-muted-foreground">下一个主题</span>
+            <span className="text-sm font-medium">
+              {next.name}
+              <span aria-hidden className="ml-1.5">
+                {next.emoji}
+              </span>
+            </span>
+          </span>
+          <ArrowRightIcon data-icon="inline-end" className="text-muted-foreground" />
+        </Link>
+      </Button>
+    </nav>
   );
 }

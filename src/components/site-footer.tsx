@@ -21,29 +21,32 @@ export function SiteFooter({
   }
 
   return (
-    <footer className="mt-auto border-t">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between lg:px-6">
-        <div className="flex items-center gap-2.5">
+    <footer className="mt-auto border-t border-border/60">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+        <div className="flex items-center gap-3">
           <span
             aria-hidden
-            className="flex size-6 shrink-0 items-center justify-center rounded-md bg-primary"
+            className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-primary shadow-sm"
           >
-            <span className="size-1.5 rounded-full bg-primary-foreground" />
+            <span className="size-2 rounded-full bg-primary-foreground" />
           </span>
-          <div className="grid leading-tight">
-            <span className="text-sm font-medium">{site.name}</span>
-            <span className="text-xs text-muted-foreground">{site.tagline}</span>
-            <span className="text-2xs text-muted-foreground">© 2026 {site.name}</span>
+          <div className="grid gap-0.5 leading-tight">
+            <span className="text-sm font-semibold tracking-tight">{site.name}</span>
+            <span className="text-xs text-muted-foreground">{site.tagline} · © 2026</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-          <p className="tabular-nums">
-            {total} 个信息源 · {categories} 个主题 · 更新于 {updated}
-          </p>
-          <span aria-hidden className="text-muted-foreground">
-            ·
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+          <span className="tabular-nums">
+            {total} 个信息源 · {categories} 个主题
           </span>
+          <span className="tabular-nums">更新于 {updated}</span>
+          <Link
+            href="/about/"
+            className="rounded-sm underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+          >
+            关于
+          </Link>
           <a
             href={site.repo}
             target="_blank"
@@ -52,24 +55,15 @@ export function SiteFooter({
           >
             {site.license}
           </a>
-          <span aria-hidden className="text-muted-foreground">
-            ·
-          </span>
-          <Link
-            href="/about/"
-            className="rounded-sm underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
-          >
-            关于
-          </Link>
           <Button
             type="button"
             variant="ghost"
-            size="sm"
+            size="xs"
             onClick={backToTop}
-            className="relative h-7 gap-1 rounded-full px-2.5 text-xs text-muted-foreground after:absolute after:inset-x-0 after:-inset-y-2 after:content-['']"
+            className="gap-1 rounded-full text-xs text-muted-foreground"
           >
             回到顶部
-            <ArrowUpIcon aria-hidden className="size-3" />
+            <ArrowUpIcon data-icon="inline-end" />
           </Button>
         </div>
       </div>

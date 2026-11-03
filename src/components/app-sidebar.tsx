@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, BookOpenIcon, GitPullRequestIcon, ShuffleIcon, XIcon } from "lucide-react";
+import {
+  ArrowUpRight,
+  BookOpenIcon,
+  GitPullRequestIcon,
+  HomeIcon,
+  PawPrintIcon,
+  ShuffleIcon,
+  XIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +22,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
@@ -24,9 +33,18 @@ import { pickRandom } from "@/lib/random";
 import { useHistory } from "@/lib/use-history";
 import type { RandomPick, TopicSummary } from "@/lib/schema";
 import { site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
-const itemClass =
-  "h-9 rounded-lg px-2 text-sm text-muted-foreground transition-colors data-[active=true]:bg-primary/8 data-[active=true]:font-semibold data-[active=true]:text-foreground dark:data-[active=true]:bg-primary/15";
+/** 当前项左侧的红色竖条：全站只有「当前位置」和 hover 用品牌红。 */
+const activeBar =
+  "relative before:absolute before:inset-y-1.5 before:left-0 before:w-[3px] before:rounded-r-full before:bg-primary before:opacity-0 data-[active=true]:before:opacity-100";
+
+const itemClass = cn(
+  "h-9 rounded-lg px-2 text-sm text-muted-foreground transition-colors",
+  "data-[active=true]:bg-primary/8 data-[active=true]:font-medium data-[active=true]:text-foreground",
+  "dark:data-[active=true]:bg-primary/15",
+  activeBar,
+);
 
 export function AppSidebar({
   topics,
@@ -45,6 +63,7 @@ export function AppSidebar({
   historyActive?: boolean;
   onOpenHistory?: () => void;
 }) {
+  const router = useRouter();
   const { isMobile, setOpenMobile } = useSidebar();
   const { entries } = useHistory();
 
@@ -60,28 +79,34 @@ export function AppSidebar({
     if (recentTopics.length === 3) break;
   }
 
+  function closeOnMobile() {
+    if (isMobile) setOpenMobile(false);
+  }
+
   // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容。
-  // 注意：抽屉是 Radix Dialog（Sheet），onOpenChange(false) 会在退出动画后卸载内容并解除
-  // body 滚动锁；这里同步关，避免与分类切换的 View Transition 抢时序。
   function select(slug: string) {
     onSelect(slug);
-    if (isMobile) setOpenMobile(false);
+    closeOnMobile();
   }
 
   // 主题顺序即 data/topics.json 的顺序
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <div className="flex items-center gap-2 px-1 py-1.5">
-          <div className="flex min-w-0 flex-1 items-center gap-2.5">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+      <SidebarHeader className="px-2 pt-3 pb-1">
+        <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            onClick={closeOnMobile}
+            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/40"
+          >
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-primary text-primary-foreground shadow-sm">
               <span className="size-2 rounded-full bg-primary-foreground" />
-            </div>
-            <div className="grid min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
-              <span className="truncate text-md font-semibold">{site.name}</span>
-              <span className="truncate text-2xs text-muted-foreground">{site.tagline}</span>
-            </div>
-          </div>
+            </span>
+            <span className="grid min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
+              <span className="truncate text-sm font-semibold tracking-tight">{site.name}</span>
+              <span className="truncate text-xs text-muted-foreground">{site.tagline}</span>
+            </span>
+          </Link>
           <SidebarTrigger className="relative hidden shrink-0 text-muted-foreground after:absolute after:-inset-2 after:content-[''] md:inline-flex" />
           {isMobile ? (
             <Button
@@ -98,87 +123,73 @@ export function AppSidebar({
         </div>
       </SidebarHeader>
 
-      <div className="px-2 pb-2 group-data-[collapsible=icon]:px-1">
-        <Button
-          variant="outline"
-          onClick={() => {
-            const pick = pickRandom(randomPool);
-            if (!pick) return;
-            recordVisit(pick.id, pick.topicSlug);
-            window.open(pick.url, "_blank", "noopener,noreferrer");
-          }}
-          className="h-9 w-full justify-start gap-2 rounded-lg px-2.5 text-sm font-normal shadow-xs group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
-        >
-          <ShuffleIcon aria-hidden className="size-4 shrink-0 text-muted-foreground" />
-          <span className="truncate group-data-[collapsible=icon]:hidden">随机一个</span>
-        </Button>
+      <div className="px-2 pt-1 pb-3">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="随机一个"
+              onClick={() => {
+                const pick = pickRandom(randomPool);
+                if (!pick) return;
+                recordVisit(pick.id, pick.topicSlug);
+                window.open(pick.url, "_blank", "noopener,noreferrer");
+              }}
+              className="h-9 gap-2 rounded-lg border border-sidebar-border bg-card px-2 text-sm font-normal text-foreground shadow-xs transition-colors group-data-[collapsible=icon]:justify-center hover:bg-sidebar-accent"
+            >
+              <ShuffleIcon className="text-muted-foreground" />
+              <span className="truncate group-data-[collapsible=icon]:hidden">随机一个</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </div>
 
       <SidebarContent>
         <SidebarGroup className="py-0">
           <SidebarGroupContent>
-            <nav aria-label="主题导航">
+            <nav aria-label="站点导航">
               <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="首页" className={itemClass}>
+                    <Link
+                      href="/"
+                      onClick={closeOnMobile}
+                      aria-current={active === "" ? "page" : undefined}
+                      data-active={active === ""}
+                    >
+                      <HomeIcon />
+                      <span className="truncate">首页</span>
+                      <SidebarMenuBadge className="text-xs tabular-nums">{total}</SidebarMenuBadge>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     isActive={historyActive}
-                    aria-current={historyActive ? "true" : undefined}
+                    aria-current={historyActive ? "page" : undefined}
                     onClick={() => {
                       onOpenHistory?.();
-                      if (isMobile) setOpenMobile(false);
+                      closeOnMobile();
                     }}
                     tooltip="足迹"
                     className={itemClass}
                   >
-                    <span
-                      aria-hidden
-                      className="w-[18px] shrink-0 text-center text-sm leading-none"
-                    >
-                      🐾
-                    </span>
+                    <PawPrintIcon />
                     <span className="truncate">足迹</span>
                     {entries.length > 0 ? (
-                      <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
+                      <SidebarMenuBadge className="text-xs tabular-nums">
                         {entries.length}
-                      </span>
+                      </SidebarMenuBadge>
                     ) : null}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    isActive={active === ""}
-                    aria-current={active === "" ? "true" : undefined}
-                    onClick={() => select("all")}
-                    tooltip="首页"
-                    className={itemClass}
-                  >
-                    <span
-                      aria-hidden
-                      className="w-[18px] shrink-0 text-center text-base leading-none"
-                    >
-                      🗂️
-                    </span>
-                    <span className="truncate">首页</span>
-                    <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
-                      {total}
-                    </span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="全部主题" className={itemClass}>
-                    <Link
-                      href="/topics/"
-                      onClick={() => {
-                        if (isMobile) setOpenMobile(false);
-                      }}
-                    >
-                      <span
-                        aria-hidden
-                        className="w-[18px] shrink-0 text-center text-base leading-none"
-                      >
-                        🧭
-                      </span>
+                    <Link href="/topics/" onClick={closeOnMobile}>
+                      <BookOpenIcon />
                       <span className="truncate">全部主题</span>
+                      <SidebarMenuBadge className="text-xs tabular-nums">
+                        {topics.length}
+                      </SidebarMenuBadge>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -189,54 +200,55 @@ export function AppSidebar({
 
         {recentTopics.length > 0 ? (
           <SidebarGroup className="py-0">
-            <SidebarGroupLabel className="h-6 px-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
-              最近访问
-            </SidebarGroupLabel>
+            <SidebarGroupLabel className="text-xs">最近访问</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {recentTopics.map((topic) => (
-                  <TopicMenuItem key={topic.slug} topic={topic} active={active} onSelect={select} />
+                  <TopicMenuItem
+                    key={topic.slug}
+                    topic={topic}
+                    active={active}
+                    onSelect={select}
+                    onPrefetch={() => router.prefetch(`/topics/${topic.slug}/`)}
+                  />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         ) : null}
 
-        <div className="sticky top-0 z-10 flex items-center gap-2 bg-sidebar px-3 pt-3 pb-1 group-data-[collapsible=icon]:hidden">
-          <span className="text-2xs font-medium tracking-[0.08em] text-muted-foreground">主题</span>
-          <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
-            {topics.length}
-          </span>
-        </div>
-
         <SidebarGroup className="py-0">
+          <SidebarGroupLabel className="sticky top-0 z-10 bg-sidebar text-xs">
+            主题
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {topics.map((topic) => (
-                <TopicMenuItem key={topic.slug} topic={topic} active={active} onSelect={select} />
+                <TopicMenuItem
+                  key={topic.slug}
+                  topic={topic}
+                  active={active}
+                  onSelect={select}
+                  onPrefetch={() => router.prefetch(`/topics/${topic.slug}/`)}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="pb-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="sm" className="text-sm text-muted-foreground">
-              <Link
-                href="/about/#criteria"
-                onClick={() => {
-                  if (isMobile) setOpenMobile(false);
-                }}
-              >
+            <SidebarMenuButton asChild size="sm" className="text-muted-foreground">
+              <Link href="/about/" onClick={closeOnMobile}>
                 <BookOpenIcon />
-                <span>收录标准</span>
+                <span>关于与标准</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="sm" className="text-sm text-muted-foreground">
+            <SidebarMenuButton asChild size="sm" className="text-muted-foreground">
               <a
                 href={`${site.repo}/blob/main/CONTRIBUTING.md`}
                 target="_blank"
@@ -244,7 +256,7 @@ export function AppSidebar({
               >
                 <GitPullRequestIcon />
                 <span>提交收录</span>
-                <ArrowUpRight className="ml-auto size-3.5" />
+                <ArrowUpRight className="ml-auto" />
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -258,20 +270,20 @@ function TopicMenuItem({
   topic,
   active,
   onSelect,
+  onPrefetch,
 }: {
   topic: TopicSummary;
   active: string;
   onSelect: (slug: string) => void;
+  onPrefetch: () => void;
 }) {
-  const router = useRouter();
-
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
         isActive={active === topic.slug}
-        aria-current={active === topic.slug ? "true" : undefined}
+        aria-current={active === topic.slug ? "page" : undefined}
         onClick={() => onSelect(topic.slug)}
-        onPointerEnter={() => router.prefetch(`/topics/${topic.slug}/`)}
+        onPointerEnter={onPrefetch}
         tooltip={topic.name}
         className={itemClass}
       >
@@ -279,7 +291,7 @@ function TopicMenuItem({
           {topic.emoji}
         </span>
         <span className="truncate">{topic.name}</span>
-        <span className="ml-auto text-2xs text-muted-foreground tabular-nums">{topic.count}</span>
+        <SidebarMenuBadge className="text-xs tabular-nums">{topic.count}</SidebarMenuBadge>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );

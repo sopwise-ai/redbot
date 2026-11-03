@@ -3,6 +3,14 @@
 import { ArrowUpRight, CheckIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { recordVisit } from "@/lib/history";
 import type { LinkItem } from "@/lib/schema";
 import { cn } from "@/lib/utils";
@@ -18,46 +26,52 @@ export function PillWall({
   groups,
   hueByLabel,
   showHeading = false,
+  showDescription = false,
 }: {
   groups: PillGroup[];
   hueByLabel: Map<string, number>;
   /** 主题页有分组时，每组前显示小标题 */
   showHeading?: boolean;
+  /** 是否在名称下补一行推荐理由（主题页与搜索结果用） */
+  showDescription?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-8">
       {groups.map((group) => (
-        <div
-          key={group.slug}
-          data-cat={group.slug}
-          data-search={group.slug === "search" ? "" : undefined}
-          className="pill-group"
-        >
+        <section key={group.slug} data-cat={group.slug} className="flex flex-col gap-3">
           {showHeading ? (
-            <h2 className="mb-3 flex items-baseline gap-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
-              {group.name}
-              <span className="tabular-nums">{group.items.length}</span>
-            </h2>
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-sm font-medium">{group.name}</h2>
+              <span className="text-xs text-muted-foreground tabular-nums">
+                {group.items.length}
+              </span>
+            </div>
           ) : null}
-          <ul
-            aria-label={group.name}
-            className="flex flex-wrap gap-2 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]"
-          >
+          <ul aria-label={group.name} className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
             {group.items.map((item) => (
-              <li key={item.id}>
-                <LinkPill item={item} hue={hueByLabel.get(item.tags[0]) ?? 0} />
+              <li key={item.id} className="min-w-0">
+                <LinkPill
+                  item={item}
+                  hue={hueByLabel.get(item.tags[0]) ?? 0}
+                  showDescription={showDescription}
+                />
               </li>
             ))}
           </ul>
-        </div>
+        </section>
       ))}
     </div>
   );
 }
 
+/**
+ * 一个信息源。桌面端等宽网格里的卡片，移动端整行。
+ * 说明文字只在有空间时出现：首页预览靠 6 条扫读，主题页才需要「为什么点它」。
+ */
 export function LinkPill({
   item,
   hue,
+  showDescription = false,
   variant = "browse",
   selected = false,
   onToggle,
@@ -65,6 +79,7 @@ export function LinkPill({
 }: {
   item: LinkItem;
   hue: number;
+  showDescription?: boolean;
   /** browse：链接（默认）；manage：选中态复选按钮（足迹管理模式） */
   variant?: "browse" | "manage";
   selected?: boolean;
@@ -72,39 +87,68 @@ export function LinkPill({
   /** 打开链接后的回调（搜索结果用来记录最近搜索） */
   onOpen?: () => void;
 }) {
+  const body = (
+    <>
+      <ItemMedia className="self-center">
+        {variant === "manage" ? (
+          <span
+            aria-hidden
+            className={cn(
+              "flex size-4 items-center justify-center rounded-[6px] border transition-colors",
+              selected
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-background",
+            )}
+          >
+            {selected ? <CheckIcon className="size-3" /> : null}
+          </span>
+        ) : (
+          <Dot hue={hue} />
+        )}
+      </ItemMedia>
+
+      <ItemContent className="gap-0.5">
+        <ItemTitle className="max-w-full truncate">{item.name}</ItemTitle>
+        {showDescription ? (
+          <ItemDescription className="line-clamp-1 text-xs">{item.desc}</ItemDescription>
+        ) : null}
+      </ItemContent>
+
+      {variant === "manage" ? null : (
+        <ItemActions className="text-muted-foreground/60">
+          <ArrowUpRight
+            aria-hidden
+            className="size-3.5 transition-colors group-hover/link:text-primary"
+          />
+        </ItemActions>
+      )}
+    </>
+  );
+
+  const shell = cn(
+    "group/link h-full flex-nowrap gap-3 rounded-xl border-border/80 bg-card px-3 py-2.5 shadow-xs transition-[background-color,border-color,box-shadow] duration-150 hover:border-ring/25 hover:bg-accent/60 hover:shadow-sm",
+    showDescription && "items-start py-3",
+  );
+
   if (variant === "manage") {
     return (
       <Button
         variant="outline"
-        size="sm"
         onClick={() => onToggle?.(item.id)}
         aria-pressed={selected}
         className={cn(
-          "group h-9 w-full justify-between gap-2.5 rounded-lg border-border bg-card px-3 text-base font-normal text-foreground/90 shadow-xs transition-[background-color,border-color,box-shadow] duration-150 hover:border-ring/25 hover:bg-accent hover:text-foreground hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:outline-none",
-          selected && "border-primary/60 bg-primary/5",
+          shell,
+          "justify-start text-left font-normal",
+          selected && "border-primary/50 bg-primary/5",
         )}
       >
-        <span
-          aria-hidden
-          className={cn(
-            "flex size-4 shrink-0 items-center justify-center rounded-[5px] border",
-            selected ? "border-primary bg-primary text-primary-foreground" : "border-border",
-          )}
-        >
-          {selected ? <CheckIcon className="size-3" /> : null}
-        </span>
-        <span className="min-w-0 flex-1 truncate text-left">{item.name}</span>
+        {body}
       </Button>
     );
   }
 
   return (
-    <Button
-      asChild
-      variant="outline"
-      size="sm"
-      className="group h-9 justify-between gap-2.5 rounded-lg border-border bg-card px-3 text-base font-normal text-foreground/90 shadow-xs transition-[background-color,border-color,box-shadow,color] duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-ring/25 hover:bg-accent hover:text-foreground hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-offset-0 lg:w-full"
-    >
+    <Item asChild variant="outline" size="sm" className={shell}>
       <a
         href={item.url}
         target="_blank"
@@ -116,17 +160,19 @@ export function LinkPill({
         title={item.desc}
         aria-label={`${item.name}：${item.desc}（在新标签页打开）`}
       >
-        <span
-          aria-hidden
-          style={{ ["--dot-hue" as string]: hue }}
-          className="size-[5px] shrink-0 rounded-full bg-[oklch(0.64_0.13_var(--dot-hue))] dark:bg-[oklch(0.75_0.11_var(--dot-hue))]"
-        />
-        <span className="min-w-0 flex-1 truncate text-left">{item.name}</span>
-        <ArrowUpRight
-          aria-hidden
-          className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
-        />
+        {body}
       </a>
-    </Button>
+    </Item>
+  );
+}
+
+/** 站点身份色点：色相来自主题顺序，同一个主题下保持一致。 */
+function Dot({ hue }: { hue: number }) {
+  return (
+    <span
+      aria-hidden
+      style={{ ["--dot-hue" as string]: hue }}
+      className="size-2 shrink-0 rounded-full bg-[oklch(0.62_0.15_var(--dot-hue))] ring-3 ring-[oklch(0.62_0.15_var(--dot-hue)/0.14)] dark:bg-[oklch(0.74_0.13_var(--dot-hue))] dark:ring-[oklch(0.74_0.13_var(--dot-hue)/0.18)]"
+    />
   );
 }

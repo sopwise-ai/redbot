@@ -1,11 +1,22 @@
 "use client";
 
-import { LinkPill } from "@/components/pill-wall";
+import { ArrowUpRightIcon } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
+import { recordVisit } from "@/lib/history";
 import type { LinkItem } from "@/lib/schema";
 
 /**
- * 搜索结果：按钮保持原样，下面补一行「主题 · 推荐理由」。
- * 手机上按钮没有 hover，没有这行就只能靠名字猜。
+ * 搜索结果：名称 + 推荐理由 + 所属主题，一个结果就是一张可点的卡。
+ * 手机上按钮没有 hover，说明文字是唯一能判断「要不要点」的线索。
  */
 export function SearchResults({
   items,
@@ -17,27 +28,64 @@ export function SearchResults({
   onOpen?: (item: LinkItem) => void;
 }) {
   return (
-    <ul data-search-results className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {items.map((item) => (
-        <li key={item.id} className="min-w-0">
-          <LinkPill
-            item={item}
-            hue={hueByLabel.get(item.tags[0]) ?? 0}
-            onOpen={() => onOpen?.(item)}
-          />
-          <p className="mt-1 line-clamp-2 px-1 text-2xs leading-4 text-muted-foreground">
-            <span className="text-foreground/70">{item.tags[0]}</span>
-            {item.group ? (
-              <>
-                <span aria-hidden> · </span>
-                <span>{item.group.name}</span>
-              </>
-            ) : null}
-            <span aria-hidden> · </span>
-            {item.desc}
-          </p>
-        </li>
-      ))}
+    <ul data-search-results className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+      {items.map((item) => {
+        const hue = hueByLabel.get(item.tags[0]) ?? 0;
+        return (
+          <li key={item.id} className="min-w-0">
+            <Item
+              asChild
+              variant="outline"
+              size="sm"
+              className="group/link h-full flex-nowrap items-start gap-3 rounded-xl border-border/80 bg-card px-3 py-3 shadow-xs transition-[background-color,border-color,box-shadow] hover:border-ring/25 hover:bg-accent/60 hover:shadow-sm"
+            >
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  recordVisit(item.id, item.topic?.slug);
+                  onOpen?.(item);
+                }}
+                title={item.desc}
+                aria-label={`${item.name}：${item.desc}（在新标签页打开）`}
+              >
+                <ItemMedia className="mt-1.5 self-start">
+                  <span
+                    aria-hidden
+                    style={{ ["--dot-hue" as string]: hue }}
+                    className="size-2 shrink-0 rounded-full bg-[oklch(0.62_0.15_var(--dot-hue))] ring-3 ring-[oklch(0.62_0.15_var(--dot-hue)/0.14)] dark:bg-[oklch(0.74_0.13_var(--dot-hue))] dark:ring-[oklch(0.74_0.13_var(--dot-hue)/0.18)]"
+                  />
+                </ItemMedia>
+
+                <ItemContent className="gap-1">
+                  <ItemTitle className="max-w-full truncate">{item.name}</ItemTitle>
+                  <ItemDescription className="line-clamp-2 text-xs leading-5">
+                    {item.desc}
+                  </ItemDescription>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {item.topic ? (
+                      <Badge variant="secondary" className="h-5 px-1.5 text-xs font-normal">
+                        {item.topic.name}
+                      </Badge>
+                    ) : null}
+                    {item.group ? (
+                      <span className="text-xs text-muted-foreground">{item.group.name}</span>
+                    ) : null}
+                  </div>
+                </ItemContent>
+
+                <ItemActions className="mt-1 self-start text-muted-foreground/60">
+                  <ArrowUpRightIcon
+                    aria-hidden
+                    className="size-3.5 transition-colors group-hover/link:text-primary"
+                  />
+                </ItemActions>
+              </a>
+            </Item>
+          </li>
+        );
+      })}
     </ul>
   );
 }
