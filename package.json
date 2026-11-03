@@ -2,7 +2,7 @@
   "name": "redbot",
   "version": "0.1.0",
   "private": true,
-  "description": "中文精选网站清单，上网一站就够了：一页按钮直达各站榜单与列表页，支持按主题浏览、全站搜索与本地足迹。免费、开源、无广告、无追踪。",
+  "description": "中文网站精选清单，上网一站就够了：一页按钮直达各站榜单与列表页，支持按主题浏览、全站搜索与本地足迹。免费、开源、无广告、无追踪。",
   "license": "MIT",
   "author": "SopwiseAI (https://redbot.cc)",
   "homepage": "https://redbot.cc",

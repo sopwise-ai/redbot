@@ -2,7 +2,7 @@
 
 # RedBot
 
-> 中文精选网站清单
+> 中文网站精选清单
 >
 > 上网，一站就够了
 
@@ -16,7 +16,7 @@
 RedBot 是一份**能点的网站清单**：每个主题只留最值得去的几个站，分好类、写着「什么时候该用它」，
 点一下直达该站**信息密度最高的那个页面** —— 热榜、快讯、榜单、广场；首页本身就是信息流的门户，就直达首页。
 
-![RedBot 首页：中文精选网站清单](./docs/screenshots/home.png)
+![RedBot 首页：中文网站精选清单](./docs/screenshots/home.png)
 
 **在线访问**：[redbot.cc](https://redbot.cc)　｜　本地预览：`npm run build && npm run start` → <http://localhost:4173>
 
