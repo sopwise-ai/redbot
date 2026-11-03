@@ -62,8 +62,8 @@
 :root {
   --radius: 0.75rem;
 
-  /* 画布 / 表面 / 线条：三层中性色，靠明度差而不是描边区分 */
-  --background: oklch(0.974 0.002 264);
+  /* 主内容纯白，侧栏一层浅灰：靠两块的底色差分区，而不是靠边框 */
+  --background: oklch(1 0 0);
   --foreground: oklch(0.205 0.006 264);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.205 0.006 264);
@@ -76,9 +76,9 @@
 
   --secondary: oklch(0.964 0.003 264);
   --secondary-foreground: oklch(0.26 0.006 264);
-  --muted: oklch(0.964 0.003 264);
+  --muted: oklch(0.962 0.003 264);
   --muted-foreground: oklch(0.505 0.008 264);
-  --accent: oklch(0.955 0.004 264);
+  --accent: oklch(0.958 0.004 264);
   --accent-foreground: oklch(0.26 0.006 264);
   --destructive: oklch(0.577 0.245 27.3);
   --border: oklch(0.906 0.005 264);
@@ -88,17 +88,18 @@
   /* 阴影统一走低透明度冷灰，避免“发脏” */
   --shadow-color: 220 10% 35%;
 
-  --sidebar: oklch(0.966 0.002 264);
+  --sidebar: oklch(0.968 0.003 264);
   --sidebar-foreground: oklch(0.205 0.006 264);
   --sidebar-primary: oklch(0.545 0.19 27);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.945 0.004 264);
+  --sidebar-accent: oklch(0.935 0.004 264);
   --sidebar-accent-foreground: oklch(0.26 0.006 264);
   --sidebar-border: oklch(0.906 0.005 264);
   --sidebar-ring: oklch(0.52 0.02 264);
 }
 
 .dark {
+  /* 深色保持原方案：侧栏略亮一点，靠明度差而不是分割线 */
   --background: oklch(0.168 0.003 264);
   --foreground: oklch(0.96 0 0);
   --card: oklch(0.205 0.004 264);
