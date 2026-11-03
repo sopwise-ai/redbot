@@ -10,7 +10,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { site } from "@/lib/site";
 
-const sectionClass = "scroll-mt-24 flex flex-col gap-3";
+const sectionClass = "flex flex-col gap-3";
 const headingClass = "text-lg font-semibold tracking-tight";
 const bodyClass = "text-sm leading-7 text-muted-foreground";
 const linkClass =

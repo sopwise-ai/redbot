@@ -46,7 +46,7 @@ data/topics/<slug>.json  一个主题的全部内容：name / emoji / desc / upd
 data/topics.schema.jsonc 数据规范（字段、上限、跨文件约束）—— 改规则先改这里
 src/app/              layout / page / globals.css / manifest / not-found / icon
                       + topics/（索引与 [slug]）/ search/ / history/ / about/
-src/components/       app-shell（状态与布局）、home-sections（首页主题预览）、app-sidebar、
+src/components/       app-shell（状态与布局）、home-hero / home-sections（首页）、app-sidebar、
                       pill-wall（按钮墙）、history-view（足迹）、topics-index、site-footer
 src/components/ui/    shadcn 生成物，改样式前先看这里有没有现成变体
 src/generated/topics.ts  由脚本生成的主题静态入口（勿手改）
@@ -106,7 +106,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 3. **不引入运行时外部请求**。没有第三方脚本、没有外部字体、没有统计代码；字体走系统栈。
 4. **足迹只存本地**。`/history/` 记录用户点过的链接（`localStorage` 的 `redbot:history`，含时间与次数），
    **不引入后端、不上传**；点击由 `LinkPill` 的 onClick 调用 `recordVisit`。管理（单条删除 / 批量 / 清空）都在页面内完成，
-   清空是两步确认，避免误触。
+   清空走 `AlertDialog` 二次确认，避免误触。
 5. **数据按路由切片，任何一页都不拿全量**。首页只带每个主题前 6 条（`homeSections`）；
    主题页只带当前主题（`getTopic`）；`/topics/`、`/search/`、`/history/` 只带 20 来个摘要；
    搜索 / 足迹 / 书签导出首次使用时按需拉 `public/search-corpus.json`；
@@ -131,37 +131,48 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 
 - `tagline` 是**名词短语**，不是句子。改成「一个按钮直达…」这类句子会让品类消失，回到「看不出这是什么站」。
 - 分类页 H1 用分类名、副行用 `desc`；品牌三层**只在首页**出现（`isHome`）。
-- 首页 H1 是 8 个字，移动端已降到 `text-xl`，桌面上限 `text-3xl`；再加长要先量 390px。
+- 首页 H1 是 8 个字，移动端 `text-2xl`、桌面 `text-3xl`（衬线）；再加长要先量 390px。
 - 条目 `desc` 写使用时机（「查公司股权和诉讼，先看这里」），不写公司简介。
 
 ## 设计 token（改样式前先读）
 
-- **颜色**：`--background` 是画布，`--card` 是浮起表面，两者只差明度；`--border` 只用于必须的边界。
+- **颜色**：`--background` 是画布（比 `--card` 暗一档），卡片是纯白浮起面；`--border` 只用于必须的边界。
   **红色只出现在「当前分类」和 hover 强调上**，不要用它装饰计数、徽章。
-- **字号**：只用 `text-2xs / xs / sm / base / md / lg / xl / 2xl / 3xl`（11/12/13/14/15/18/22/28/32），
-  行高已绑在 token 上。**不要再写 `text-[13px]` 这类任意值**。
-- **阴影**：`shadow-xs`（静止）、`shadow-sm`（悬停）；不要自造 box-shadow。
-- **圆角**：`--radius` 10px，`rounded-lg` 用于按钮/列表项，`rounded-full` 只用于搜索框与筛选 chip。
+  **焦点环用中性灰**（`--ring`），不是品牌红：红色焦点环在图标按钮上会被误读成「错误」。
+- **字号**：直接用 Tailwind 默认阶梯（`text-xs 12 / sm 14 / base 16 / lg 18 / xl 20 / 2xl 24 / 3xl 30`）。
+  13px 那一档已经删掉，**不要再写 `text-[13px]`、`text-2xs`、`text-md`**。
+- **标题**：页面 H1 用 `font-serif`（系统衬线，`Songti SC` 等），正文与控件保持无衬线。
+  这是全站唯一的「编辑感」来源，只给 H1，不要扩散到小标题。
+- **阴影**：`shadow-xs`（静止）、`shadow-sm`（悬停）、`shadow-md`（hero / 对话框）。
+- **圆角**：`--radius` 12px；卡片与链接行用 `rounded-xl`，对话框/hero 用 `rounded-2xl` / `rounded-3xl`，
+  `rounded-full` 只用于筛选 chip、主 CTA 与搜索框。
+- **主题色块**：主题 emoji 坐在 `oklch(0.96 0.035 <hue>)` 的淡色方块里（深色 `0.28 0.03`），
+  色相来自 `hueFor(主题在 topics.json 里的下标)`；卡片内的色点用同一色相，保证「一个主题一种颜色」。
 
 ## 界面结构（改样式前先读）
 
-首页与主题页用**分区小标题**分段（首页每个主题 6 条预览，主题页按分组）；段间仍是 `gap-8`。
+首页 = `HomeHero`（品牌三层 + 两个动作 + 规模数字）+ 17 个主题预览（每个 6 条）+ 收尾卡片；
+主题页 = 报头 + 分组筛选 + 卡片墙 + 前后翻页；其余视图共用 `ShellHeader` + 内容区。
 
-- `PillWall` 桌面端是**等宽网格**：`lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]`，
-  列宽自动均分、右缘齐边；移动端退回 `flex-wrap` 的内容宽度（小屏等宽会把中文名截断）。
-  块间用 `gap-8` 分段，**不要合并成一个大容器**。
-  代价是行数变多、长站名会被截断（靠 `title` 兜底）——这是刻意的取舍，不要为了密度改回可变宽度。
-- 按钮是 `h-9` + `rounded-lg` + `border` + `shadow-xs`，hover 只换底色/边框并升到 `shadow-sm`（不做位移）。
-  内部是 `justify-between`：色点与文字贴左、箭头钉在右缘，**不要改回居中**——居中会让箭头连不成竖线。
-- 侧栏：品牌行 + 折叠按钮 → 「随机一个」→ 足迹/首页 → 吸顶的「主题」标题 → 分类列表 → 页脚。
-  桌面可折叠成 48px 图标轨（`collapsible="icon"`）。主题顺序即 `data/topics.json` 的顺序，
-  图标来自各主题文件的 `emoji`（14px，固定 18px 宽）。
-- 色点色相来自 `hueFor(index)`（8 个色相循环，index 是分类顺序）——
-  **调整分类顺序会改变全站配色**，这不是 bug。深色模式走单独的 `dark:` 分支（L=0.75），不要复用浅色明度。
-- 报头是「图标锚点 + 标题 + 右侧统计」：`pt-10 pb-6`（无底部边框），左侧 44px 圆角方块放分类 emoji，
-  右侧放「N 个主题 / 更新于」；主题页额外有「分享 / 在 GitHub 编辑」两个图标按钮。
-  主题有 `groups` 时，标题下出现「全部 / 分组 / 未分组」筛选条，选中状态写进 `?group=`；只有一组时不显示。
-  **不要把这个计数再写一遍**。页头 `h-14`（移动）/ `h-16`（桌面）。
+- **能用 shadcn 就不要手写**：链接卡是 `Item asChild`（`ItemMedia` 放色点、`ItemTitle` 放名称、
+  `ItemDescription` 放推荐理由 / 足迹元信息、`ItemActions` 放箭头）；搜索框是 `InputGroup`
+  （`InputGroupAddon` + `InputGroupInput` + `InputGroupButton`）；空状态是 `Empty`；
+  加载占位是 `Skeleton`；清空足迹用 `AlertDialog`；FAQ 用 `Accordion`；分组筛选用 `ToggleGroup`。
+  **不要退回到 `inline-flex h-9 rounded-md border px-3` 这类手写变体。**
+- **按钮墙**是 `grid gap-2 sm:grid-cols-2 xl:grid-cols-3` 的等宽网格，不再是可变宽度的 flex-wrap：
+  三列在 1160px 容器里刚好 373px 一列，中文名不会截断，右缘自然齐边。
+  行高 48px（含说明 62px），hover 只换底色/边框并升到 `shadow-sm`，**不做位移**。
+- **每张卡内部是 `justify-between` 的两端结构**：色点与文字贴左、箭头钉在右缘，不要改回居中。
+- **侧栏**：品牌行 + 折叠按钮 → 「随机一个」→ 首页 / 足迹 / 全部主题 → 最近访问 → 吸顶「主题」→ 页脚。
+  计数用 `SidebarMenuBadge`，当前项左侧有 3px 红色竖条（`before:` 伪元素），
+  这是全站唯一用红色标记位置的元素。桌面可折叠成图标轨（`collapsible="icon"`）。
+  主题顺序即 `data/topics.json` 的顺序，**调整顺序会改变全站配色**，这不是 bug。
+- **顶部栏**：`h-16` 吸顶、半透明毛玻璃、底部 1px 分隔线；桌面是「搜索 + 主题/ GitHub」，
+  移动端是「菜单 + 品牌点 + 搜索 + 主题切换」，`<sm` 时只留品牌红点，把宽度让给搜索框。
+- **报头**：淡色 emoji 方块（44/48px，色相跟随主题）+ H1（衬线）+ 计数 `Badge` + 副标题；
+  右侧只放「分享 / 在 GitHub 编辑」。**不要重复写「N 个主题 / 更新于」**——规模数字在 hero 和页脚。
+- **主题页底部**有「上一个 / 下一个主题」两个等宽按钮卡，顺序即 `data/topics.json`；
+  关于页在 `xl` 以上有 sticky 目录，两者都是为了让长页面有出口，不要删。
 
 ## 容易踩的坑
 

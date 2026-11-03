@@ -5,6 +5,7 @@ import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { loadCorpus } from "@/lib/corpus";
 import type { LinkItem } from "@/lib/schema";
 import { site } from "@/lib/site";
@@ -76,7 +77,7 @@ export function BookmarkExport({ total }: { total: number }) {
         onClick={download}
         disabled={busy}
       >
-        <DownloadIcon aria-hidden className="size-3.5" />
+        {busy ? <Spinner data-icon="inline-start" /> : <DownloadIcon data-icon="inline-start" />}
         {busy ? "准备中…" : "导出书签"}
       </Button>
     </Card>

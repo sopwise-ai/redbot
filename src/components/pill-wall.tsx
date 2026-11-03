@@ -144,7 +144,7 @@ export function LinkPill({
         aria-pressed={selected}
         className={cn(
           shell,
-          "justify-start text-left font-normal",
+          "w-full justify-start text-left font-normal",
           selected && "border-primary/50 bg-primary/5",
         )}
       >

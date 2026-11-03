@@ -199,7 +199,8 @@ export function AppSidebar({
         </SidebarGroup>
 
         {recentTopics.length > 0 ? (
-          <SidebarGroup className="py-0">
+          // 移动端抽屉里主题列表本来就短，最近访问会和下面的列表重复出现，只在桌面显示
+          <SidebarGroup className="hidden py-0 md:flex">
             <SidebarGroupLabel className="text-xs">最近访问</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
