@@ -1,9 +1,16 @@
 import { AppShell } from "@/components/app-shell";
-import { getGroups, getStats } from "@/lib/catalog";
+import { getStats, homeSections, randomPool, topics } from "@/lib/catalog";
 
 export default function HomePage() {
-  const groups = getGroups();
   const stats = getStats();
 
-  return <AppShell groups={groups} total={stats.total} updated={stats.updated} />;
+  return (
+    <AppShell
+      topics={topics}
+      homeSections={homeSections}
+      randomPool={randomPool}
+      total={stats.total}
+      updated={stats.updated}
+    />
+  );
 }

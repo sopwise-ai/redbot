@@ -39,3 +39,6 @@ Thumbs.db
 
 # git worktree 工作区（隔离开发用）
 .worktrees/
+
+# 构建期生成的搜索语料
+public/search-corpus.json

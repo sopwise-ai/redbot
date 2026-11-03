@@ -8,20 +8,28 @@ import { Button } from "@/components/ui/button";
 import { clearHistory, formatRelativeTime, recordVisit, removeVisits } from "@/lib/history";
 import { pickRandom } from "@/lib/random";
 import { buildHueMap } from "@/lib/groups";
-import type { CategoryGroup, LinkItem } from "@/lib/schema";
+import type { LinkItem, TopicSummary } from "@/lib/schema";
 import { useHistory } from "@/lib/use-history";
 
-export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
+export function HistoryView({
+  corpus,
+  topics,
+  error = false,
+}: {
+  corpus: LinkItem[] | null;
+  topics: TopicSummary[];
+  error?: boolean;
+}) {
   const { entries, ready } = useHistory();
   const [managing, setManaging] = React.useState(false);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [confirmClear, setConfirmClear] = React.useState(false);
 
   const byId = React.useMemo(
-    () => new Map(groups.flatMap((group) => group.items).map((item) => [item.id, item])),
-    [groups],
+    () => new Map((corpus ?? []).map((item) => [item.id, item])),
+    [corpus],
   );
-  const hueByLabel = React.useMemo(() => buildHueMap(groups), [groups]);
+  const hueByLabel = React.useMemo(() => buildHueMap(topics), [topics]);
 
   // 足迹顺序即「最近使用」，过滤掉已经下架的条目
   const items = React.useMemo(
@@ -32,7 +40,7 @@ export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
     () => new Map(entries.map((entry) => [entry.id, entry])),
     [entries],
   );
-  const allItems = React.useMemo(() => groups.flatMap((group) => group.items), [groups]);
+  const allItems = React.useMemo(() => corpus ?? [], [corpus]);
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -48,7 +56,16 @@ export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
     setSelected(new Set());
   }
 
-  if (!ready) {
+  if (!ready) return <div className="h-40" aria-hidden />;
+  if (!corpus) {
+    if (error) {
+      return (
+        <div className="rounded-xl border border-dashed px-6 py-16 text-center">
+          <p className="text-md font-medium">足迹数据加载失败</p>
+          <p className="mt-2 text-sm text-muted-foreground">刷新页面再试一次。</p>
+        </div>
+      );
+    }
     return <div className="h-40" aria-hidden />;
   }
 
@@ -65,7 +82,7 @@ export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
           onClick={() => {
             const pick = pickRandom(allItems);
             if (!pick) return;
-            recordVisit(pick.id);
+            recordVisit(pick.id, pick.topic?.slug);
             window.open(pick.url, "_blank", "noopener,noreferrer");
           }}
         >

@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { catalog, categories, getGroups, getStats } from "@/lib/catalog";
+import {
+  catalog,
+  categories,
+  getGroups,
+  getStats,
+  getTopic,
+  homeSections,
+  randomPool,
+  topics,
+} from "@/lib/catalog";
 import { LIMITS } from "@/lib/schema";
 
 /**
@@ -73,5 +82,32 @@ describe("getStats", () => {
     expect(stats.total).toBe(catalog.links.length);
     expect(stats.categories).toBe(categories.length);
     expect(stats.updated).toBe(catalog.updated);
+  });
+});
+
+describe("按路由切片", () => {
+  it("主题摘要计数之和 = 全站条数", () => {
+    expect(topics.reduce((sum, topic) => sum + topic.count, 0)).toBe(catalog.links.length);
+  });
+
+  it("首页每个主题最多 6 条", () => {
+    expect(homeSections).toHaveLength(topics.length);
+    for (const section of homeSections) {
+      expect(section.items.length).toBeLessThanOrEqual(6);
+      expect(section.items.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("getTopic 只返回当前主题的条目", () => {
+    expect(getTopic("tools")?.items).toHaveLength(9);
+    expect(getTopic("missing")).toBeUndefined();
+  });
+
+  it("随机池带主题 slug，供足迹记录", () => {
+    expect(randomPool.length).toBeGreaterThan(0);
+    for (const pick of randomPool) {
+      expect(pick.url.startsWith("https://")).toBe(true);
+      expect(pick.topicSlug).not.toBe("");
+    }
   });
 });

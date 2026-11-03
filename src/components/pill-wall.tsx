@@ -13,11 +13,7 @@ export interface PillGroup {
   items: LinkItem[];
 }
 
-/**
- * 每一组都包一层带 `data-cat` 的容器：
- * 首帧（JS 还没跑）由 layout 注入的 CSS 依据 `html[data-tag]` 直接隐藏非目标组，
- * 避免「先渲染全部、再切到分类」的跳动。
- */
+/** 每一组包一层带 `data-cat` 的容器，方便按主题/分组定位与样式钩子。 */
 export function PillWall({
   groups,
   hueByLabel,
@@ -114,7 +110,7 @@ export function LinkPill({
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => {
-          recordVisit(item.id);
+          recordVisit(item.id, item.topic?.slug);
           onOpen?.();
         }}
         title={item.desc}

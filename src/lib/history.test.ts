@@ -72,6 +72,13 @@ describe("recordVisit", () => {
     expect(entries[0].at).toBeGreaterThan(0);
   });
 
+  it("记录主题；后续不带主题的点击保留它", () => {
+    recordVisit("baidu", "tools");
+    expect(readHistory()[0].topic).toBe("tools");
+    recordVisit("baidu");
+    expect(readHistory()[0]).toMatchObject({ id: "baidu", topic: "tools", count: 2 });
+  });
+
   it("重复点击累加次数并置顶", () => {
     const now = vi.spyOn(Date, "now");
     now.mockReturnValue(100);

@@ -76,7 +76,8 @@ jobs:
         run: |
           count=$(grep -o 'target="_blank"' out/index.html | wc -l)
           echo "exported links: $count"
-          test "$count" -ge 100
+          # 首页是「每主题 6 条预览」；≥80 保证外壳与预览链接都在
+          test "$count" -ge 80
 
       # SECURITY.md 承诺「target=_blank 一律带 rel=noopener noreferrer」，在这里兑现
       - name: Check link rel

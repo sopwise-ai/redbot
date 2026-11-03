@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { headMeta, headCount } from "@/lib/head-meta";
 import { site } from "@/lib/site";
 import type { ShellView } from "@/components/app-shell";
-import type { CategoryGroup } from "@/lib/schema";
+import type { CategoryGroup, TopicSummary } from "@/lib/schema";
 
 /**
  * 主区域报头：图标锚点 + 标题 + 右侧统计。
@@ -18,7 +18,7 @@ export function ShellHeader({
   view,
   searching,
   activeGroup,
-  groups,
+  topics,
   total,
   updated,
   searchCount,
@@ -28,7 +28,7 @@ export function ShellHeader({
   view: ShellView;
   searching: boolean;
   activeGroup: CategoryGroup | null;
-  groups: CategoryGroup[];
+  topics: TopicSummary[];
   total: number;
   updated: string;
   searchCount: number;
@@ -109,7 +109,7 @@ export function ShellHeader({
                 href="/topics/"
                 className="text-xs text-muted-foreground tabular-nums transition-colors hover:text-foreground hover:underline hover:underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
               >
-                {groups.length} 个主题
+                {topics.length} 个主题
               </Link>
               <p className="mt-1 text-2xs text-muted-foreground tabular-nums">更新于 {updated}</p>
             </div>

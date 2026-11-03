@@ -8,6 +8,7 @@ import { ArrowUpRight, HistoryIcon, SearchIcon, XIcon } from "lucide-react";
 import { AboutView } from "@/components/about-view";
 import { AppSidebar } from "@/components/app-sidebar";
 import { GroupFilter, UNGROUPED_GROUP } from "@/components/group-filter";
+import { HomeSections } from "@/components/home-sections";
 import { HistoryView } from "@/components/history-view";
 import { PillWall, type PillGroup } from "@/components/pill-wall";
 import { SearchResults } from "@/components/search-results";
@@ -26,38 +27,38 @@ import {
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { loadCorpus } from "@/lib/corpus";
 import { recordVisit } from "@/lib/history";
 import { buildHueMap } from "@/lib/groups";
 import { ALL, parseRoute } from "@/lib/route-state";
-import type { CategoryGroup } from "@/lib/schema";
+import type { CategoryGroup, HomeSection, LinkItem, RandomPick, TopicSummary } from "@/lib/schema";
 import { createSearchIndex, createTopicIndex } from "@/lib/search";
 import { site } from "@/lib/site";
-import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
 import { clearRecentSearches, readRecentSearches, rememberSearch } from "@/lib/recent-searches";
 import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
 import { useHistory } from "@/lib/use-history";
 
 export type ShellView = "wall" | "topics" | "search" | "history" | "about";
 
-/** 让 <html data-tag> 与当前分类保持一致（样式钩子与调试用） */
-function syncTagAttribute(slug: string) {
-  const root = document.documentElement;
-  if (slug === ALL) delete root.dataset.tag;
-  else root.dataset.tag = slug;
-}
-
 export function AppShell({
-  groups,
+  topics,
+  activeTopic,
+  homeSections = [],
+  randomPool = [],
   total,
   updated,
-  initialActive = ALL,
   view = "wall",
 }: {
-  groups: CategoryGroup[];
+  /** 二十来个主题的摘要，每页都带；不含条目 */
+  topics: TopicSummary[];
+  /** 仅主题页：当前主题的完整条目 */
+  activeTopic?: CategoryGroup;
+  /** 仅首页：每个主题的前几条预览 */
+  homeSections?: HomeSection[];
+  /** 「随机一个」的构建期抽样池 */
+  randomPool?: RandomPick[];
   total: number;
   updated: string;
-  /** 由路由决定：/ 是 all，/topics/<slug>/ 是对应分类。首屏直接渲染，不经过客户端纠正 */
-  initialActive?: string;
   /** 主区域默认展示什么：按钮墙 / 主题索引 / 搜索 */
   view?: ShellView;
 }) {
@@ -65,12 +66,13 @@ export function AppShell({
   const pathname = usePathname();
   const [skipReady, setSkipReady] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [active, setActive] = React.useState<string>(initialActive);
   const [query, setQuery] = React.useState("");
   const [groupFilter, setGroupFilter] = React.useState("");
   const [recentSearches, setRecentSearches] = React.useState<string[]>([]);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
+  const [corpus, setCorpus] = React.useState<LinkItem[] | null>(null);
+  const [corpusError, setCorpusError] = React.useState(false);
   const { entries: historyEntries } = useHistory();
 
   // 最近搜索只存在 localStorage；静态导出没有服务端状态，挂载后读一次
@@ -89,43 +91,54 @@ export function AppShell({
   const searchEntryPushed = React.useRef(false);
 
   const searching = query.trim().length > 0;
-  const activeGroup = groups.find((group) => group.slug === active) ?? null;
+  const activeGroup = activeTopic ?? null;
 
   // 主题页的分组筛选：?group= 是状态，首帧与切换主题时读回
   React.useEffect(() => {
     const requested = new URLSearchParams(window.location.search).get("group") ?? "";
-    const available = activeGroup?.groups ?? [];
+    const available = activeTopic?.groups ?? [];
     const valid =
       requested === "" ||
       requested === UNGROUPED_GROUP ||
       available.some((group) => group.slug === requested);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setGroupFilter(valid ? requested : "");
-  }, [active, activeGroup]);
+  }, [activeTopic]);
 
   const changeGroupFilter = React.useCallback(
     (next: string) => {
       setGroupFilter(next);
-      if (!activeGroup) return;
+      if (!activeTopic) return;
       const suffix = next ? `?group=${encodeURIComponent(next)}` : "";
-      replaceUrlQuietly(`/topics/${activeGroup.slug}/${suffix}`, { silent: true });
+      replaceUrlQuietly(`/topics/${activeTopic.slug}/${suffix}`, { silent: true });
     },
-    [activeGroup],
+    [activeTopic],
   );
 
-  const searchIndex = React.useMemo(
-    () => createSearchIndex(groups.flatMap((group) => group.items)),
-    [groups],
-  );
+  const requestCorpus = React.useCallback(() => {
+    if (corpus) return;
+    loadCorpus()
+      .then((items) => {
+        setCorpus(items);
+        setCorpusError(false);
+      })
+      .catch(() => setCorpusError(true));
+  }, [corpus]);
+
+  React.useEffect(() => {
+    if (searching || view === "history") requestCorpus();
+  }, [searching, view, requestCorpus]);
+
+  const searchIndex = React.useMemo(() => (corpus ? createSearchIndex(corpus) : null), [corpus]);
   const results = React.useMemo(
-    () => (searching ? searchIndex.search(query) : []),
+    () => (searching && searchIndex ? searchIndex.search(query) : []),
     [searchIndex, query, searching],
   );
   const nearMisses = React.useMemo(
-    () => (searching && results.length === 0 ? searchIndex.nearMisses(query) : []),
+    () => (searching && results.length === 0 && searchIndex ? searchIndex.nearMisses(query) : []),
     [searchIndex, query, searching, results.length],
   );
-  const topicIndex = React.useMemo(() => createTopicIndex(groups), [groups]);
+  const topicIndex = React.useMemo(() => createTopicIndex(topics), [topics]);
   const topicSuggestions = React.useMemo(
     () =>
       searching && results.length === 0
@@ -134,30 +147,14 @@ export function AppShell({
     [topicIndex, query, searching, results.length],
   );
 
-  const hueByLabel = React.useMemo(() => buildHueMap(groups), [groups]);
+  const hueByLabel = React.useMemo(() => buildHueMap(topics), [topics]);
 
-  /**
-   * 分类切换走浏览器原生 View Transitions：只对内容区做交叉淡入淡出，
-   * 侧栏/顶栏保持不动。不支持或开启减弱动效时直接切换。
-   * 执行策略（scroll 顺序、reduced-motion 短路）提纯在 switch-category.ts。
-   */
-  const switchCategory = React.useCallback(
+  // 数据按路由切片后，切主题走静态页导航；Link 预取 + 静态 HTML 已经足够快
+  const goTopic = React.useCallback(
     (next: string) => {
-      // 非按钮墙视图（/topics/、/search/、/history/）一律走路由，
-      // 不能套用「点的是当前分类」的短路判断——那些页面的 active 默认就是 all
-      if (view !== "wall") {
-        router.push(next === ALL ? "/" : `/topics/${next}/`);
-        return;
-      }
-      if (next === active && !searching) return;
-      setQuery("");
-      applyCategorySwitch({
-        next,
-        env: envFromWindow(window, syncTagAttribute),
-        apply: setActive,
-      });
+      router.push(next === ALL ? "/" : `/topics/${next}/`);
     },
-    [active, searching, view, router],
+    [router],
   );
 
   // 记录「搜索从哪儿来」：第一次输入时抓一次当前地址
@@ -176,7 +173,7 @@ export function AppShell({
     const route = parseRoute(
       window.location.pathname,
       window.location.search,
-      groups.map((group) => group.slug),
+      topics.map((topic) => topic.slug),
     );
     // 静态导出没有服务端注入，首帧只能从地址栏读这一次；urlSynced 保证不重复触发
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -184,7 +181,7 @@ export function AppShell({
     // 直链/刷新进来时这条 URL 本来就在历史里，后续输入只 replace 不再 push
     if (route.isSearch) searchEntryPushed.current = true;
     urlSynced.current = true;
-  }, [groups]);
+  }, [topics]);
 
   // 地址栏：搜索时是 /search/?q=，清空后回到来源页。
   // 必须用 replaceUrlQuietly（绕过 Next 的 replaceState patch）：
@@ -216,40 +213,31 @@ export function AppShell({
     }
   }, [searching, query]);
 
-  // 分类写回路径（搜索中、或当前页不是按钮墙时都不改，避免把 /topics/ 改写成 /）
-  React.useEffect(() => {
-    if (searching || view !== "wall") return;
-    const path = active === ALL ? "/" : `/topics/${active}/`;
-    if (window.location.pathname !== path) replaceUrlQuietly(path);
-  }, [active, searching, view]);
-
   // 浏览器前进/后退：把地址栏重新读成 state（与首帧读 URL 用同一个解析器）
   React.useEffect(() => {
     function onPopState() {
       const route = parseRoute(
         window.location.pathname,
         window.location.search,
-        groups.map((group) => group.slug),
+        topics.map((topic) => topic.slug),
       );
       // 后退/前进到搜索页：把 q 读回来；离开搜索页则清空，即「退出搜索态」
       setQuery(route.query);
       // 搜索页这条 URL 已经在历史里了，之后打字只 replace
       if (route.isSearch) searchEntryPushed.current = true;
-      // 搜索页是全站的，没有当前分类；只有离开搜索页才恢复分类高亮
+      // 主题页只会因为 ?group= 变化走到这里；分类切换本身是页面导航
       if (!route.isSearch) {
-        setActive(route.active);
         const requested = new URLSearchParams(window.location.search).get("group") ?? "";
-        const target = groups.find((group) => group.slug === route.active);
         const valid =
           requested === "" ||
           requested === UNGROUPED_GROUP ||
-          (target?.groups ?? []).some((group) => group.slug === requested);
+          (activeTopic?.groups ?? []).some((group) => group.slug === requested);
         setGroupFilter(valid ? requested : "");
       }
     }
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [groups]);
+  }, [topics, activeTopic]);
 
   // skip link 平时不挂载：否则导航后的焦点会落到它身上，把它点亮。
   // 触发条件：焦点还在 body（页面刚加载、用户还没交互）时按下第一次 Tab。
@@ -416,7 +404,7 @@ export function AppShell({
         const first = results[0];
         if (!first) return;
         event.preventDefault();
-        recordVisit(first.id);
+        recordVisit(first.id, first.topic?.slug);
         setRecentSearches(rememberSearch(query));
         window.open(first.url, "_blank", "noopener,noreferrer");
         return;
@@ -461,7 +449,7 @@ export function AppShell({
   const hasGroups = (activeGroup?.groups.length ?? 0) > 0;
 
   const wallGroups: PillGroup[] = React.useMemo(() => {
-    if (!activeGroup || searching) return groups;
+    if (!activeGroup || searching) return [];
     if (activeGroup.groups.length === 0) return [activeGroup];
 
     const itemsOf = (slug: string) =>
@@ -494,7 +482,7 @@ export function AppShell({
       });
     }
     return list;
-  }, [activeGroup, groups, searching, groupFilter]);
+  }, [activeGroup, searching, groupFilter]);
 
   const visibleCount = searching
     ? results.length
@@ -523,10 +511,11 @@ export function AppShell({
       ) : null}
       <SidebarProvider>
         <AppSidebar
-          groups={groups}
+          topics={topics}
           total={total}
-          active={view === "wall" ? active : ""}
-          onSelect={switchCategory}
+          active={view === "wall" ? (activeTopic?.slug ?? "") : "__none"}
+          onSelect={goTopic}
+          randomPool={randomPool}
           historyActive={view === "history"}
           onOpenHistory={() => router.push("/history/")}
         />
@@ -545,8 +534,14 @@ export function AppShell({
                 <Input
                   ref={inputRef}
                   value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  onFocus={() => setSearchFocused(true)}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    if (event.target.value.trim()) requestCorpus();
+                  }}
+                  onFocus={() => {
+                    setSearchFocused(true);
+                    requestCorpus();
+                  }}
                   onBlur={() => setSearchFocused(false)}
                   aria-expanded={showRecent}
                   aria-controls="recent-searches"
@@ -635,7 +630,7 @@ export function AppShell({
                 view={view}
                 searching={searching}
                 activeGroup={activeGroup}
-                groups={groups}
+                topics={topics}
                 total={total}
                 updated={updated}
                 searchCount={results.length}
@@ -661,7 +656,16 @@ export function AppShell({
               </p>
 
               {searching ? (
-                results.length > 0 ? (
+                !corpus && !corpusError ? (
+                  <div className="rounded-xl border border-dashed px-6 py-16 text-center">
+                    <p className="text-sm text-muted-foreground">正在准备搜索…</p>
+                  </div>
+                ) : corpusError ? (
+                  <div className="rounded-xl border border-dashed px-6 py-16 text-center">
+                    <p className="text-md font-medium">搜索语料加载失败</p>
+                    <p className="mt-2 text-sm text-muted-foreground">刷新页面再试一次。</p>
+                  </div>
+                ) : results.length > 0 ? (
                   <div className="animate-in duration-200 fade-in-0">
                     <SearchResults
                       items={results}
@@ -686,7 +690,7 @@ export function AppShell({
                               href={item.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              onClick={() => recordVisit(item.id)}
+                              onClick={() => recordVisit(item.id, item.topic?.slug)}
                               className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
                             >
                               {item.name}
@@ -744,9 +748,9 @@ export function AppShell({
                   </div>
                 )
               ) : view === "history" ? (
-                <HistoryView groups={groups} />
+                <HistoryView corpus={corpus} topics={topics} error={corpusError} />
               ) : view === "topics" ? (
-                <TopicsIndex groups={groups} />
+                <TopicsIndex topics={topics} />
               ) : view === "search" ? (
                 <p className="text-sm text-muted-foreground">
                   输入关键词开始搜索，或者{" "}
@@ -760,13 +764,15 @@ export function AppShell({
                 </p>
               ) : view === "about" ? (
                 <AboutView />
+              ) : isHome ? (
+                <HomeSections sections={homeSections} hueByLabel={hueByLabel} />
               ) : (
                 <PillWall groups={wallGroups} hueByLabel={hueByLabel} showHeading={hasGroups} />
               )}
             </div>
           </main>
 
-          <SiteFooter total={total} categories={groups.length} updated={updated} />
+          <SiteFooter total={total} categories={topics.length} updated={updated} />
         </div>
 
         <Dialog open={shortcutsOpen} onOpenChange={setShortcutsOpen}>

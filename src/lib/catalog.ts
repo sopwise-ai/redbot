@@ -1,7 +1,15 @@
 import { topicFiles } from "@/generated/topics";
 
 import { checkTopicGroups, mergeTopics, type TopicEntry } from "@/lib/merge-topics";
-import { topicFileSchema, type Catalog, type Category, type CategoryGroup } from "@/lib/schema";
+import {
+  topicFileSchema,
+  type Catalog,
+  type Category,
+  type CategoryGroup,
+  type HomeSection,
+  type RandomPick,
+  type TopicSummary,
+} from "@/lib/schema";
 
 /**
  * 数据在模块加载时（= 构建时）完成解析与校验。
@@ -64,6 +72,33 @@ export function getGroups(): CategoryGroup[] {
 
   return groups;
 }
+
+/** 主题页只取当前主题，避免每页下发全量。 */
+const allGroups = getGroups();
+
+export function getTopic(slug: string) {
+  return allGroups.find((group) => group.slug === slug);
+}
+
+/** 侧栏/首页用的摘要（不带条目）。 */
+export const topics: TopicSummary[] = allGroups.map(({ items, ...category }) => ({
+  ...category,
+  count: items.length,
+}));
+
+/** 首页每个主题只预览前 6 条。 */
+export const homeSections: HomeSection[] = topics.map((topic) => ({
+  topic,
+  items: getTopic(topic.slug)!.items.slice(0, 6),
+}));
+
+/** 构建期抽样，给「随机一个」用；避免每页下发全量链接。 */
+export const randomPool: RandomPick[] = (() => {
+  const step = Math.max(1, Math.ceil(catalog.links.length / 120));
+  return catalog.links
+    .filter((_, index) => index % step === 0)
+    .map((link) => ({ id: link.id, url: link.url, topicSlug: link.topic?.slug ?? "" }));
+})();
 
 export function getStats() {
   return {

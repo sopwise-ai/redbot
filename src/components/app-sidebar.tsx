@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowUpRight, BookOpenIcon, GitPullRequestIcon, ShuffleIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,41 +22,42 @@ import {
 import { recordVisit } from "@/lib/history";
 import { pickRandom } from "@/lib/random";
 import { useHistory } from "@/lib/use-history";
-import type { CategoryGroup } from "@/lib/schema";
+import type { RandomPick, TopicSummary } from "@/lib/schema";
 import { site } from "@/lib/site";
 
 const itemClass =
   "h-9 rounded-lg px-2 text-sm text-muted-foreground transition-colors data-[active=true]:bg-primary/8 data-[active=true]:font-semibold data-[active=true]:text-foreground dark:data-[active=true]:bg-primary/15";
 
 export function AppSidebar({
-  groups,
+  topics,
   total,
   active,
   onSelect,
+  randomPool,
   historyActive = false,
   onOpenHistory,
 }: {
-  groups: CategoryGroup[];
+  topics: TopicSummary[];
   total: number;
   active: string;
   onSelect: (slug: string) => void;
+  randomPool: RandomPick[];
   historyActive?: boolean;
   onOpenHistory?: () => void;
 }) {
   const { isMobile, setOpenMobile } = useSidebar();
   const { entries } = useHistory();
 
-  // 最近访问的主题：从足迹里按「最近点过」去重取前 3 个（纯本地，不新增存储）
-  const groupByItem = new Map<string, CategoryGroup>();
-  for (const group of groups) for (const item of group.items) groupByItem.set(item.id, group);
-  const recentGroups: CategoryGroup[] = [];
+  // 最近访问的主题：足迹里现在带了 topic slug，不再需要 id→topic 的全量映射
+  const recentTopics: TopicSummary[] = [];
   const seenRecent = new Set<string>();
   for (const entry of entries) {
-    const group = groupByItem.get(entry.id);
-    if (!group || seenRecent.has(group.slug)) continue;
-    seenRecent.add(group.slug);
-    recentGroups.push(group);
-    if (recentGroups.length === 3) break;
+    if (!entry.topic || seenRecent.has(entry.topic)) continue;
+    const topic = topics.find((item) => item.slug === entry.topic);
+    if (!topic) continue;
+    seenRecent.add(entry.topic);
+    recentTopics.push(topic);
+    if (recentTopics.length === 3) break;
   }
 
   // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容。
@@ -100,9 +102,9 @@ export function AppSidebar({
         <Button
           variant="outline"
           onClick={() => {
-            const pick = pickRandom(groups.flatMap((group) => group.items));
+            const pick = pickRandom(randomPool);
             if (!pick) return;
-            recordVisit(pick.id);
+            recordVisit(pick.id, pick.topicSlug);
             window.open(pick.url, "_blank", "noopener,noreferrer");
           }}
           className="h-9 w-full justify-start gap-2 rounded-lg px-2.5 text-sm font-normal shadow-xs group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
@@ -144,10 +146,10 @@ export function AppSidebar({
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    isActive={active === "all"}
-                    aria-current={active === "all" ? "true" : undefined}
+                    isActive={active === ""}
+                    aria-current={active === "" ? "true" : undefined}
                     onClick={() => select("all")}
-                    tooltip="全部"
+                    tooltip="首页"
                     className={itemClass}
                   >
                     <span
@@ -156,7 +158,7 @@ export function AppSidebar({
                     >
                       🗂️
                     </span>
-                    <span className="truncate">全部</span>
+                    <span className="truncate">首页</span>
                     <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
                       {total}
                     </span>
@@ -185,15 +187,15 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {recentGroups.length > 0 ? (
+        {recentTopics.length > 0 ? (
           <SidebarGroup className="py-0">
             <SidebarGroupLabel className="h-6 px-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
               最近访问
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {recentGroups.map((group) => (
-                  <TopicMenuItem key={group.slug} group={group} active={active} onSelect={select} />
+                {recentTopics.map((topic) => (
+                  <TopicMenuItem key={topic.slug} topic={topic} active={active} onSelect={select} />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
@@ -203,15 +205,15 @@ export function AppSidebar({
         <div className="sticky top-0 z-10 flex items-center gap-2 bg-sidebar px-3 pt-3 pb-1 group-data-[collapsible=icon]:hidden">
           <span className="text-2xs font-medium tracking-[0.08em] text-muted-foreground">主题</span>
           <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
-            {groups.length}
+            {topics.length}
           </span>
         </div>
 
         <SidebarGroup className="py-0">
           <SidebarGroupContent>
             <SidebarMenu>
-              {groups.map((group) => (
-                <TopicMenuItem key={group.slug} group={group} active={active} onSelect={select} />
+              {topics.map((topic) => (
+                <TopicMenuItem key={topic.slug} topic={topic} active={active} onSelect={select} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -253,30 +255,31 @@ export function AppSidebar({
 }
 
 function TopicMenuItem({
-  group,
+  topic,
   active,
   onSelect,
 }: {
-  group: CategoryGroup;
+  topic: TopicSummary;
   active: string;
   onSelect: (slug: string) => void;
 }) {
+  const router = useRouter();
+
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        isActive={active === group.slug}
-        aria-current={active === group.slug ? "true" : undefined}
-        onClick={() => onSelect(group.slug)}
-        tooltip={group.name}
+        isActive={active === topic.slug}
+        aria-current={active === topic.slug ? "true" : undefined}
+        onClick={() => onSelect(topic.slug)}
+        onPointerEnter={() => router.prefetch(`/topics/${topic.slug}/`)}
+        tooltip={topic.name}
         className={itemClass}
       >
         <span aria-hidden className="w-[18px] shrink-0 text-center text-base leading-none">
-          {group.emoji}
+          {topic.emoji}
         </span>
-        <span className="truncate">{group.name}</span>
-        <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
-          {group.items.length}
-        </span>
+        <span className="truncate">{topic.name}</span>
+        <span className="ml-auto text-2xs text-muted-foreground tabular-nums">{topic.count}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );

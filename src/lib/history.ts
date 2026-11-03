@@ -11,6 +11,8 @@ const EVENT = "redbot:history-change";
 
 export interface HistoryEntry {
   id: string;
+  /** 所属主题 slug（旧记录可能没有；用于侧栏「最近访问」） */
+  topic?: string;
   /** 最近一次点击时间戳 */
   at: number;
   /** 累计点击次数 */
@@ -21,7 +23,10 @@ function isEntry(value: unknown): value is HistoryEntry {
   if (!value || typeof value !== "object") return false;
   const entry = value as Record<string, unknown>;
   return (
-    typeof entry.id === "string" && typeof entry.at === "number" && typeof entry.count === "number"
+    typeof entry.id === "string" &&
+    (entry.topic === undefined || typeof entry.topic === "string") &&
+    typeof entry.at === "number" &&
+    typeof entry.count === "number"
   );
 }
 
@@ -49,12 +54,17 @@ function write(entries: HistoryEntry[]) {
 }
 
 /** 记录一次点击：已存在则累加次数并刷新时间 */
-export function recordVisit(id: string) {
+export function recordVisit(id: string, topic?: string) {
   const entries = readHistory();
   const existing = entries.find((entry) => entry.id === id);
-  const next: HistoryEntry = existing
-    ? { id, at: Date.now(), count: existing.count + 1 }
-    : { id, at: Date.now(), count: 1 };
+  const at = Date.now();
+  const next: HistoryEntry = {
+    id,
+    at,
+    count: existing ? existing.count + 1 : 1,
+    // 新记录带上主题；旧记录没有时用调用方传入的补上
+    ...(topic ? { topic } : existing?.topic ? { topic: existing.topic } : {}),
+  };
 
   write([next, ...entries.filter((entry) => entry.id !== id)]);
 }

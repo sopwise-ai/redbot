@@ -167,6 +167,8 @@ export interface LinkItem {
   tags: string[];
   /** 所属分组（未分组时不存在） */
   group?: GroupMeta;
+  /** 所属主题（合并时补上；历史记录与搜索上下文用） */
+  topic?: { slug: string; name: string };
   /** 搜索别名（可选；为空时不下发） */
   aliases?: string[];
   desc: string;
@@ -190,4 +192,22 @@ export interface Category {
 /** 一组链接的展示模型：分类元信息 + 属于它的条目（顺序即优先级）。 */
 export interface CategoryGroup extends Category {
   items: LinkItem[];
+}
+
+/** 侧栏/首页用的主题摘要：不带条目，只有计数。 */
+export interface TopicSummary extends Category {
+  count: number;
+}
+
+/** 首页每个主题的前几条预览。 */
+export interface HomeSection {
+  topic: TopicSummary;
+  items: LinkItem[];
+}
+
+/** 「随机一个」的构建期抽样池，避免每页下发全量。 */
+export interface RandomPick {
+  id: string;
+  url: string;
+  topicSlug: string;
 }

@@ -2,14 +2,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { BookmarkExport } from "@/components/bookmark-export";
-import type { CategoryGroup } from "@/lib/schema";
+import type { TopicSummary } from "@/lib/schema";
 
 /** 主题索引：渲染在主区域里，与按钮墙共用同一个外壳 */
-export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
+export function TopicsIndex({ topics }: { topics: TopicSummary[] }) {
   return (
     <>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {groups.map((item) => (
+        {topics.map((item) => (
           <li key={item.slug}>
             <Link
               href={`/topics/${item.slug}/`}
@@ -24,9 +24,7 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
               <span className="min-w-0 flex-1">
                 <span className="flex items-baseline gap-2">
                   <span className="text-md font-medium">{item.name}</span>
-                  <span className="text-2xs text-muted-foreground tabular-nums">
-                    {item.items.length}
-                  </span>
+                  <span className="text-2xs text-muted-foreground tabular-nums">{item.count}</span>
                 </span>
                 <span className="mt-0.5 block truncate text-sm text-muted-foreground">
                   {item.desc}
@@ -40,7 +38,7 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
           </li>
         ))}
       </ul>
-      <BookmarkExport groups={groups} />
+      <BookmarkExport total={topics.reduce((sum, topic) => sum + topic.count, 0)} />
     </>
   );
 }

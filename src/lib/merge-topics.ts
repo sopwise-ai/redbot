@@ -51,6 +51,7 @@ export function mergeTopics(entries: TopicEntry[]): MergedCatalog {
         url: link.url,
         desc: link.desc,
         tags: [file.name, ...link.tags],
+        topic: { slug, name: file.name },
         ...(group ? { group } : {}),
         ...(link.aliases.length > 0 ? { aliases: link.aliases } : {}),
       });

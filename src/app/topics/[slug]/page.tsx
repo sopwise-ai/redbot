@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
-import { categories, getGroups, getStats } from "@/lib/catalog";
+import { categories, getStats, getTopic, randomPool, topics } from "@/lib/catalog";
 import { site } from "@/lib/site";
 import { serializeJsonLd, topicJsonLd } from "@/lib/structured-data";
 
@@ -38,10 +38,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   if (!categories.some((category) => category.slug === slug)) notFound();
 
-  const groups = getGroups();
   const stats = getStats();
   const category = categories.find((item) => item.slug === slug)!;
-  const group = groups.find((item) => item.slug === slug);
+  const group = getTopic(slug)!;
 
   return (
     <>
@@ -51,7 +50,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           __html: serializeJsonLd(topicJsonLd(category, group?.items ?? [])),
         }}
       />
-      <AppShell groups={groups} total={stats.total} updated={stats.updated} initialActive={slug} />
+      <AppShell
+        topics={topics}
+        activeTopic={group}
+        randomPool={randomPool}
+        total={stats.total}
+        updated={stats.updated}
+      />
     </>
   );
 }

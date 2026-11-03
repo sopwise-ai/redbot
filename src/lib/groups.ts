@@ -1,5 +1,3 @@
-import type { CategoryGroup } from "@/lib/schema";
-
 /** 8 个低饱和色相，按分类顺序分配；超过 8 个分类时循环。 */
 export const HUES = [25, 55, 95, 150, 195, 240, 290, 330] as const;
 
@@ -9,6 +7,6 @@ export function hueFor(index: number) {
 }
 
 /** 分类主标签 → 色相。色点、文字色都查这张表。 */
-export function buildHueMap(groups: CategoryGroup[]): Map<string, number> {
-  return new Map(groups.map((group, index) => [group.name, hueFor(index)]));
+export function buildHueMap(categories: Array<{ name: string }>): Map<string, number> {
+  return new Map(categories.map((category, index) => [category.name, hueFor(index)]));
 }

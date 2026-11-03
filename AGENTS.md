@@ -23,9 +23,10 @@
 ## 命令
 
 ```bash
-npm run dev          # 开发服务器 http://localhost:3000（predev 会自动生成主题入口）
+npm run dev          # 开发服务器 http://localhost:3000（predev 生成主题入口与搜索语料）
 npm run gen          # 由 data/ 生成 src/generated/topics.ts（改完主题文件要重跑，CI 会校验）
-npm run build        # 生成入口 → 校验数据 → 生成 README → 静态导出
+npm run corpus       # 由 data/ 生成 public/search-corpus.json（构建期产物，已 gitignore）
+npm run build        # 生成入口 / 搜索语料 → 校验数据 → 生成 README → 静态导出
 npm run verify       # 格式 + Markdown + ESLint + 生成一致性 + 数据 + README + 单测 + 类型
 npm run lint         # ESLint（next/core-web-vitals + next/typescript，flat config）
 npm run clean        # 删 .next / out / tsbuildinfo
@@ -45,16 +46,17 @@ data/topics/<slug>.json  一个主题的全部内容：name / emoji / desc / upd
 data/topics.schema.jsonc 数据规范（字段、上限、跨文件约束）—— 改规则先改这里
 src/app/              layout / page / globals.css / manifest / not-found / icon
                       + topics/（索引与 [slug]）/ search/ / history/ / about/
-src/components/       app-shell（状态与布局）、app-sidebar、pill-wall（按钮墙）、
-                      history-view（足迹）、topics-index、site-footer
+src/components/       app-shell（状态与布局）、home-sections（首页主题预览）、app-sidebar、
+                      pill-wall（按钮墙）、history-view（足迹）、topics-index、site-footer
 src/components/ui/    shadcn 生成物，改样式前先看这里有没有现成变体
 src/generated/topics.ts  由脚本生成的主题静态入口（勿手改）
 src/lib/schema.ts     zod 契约 + LIMITS（配额、副标签白名单）—— 规范的可执行镜像
 src/lib/merge-topics.ts  主题文件 → 运行时模型（纯函数，有单测）
-src/lib/catalog.ts    取数与分组（构建期 parse，数据不合法直接构建失败）
+src/lib/catalog.ts    取数与切片（topics 摘要 / getTopic / homeSections / randomPool）
+src/lib/corpus.ts     按需拉取 public/search-corpus.json（搜索、足迹、导出共用）
 src/lib/history.ts    足迹读写（localStorage: redbot:history）；use-history.ts 是其 React 封装
 src/lib/search.ts     fuse 索引；src/lib/site.ts 站点元信息（域名、仓库、作者）
-scripts/              generate-topics.ts / validate.ts / generate-readme.ts —— 只负责读写与打印
+scripts/              generate-topics.ts / generate-corpus.ts / validate.ts / generate-readme.ts
 scripts/lib/load-topics.ts 读取 data/topics.json + data/topics/*.json（校验与 README 共用）
 scripts/lib/checks.ts 校验规则本身（唯一性、配额、标签、https、首页提醒），有单测
 scripts/lib/readme.ts README 渲染本身（纯函数），有单测
@@ -105,16 +107,16 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 4. **足迹只存本地**。`/history/` 记录用户点过的链接（`localStorage` 的 `redbot:history`，含时间与次数），
    **不引入后端、不上传**；点击由 `LinkPill` 的 onClick 调用 `recordVisit`。管理（单条删除 / 批量 / 清空）都在页面内完成，
    清空是两步确认，避免误触。
-5. **分类在路径里，搜索是状态**。`/topics/<slug>/`（按 data/topics.json 逐个预生成）是分类页，`/` 是全部，
-   `/topics/` 是主题索引，`/search/` 是搜索页——**后两者都渲染在同一个外壳里**（侧栏 + 顶栏 + 主区域），
-   不要给它们做独立版式。
-   搜索：顶栏输入框即搜即显，范围是**全站**（不按当前分类过滤）；先匹配名称/别名（精确 → 前缀），再退回 Fuse 模糊；0 结果时给「你是不是想找」与主题建议；第一次输入时记下来源路径，
-   地址栏换成 `/search/?q=`，**清空或按 Esc 即回到来源页**（见 `originPath`）。
-   分类切换是 `setActive` + `history.replaceState`（不触发路由请求），刷新由服务端渲染正确分类——
-   **不要退回 `?tag=`**，那会让首屏渲染「全部」再纠正。
-6. **动效要尊重 `prefers-reduced-motion`**。分类切换用 View Transitions（`switchCategory`），
-   不支持或减弱动效时直接切换；CSS 里已有全局兜底。
-7. **构建期失败优先于运行时兜底**。数据不合法就让 `npm run build` 挂掉，不要写运行期容错。
+5. **数据按路由切片，任何一页都不拿全量**。首页只带每个主题前 6 条（`homeSections`）；
+   主题页只带当前主题（`getTopic`）；`/topics/`、`/search/`、`/history/` 只带 20 来个摘要；
+   搜索 / 足迹 / 书签导出首次使用时按需拉 `public/search-corpus.json`。
+   **不要把 `getGroups()` 再传进 `AppShell`**——那等于把全站数据塞回每一页。
+6. **分类在路径里，搜索是状态**。`/topics/<slug>/` 是静态页；切主题是 `router.push` / `<Link>` 导航，
+   不再用 `setActive` + `history.replaceState`，也不套 View Transition。
+   搜索仍是顶栏即搜即显、全站范围；先名称/别名（精确 → 前缀），再 Fuse 模糊；0 结果给「你是不是想找」与主题建议；
+   地址栏 `/search/?q=`，清空或 Esc 回到来源页（`originPath`）。
+7. **动效要尊重 `prefers-reduced-motion`**。没有分类切换动画；其他过渡保持 CSS 兜底。
+8. **构建期失败优先于运行时兜底**。数据不合法就让 `npm run build` 挂掉，不要写运行期容错。
 
 ## 文案三层（改界面文案前先读）
 
@@ -142,7 +144,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 
 ## 界面结构（改样式前先读）
 
-页面**没有分区标题**：分类由「左侧色点成段 + 段间距」表达，而不是小标题。
+首页与主题页用**分区小标题**分段（首页每个主题 6 条预览，主题页按分组）；段间仍是 `gap-8`。
 
 - `PillWall` 桌面端是**等宽网格**：`lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]`，
   列宽自动均分、右缘齐边；移动端退回 `flex-wrap` 的内容宽度（小屏等宽会把中文名截断）。
@@ -150,7 +152,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
   代价是行数变多、长站名会被截断（靠 `title` 兜底）——这是刻意的取舍，不要为了密度改回可变宽度。
 - 按钮是 `h-9` + `rounded-lg` + `border` + `shadow-xs`，hover 只换底色/边框并升到 `shadow-sm`（不做位移）。
   内部是 `justify-between`：色点与文字贴左、箭头钉在右缘，**不要改回居中**——居中会让箭头连不成竖线。
-- 侧栏：品牌行 + 折叠按钮 → 「随机一个」→ 足迹/全部 → 吸顶的「主题」标题 → 分类列表 → 页脚。
+- 侧栏：品牌行 + 折叠按钮 → 「随机一个」→ 足迹/首页 → 吸顶的「主题」标题 → 分类列表 → 页脚。
   桌面可折叠成 48px 图标轨（`collapsible="icon"`）。主题顺序即 `data/topics.json` 的顺序，
   图标来自各主题文件的 `emoji`（14px，固定 18px 宽）。
 - 色点色相来自 `hueFor(index)`（8 个色相循环，index 是分类顺序）——
@@ -162,7 +164,6 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 
 ## 容易踩的坑
 
-- **`scrollTo(0)` 必须在 `startViewTransition` 之前**，否则两张快照位置不同，过渡会位移。
 - **skip link 必须「按需挂载」**：它平时不进 DOM，只在「焦点在 body 上按下第一次 Tab」时插入并聚焦。
   常驻 DOM 的话，路由切换后焦点会落到它身上，被 `:focus-visible` 点亮成一个盖在顶栏的按钮。
   另外路由变化时仍会把焦点交给 `#content`（`main.focus()`），作为第二道保险。
@@ -177,7 +178,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 
 ```bash
 npm run verify      # 格式 + Markdown + ESLint + 数据 + README 一致性 + 单测 + 类型
-npm run build       # 生成 README + 静态导出（CI 随后断言 out/index.html 里有 ≥100 个 target="_blank"）
+npm run build       # 生成语料/README + 静态导出（CI 断言首页有 ≥80 个 target="_blank"）
 git diff --exit-code -- README.md   # CI 会做：忘了重新生成 README 就挂
 ```
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/app-shell";
-import { getGroups, getStats } from "@/lib/catalog";
+import { getStats, randomPool, topics } from "@/lib/catalog";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -16,8 +16,15 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  const groups = getGroups();
   const stats = getStats();
 
-  return <AppShell groups={groups} total={stats.total} updated={stats.updated} view="about" />;
+  return (
+    <AppShell
+      topics={topics}
+      randomPool={randomPool}
+      total={stats.total}
+      updated={stats.updated}
+      view="about"
+    />
+  );
 }
