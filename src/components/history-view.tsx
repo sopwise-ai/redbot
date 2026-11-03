@@ -5,7 +5,8 @@ import { Trash2Icon } from "lucide-react";
 
 import { LinkPill } from "@/components/pill-wall";
 import { Button } from "@/components/ui/button";
-import { removeVisits, clearHistory } from "@/lib/history";
+import { clearHistory, formatRelativeTime, recordVisit, removeVisits } from "@/lib/history";
+import { pickRandom } from "@/lib/random";
 import { buildHueMap } from "@/lib/groups";
 import type { CategoryGroup, LinkItem } from "@/lib/schema";
 import { useHistory } from "@/lib/use-history";
@@ -27,6 +28,11 @@ export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
     () => entries.map((entry) => byId.get(entry.id)).filter((item): item is LinkItem => !!item),
     [entries, byId],
   );
+  const entriesById = React.useMemo(
+    () => new Map(entries.map((entry) => [entry.id, entry])),
+    [entries],
+  );
+  const allItems = React.useMemo(() => groups.flatMap((group) => group.items), [groups]);
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -53,6 +59,18 @@ export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
         <p className="mt-2 text-sm text-muted-foreground">
           随便点几个信息源，它们会自动出现在这里，方便下次直接打开。
         </p>
+        <Button
+          size="sm"
+          className="mt-5 rounded-full"
+          onClick={() => {
+            const pick = pickRandom(allItems);
+            if (!pick) return;
+            recordVisit(pick.id);
+            window.open(pick.url, "_blank", "noopener,noreferrer");
+          }}
+        >
+          随机一个
+        </Button>
       </div>
     );
   }
@@ -126,17 +144,25 @@ export function HistoryView({ groups }: { groups: CategoryGroup[] }) {
       </div>
 
       <ul className="flex flex-wrap gap-2 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(172px,1fr))]">
-        {items.map((item) => (
-          <li key={item.id} className="min-w-0">
-            <LinkPill
-              item={item}
-              hue={hueByLabel.get(item.tags[0]) ?? 0}
-              variant={managing ? "manage" : "browse"}
-              selected={managing && selected.has(item.id)}
-              onToggle={toggle}
-            />
-          </li>
-        ))}
+        {items.map((item) => {
+          const entry = entriesById.get(item.id);
+          return (
+            <li key={item.id} className="min-w-0">
+              <LinkPill
+                item={item}
+                hue={hueByLabel.get(item.tags[0]) ?? 0}
+                variant={managing ? "manage" : "browse"}
+                selected={managing && selected.has(item.id)}
+                onToggle={toggle}
+              />
+              {!managing && entry ? (
+                <p className="mt-1 px-1 text-2xs text-muted-foreground">
+                  点过 {entry.count} 次 · {formatRelativeTime(entry.at)}
+                </p>
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

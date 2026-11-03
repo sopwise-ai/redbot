@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import type { CategoryGroup } from "@/lib/schema";
 
@@ -27,7 +27,7 @@ export function TopicsIndex({ groups }: { groups: CategoryGroup[] }) {
                 {item.desc}
               </span>
             </span>
-            <ArrowUpRight
+            <ArrowRight
               aria-hidden
               className="mt-1 size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-primary"
             />

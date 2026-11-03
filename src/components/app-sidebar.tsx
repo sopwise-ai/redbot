@@ -10,6 +10,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -18,6 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { recordVisit } from "@/lib/history";
+import { pickRandom } from "@/lib/random";
 import { useHistory } from "@/lib/use-history";
 import type { CategoryGroup } from "@/lib/schema";
 import { site } from "@/lib/site";
@@ -42,6 +44,19 @@ export function AppSidebar({
 }) {
   const { isMobile, setOpenMobile } = useSidebar();
   const { entries } = useHistory();
+
+  // 最近访问的主题：从足迹里按「最近点过」去重取前 3 个（纯本地，不新增存储）
+  const groupByItem = new Map<string, CategoryGroup>();
+  for (const group of groups) for (const item of group.items) groupByItem.set(item.id, group);
+  const recentGroups: CategoryGroup[] = [];
+  const seenRecent = new Set<string>();
+  for (const entry of entries) {
+    const group = groupByItem.get(entry.id);
+    if (!group || seenRecent.has(group.slug)) continue;
+    seenRecent.add(group.slug);
+    recentGroups.push(group);
+    if (recentGroups.length === 3) break;
+  }
 
   // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容。
   // 注意：抽屉是 Radix Dialog（Sheet），onOpenChange(false) 会在退出动画后卸载内容并解除
@@ -85,9 +100,8 @@ export function AppSidebar({
         <Button
           variant="outline"
           onClick={() => {
-            const all = groups.flatMap((group) => group.items);
-            if (all.length === 0) return;
-            const pick = all[Math.floor(Math.random() * all.length)];
+            const pick = pickRandom(groups.flatMap((group) => group.items));
+            if (!pick) return;
             recordVisit(pick.id);
             window.open(pick.url, "_blank", "noopener,noreferrer");
           }}
@@ -121,9 +135,11 @@ export function AppSidebar({
                       🐾
                     </span>
                     <span className="truncate">足迹</span>
-                    <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
-                      {entries.length}
-                    </span>
+                    {entries.length > 0 ? (
+                      <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
+                        {entries.length}
+                      </span>
+                    ) : null}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
@@ -169,6 +185,21 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {recentGroups.length > 0 ? (
+          <SidebarGroup className="py-0">
+            <SidebarGroupLabel className="h-6 px-2 text-2xs font-medium tracking-[0.08em] text-muted-foreground">
+              最近访问
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {recentGroups.map((group) => (
+                  <TopicMenuItem key={group.slug} group={group} active={active} onSelect={select} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ) : null}
+
         <div className="sticky top-0 z-10 flex items-center gap-2 bg-sidebar px-3 pt-3 pb-1 group-data-[collapsible=icon]:hidden">
           <span className="text-2xs font-medium tracking-[0.08em] text-muted-foreground">主题</span>
           <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
@@ -180,26 +211,7 @@ export function AppSidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               {groups.map((group) => (
-                <SidebarMenuItem key={group.slug}>
-                  <SidebarMenuButton
-                    isActive={active === group.slug}
-                    aria-current={active === group.slug ? "true" : undefined}
-                    onClick={() => select(group.slug)}
-                    tooltip={group.name}
-                    className={itemClass}
-                  >
-                    <span
-                      aria-hidden
-                      className="w-[18px] shrink-0 text-center text-base leading-none"
-                    >
-                      {group.emoji}
-                    </span>
-                    <span className="truncate">{group.name}</span>
-                    <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
-                      {group.items.length}
-                    </span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <TopicMenuItem key={group.slug} group={group} active={active} onSelect={select} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -232,5 +244,35 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
+  );
+}
+
+function TopicMenuItem({
+  group,
+  active,
+  onSelect,
+}: {
+  group: CategoryGroup;
+  active: string;
+  onSelect: (slug: string) => void;
+}) {
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        isActive={active === group.slug}
+        aria-current={active === group.slug ? "true" : undefined}
+        onClick={() => onSelect(group.slug)}
+        tooltip={group.name}
+        className={itemClass}
+      >
+        <span aria-hidden className="w-[18px] shrink-0 text-center text-base leading-none">
+          {group.emoji}
+        </span>
+        <span className="truncate">{group.name}</span>
+        <span className="ml-auto text-2xs text-muted-foreground tabular-nums">
+          {group.items.length}
+        </span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   );
 }

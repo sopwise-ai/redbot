@@ -77,3 +77,22 @@ export function subscribeHistory(onChange: () => void) {
     window.removeEventListener("storage", onChange);
   };
 }
+
+/** 把时间戳转成「刚刚 / N 分钟前 / N 小时前 / N 天前 / YYYY-MM-DD」。 */
+export function formatRelativeTime(at: number, now = Date.now()): string {
+  const diff = now - at;
+  if (diff < 60_000) return "刚刚";
+
+  const minutes = Math.floor(diff / 60_000);
+  if (minutes < 60) return `${minutes} 分钟前`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} 小时前`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} 天前`;
+
+  const date = new Date(at);
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}

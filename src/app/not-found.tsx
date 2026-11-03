@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRightIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { site } from "@/lib/site";
 
 export const metadata = {
@@ -26,6 +27,24 @@ export default function NotFound() {
           链接可能已经失效，或者地址里有拼写错误。
         </p>
       </div>
+
+      <form
+        action="/search/"
+        method="get"
+        role="search"
+        className="flex w-full max-w-sm items-center gap-2"
+      >
+        <Input
+          type="search"
+          name="q"
+          aria-label="搜索信息源"
+          placeholder="搜一个站，比如「播客」"
+          autoComplete="off"
+        />
+        <Button type="submit" className="shrink-0 rounded-full">
+          搜索
+        </Button>
+      </form>
 
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Button asChild className="rounded-full">

@@ -8,11 +8,19 @@ import { ArrowUpRight, SearchIcon, XIcon } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { HistoryView } from "@/components/history-view";
 import { PillWall } from "@/components/pill-wall";
+import { SearchResults } from "@/components/search-results";
 import { ShellHeader } from "@/components/shell-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TopicsIndex } from "@/components/topics-index";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -56,6 +64,7 @@ export function AppShell({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [active, setActive] = React.useState<string>(initialActive);
   const [query, setQuery] = React.useState("");
+  const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
   const { entries: historyEntries } = useHistory();
 
   // 进入搜索前所在的路径，清空搜索时回到这里
@@ -329,21 +338,71 @@ export function AppShell({
     };
   }, []);
 
-  // ⌘K 聚焦搜索框
+  // 键盘：⌘K / 聚焦搜索，结果 ↑↓ 移动，? 看快捷键
   React.useEffect(() => {
+    function isTyping(target: EventTarget | null) {
+      const el = target as HTMLElement | null;
+      if (!el) return false;
+      return el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable;
+    }
+
     function onKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         inputRef.current?.focus();
         inputRef.current?.select();
+        return;
       }
+
+      if (shortcutsOpen) return;
+
+      if (event.key === "/" && !isTyping(event.target) && !event.metaKey && !event.ctrlKey) {
+        event.preventDefault();
+        inputRef.current?.focus();
+        inputRef.current?.select();
+        return;
+      }
+
+      if (event.key === "?" && !isTyping(event.target)) {
+        event.preventDefault();
+        setShortcutsOpen(true);
+        return;
+      }
+
       if (event.key === "Escape" && document.activeElement === inputRef.current) {
         setQuery("");
+        return;
+      }
+
+      if (!searching) return;
+      const links = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-search-results] a[href^='http']"),
+      );
+      if (links.length === 0) return;
+      const current = document.activeElement as HTMLElement | null;
+      const onInput = current === inputRef.current;
+      const onResult = !!current && links.includes(current);
+      // 只在「输入框或结果链接」上接管方向键，别抢侧栏/页脚的键盘操作
+      if (!onInput && !onResult) return;
+      const index = current ? links.indexOf(current) : -1;
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (onInput) links[0].focus();
+        else (links[index + 1] ?? links[links.length - 1]).focus();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (index <= 0) inputRef.current?.focus();
+        else links[index - 1].focus();
+      } else if (event.key === "Escape" && onResult) {
+        event.preventDefault();
+        inputRef.current?.focus();
       }
     }
+
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [router]);
+  }, [searching, shortcutsOpen]);
 
   const visibleGroups = activeGroup && !searching ? [activeGroup] : groups;
   const visibleCount = searching
@@ -461,10 +520,7 @@ export function AppShell({
               {searching ? (
                 results.length > 0 ? (
                   <div className="animate-in duration-200 fade-in-0">
-                    <PillWall
-                      groups={[{ slug: "search", name: "search", items: results }]}
-                      hueByLabel={hueByLabel}
-                    />
+                    <SearchResults items={results} hueByLabel={hueByLabel} />
                   </div>
                 ) : (
                   <div className="rounded-xl border border-dashed px-6 py-16 text-center">
@@ -563,6 +619,40 @@ export function AppShell({
 
           <SiteFooter total={total} categories={groups.length} updated={updated} />
         </div>
+
+        <Dialog open={shortcutsOpen} onOpenChange={setShortcutsOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>键盘快捷键</DialogTitle>
+              <DialogDescription>不用离开键盘就能完成一次查找。</DialogDescription>
+            </DialogHeader>
+            <dl className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 text-sm">
+              <dt className="flex items-center gap-1">
+                <Kbd>⌘K</Kbd>
+                <span className="text-muted-foreground">/</span>
+                <Kbd>/</Kbd>
+              </dt>
+              <dd>聚焦搜索框</dd>
+              <dt className="flex items-center gap-1">
+                <Kbd>↑</Kbd>
+                <Kbd>↓</Kbd>
+              </dt>
+              <dd>在搜索结果间移动</dd>
+              <dt>
+                <Kbd>Enter</Kbd>
+              </dt>
+              <dd>打开当前结果</dd>
+              <dt>
+                <Kbd>Esc</Kbd>
+              </dt>
+              <dd>清空搜索 / 回到来源页</dd>
+              <dt>
+                <Kbd>?</Kbd>
+              </dt>
+              <dd>打开这张表</dd>
+            </dl>
+          </DialogContent>
+        </Dialog>
       </SidebarProvider>
     </>
   );

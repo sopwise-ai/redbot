@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   clearHistory,
+  formatRelativeTime,
   readHistory,
   recordVisit,
   removeVisits,
@@ -127,5 +128,24 @@ describe("subscribeHistory", () => {
     unsubscribe();
     recordVisit("b");
     expect(listener).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("formatRelativeTime", () => {
+  const now = new Date("2026-11-03T12:00:00+08:00").getTime();
+  const at = (msAgo: number) => now - msAgo;
+
+  it("一分钟内是「刚刚」", () => {
+    expect(formatRelativeTime(at(30_000), now)).toBe("刚刚");
+  });
+
+  it("分钟 / 小时 / 天逐级切换", () => {
+    expect(formatRelativeTime(at(5 * 60_000), now)).toBe("5 分钟前");
+    expect(formatRelativeTime(at(3 * 3_600_000), now)).toBe("3 小时前");
+    expect(formatRelativeTime(at(2 * 86_400_000), now)).toBe("2 天前");
+  });
+
+  it("超过 30 天回落到日期", () => {
+    expect(formatRelativeTime(at(40 * 86_400_000), now)).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });
