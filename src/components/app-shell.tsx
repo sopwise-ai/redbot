@@ -206,12 +206,19 @@ export function AppShell({
       }
       return;
     }
+    const wasSearching = searchEntryPushed.current;
     searchEntryPushed.current = false;
     if (window.location.pathname.startsWith("/search")) {
       const back = trackedOrigin.current ? originPath.current : "/";
-      replaceUrlQuietly(back);
+      // 直接打开 /search/?q= 时，页面本身就是搜索视图；只 replace URL 会留下
+      // 「地址是 /、内容还是搜索空态」的错位，必须真正导航回首页。
+      if (view === "search" && wasSearching) {
+        router.push(back);
+      } else {
+        replaceUrlQuietly(back);
+      }
     }
-  }, [searching, query]);
+  }, [searching, query, view, router]);
 
   // 浏览器前进/后退：把地址栏重新读成 state（与首帧读 URL 用同一个解析器）
   React.useEffect(() => {
