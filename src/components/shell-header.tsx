@@ -86,7 +86,12 @@ export function ShellHeader({
                 title={`${site.name} · ${activeGroup.name}`}
                 url={`${site.url}/topics/${activeGroup.slug}/`}
               />
-              <Button asChild variant="ghost" size="icon-sm" className="text-muted-foreground">
+              <Button
+                asChild
+                variant="ghost"
+                size="icon-sm"
+                className="relative text-muted-foreground after:absolute after:-inset-1.5 after:content-['']"
+              >
                 <a
                   href={`${site.repo}/edit/main/data/topics/${activeGroup.slug}.json`}
                   target="_blank"

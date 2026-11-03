@@ -80,7 +80,7 @@ export function AppSidebar({
               <span className="truncate text-2xs text-muted-foreground">{site.tagline}</span>
             </div>
           </div>
-          <SidebarTrigger className="hidden shrink-0 text-muted-foreground md:inline-flex" />
+          <SidebarTrigger className="relative hidden shrink-0 text-muted-foreground after:absolute after:-inset-2 after:content-[''] md:inline-flex" />
           {isMobile ? (
             <Button
               type="button"
@@ -88,7 +88,7 @@ export function AppSidebar({
               size="icon-sm"
               aria-label="关闭导航"
               onClick={() => setOpenMobile(false)}
-              className="shrink-0 text-muted-foreground focus-visible:ring-sidebar-ring"
+              className="relative shrink-0 text-muted-foreground after:absolute after:-inset-1.5 after:content-[''] focus-visible:ring-sidebar-ring"
             >
               <XIcon />
             </Button>

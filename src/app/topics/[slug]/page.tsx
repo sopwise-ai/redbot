@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { categories, getGroups, getStats } from "@/lib/catalog";
 import { site } from "@/lib/site";
+import { serializeJsonLd, topicJsonLd } from "@/lib/structured-data";
 
 // 只生成 data/topics.json 里登记的主题；其余路径走 404
 export const dynamicParams = false;
@@ -39,8 +40,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   const groups = getGroups();
   const stats = getStats();
+  const category = categories.find((item) => item.slug === slug)!;
+  const group = groups.find((item) => item.slug === slug);
 
   return (
-    <AppShell groups={groups} total={stats.total} updated={stats.updated} initialActive={slug} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(topicJsonLd(category, group?.items ?? [])),
+        }}
+      />
+      <AppShell groups={groups} total={stats.total} updated={stats.updated} initialActive={slug} />
+    </>
   );
 }

@@ -56,6 +56,7 @@ export function LinkPill({
   variant = "browse",
   selected = false,
   onToggle,
+  onOpen,
 }: {
   item: LinkItem;
   hue: number;
@@ -63,6 +64,8 @@ export function LinkPill({
   variant?: "browse" | "manage";
   selected?: boolean;
   onToggle?: (id: string) => void;
+  /** 打开链接后的回调（搜索结果用来记录最近搜索） */
+  onOpen?: () => void;
 }) {
   if (variant === "manage") {
     return (
@@ -101,7 +104,10 @@ export function LinkPill({
         href={item.url}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => recordVisit(item.id)}
+        onClick={() => {
+          recordVisit(item.id);
+          onOpen?.();
+        }}
         title={item.desc}
         aria-label={`${item.name}：${item.desc}（在新标签页打开）`}
       >

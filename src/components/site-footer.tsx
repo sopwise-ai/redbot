@@ -66,7 +66,7 @@ export function SiteFooter({
             variant="ghost"
             size="sm"
             onClick={backToTop}
-            className="h-7 gap-1 rounded-full px-2.5 text-xs text-muted-foreground"
+            className="relative h-7 gap-1 rounded-full px-2.5 text-xs text-muted-foreground after:absolute after:inset-x-0 after:-inset-y-2 after:content-['']"
           >
             回到顶部
             <ArrowUpIcon aria-hidden className="size-3" />

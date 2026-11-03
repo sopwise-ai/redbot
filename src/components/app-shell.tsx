@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowUpRight, SearchIcon, XIcon } from "lucide-react";
+import { ArrowUpRight, HistoryIcon, SearchIcon, XIcon } from "lucide-react";
 
 import { AboutView } from "@/components/about-view";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -32,6 +32,7 @@ import type { CategoryGroup } from "@/lib/schema";
 import { createSearchIndex, createTopicIndex } from "@/lib/search";
 import { site } from "@/lib/site";
 import { applyCategorySwitch, envFromWindow } from "@/lib/switch-category";
+import { clearRecentSearches, readRecentSearches, rememberSearch } from "@/lib/recent-searches";
 import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
 import { useHistory } from "@/lib/use-history";
 
@@ -65,8 +66,16 @@ export function AppShell({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [active, setActive] = React.useState<string>(initialActive);
   const [query, setQuery] = React.useState("");
+  const [recentSearches, setRecentSearches] = React.useState<string[]>([]);
+  const [searchFocused, setSearchFocused] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
   const { entries: historyEntries } = useHistory();
+
+  // 最近搜索只存在 localStorage；静态导出没有服务端状态，挂载后读一次
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setRecentSearches(readRecentSearches());
+  }, []);
 
   // 进入搜索前所在的路径，清空搜索时回到这里
   const originPath = React.useRef<string>("/");
@@ -370,8 +379,19 @@ export function AppShell({
         return;
       }
 
+      if (event.key === "Enter" && document.activeElement === inputRef.current && searching) {
+        const first = results[0];
+        if (!first) return;
+        event.preventDefault();
+        recordVisit(first.id);
+        setRecentSearches(rememberSearch(query));
+        window.open(first.url, "_blank", "noopener,noreferrer");
+        return;
+      }
+
       if (event.key === "Escape" && document.activeElement === inputRef.current) {
-        setQuery("");
+        if (query.trim()) setQuery("");
+        else setSearchFocused(false);
         return;
       }
 
@@ -403,7 +423,7 @@ export function AppShell({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [searching, shortcutsOpen]);
+  }, [searching, shortcutsOpen, results, query]);
 
   const visibleGroups = activeGroup && !searching ? [activeGroup] : groups;
   const visibleCount = searching
@@ -414,6 +434,8 @@ export function AppShell({
 
   // 首页＝按钮墙 + 无分类 + 非搜索：只有这里展示品牌标语与信任行
   const isHome = !searching && view === "wall" && !activeGroup;
+  // 点搜索框、还没输入、且有历史时展示最近搜索
+  const showRecent = searchFocused && !searching && recentSearches.length > 0;
 
   return (
     <>
@@ -452,6 +474,10 @@ export function AppShell({
                   ref={inputRef}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  aria-expanded={showRecent}
+                  aria-controls="recent-searches"
                   placeholder="搜索全部信息源…"
                   aria-label="搜索信息源"
                   autoComplete="off"
@@ -477,6 +503,41 @@ export function AppShell({
                     ⌘K
                   </Kbd>
                 )}
+
+                {showRecent ? (
+                  <div
+                    id="recent-searches"
+                    aria-label="最近搜索"
+                    // 防止点面板时输入框先失焦，点击事件丢失
+                    onMouseDown={(event) => event.preventDefault()}
+                    className="absolute top-full right-0 left-0 z-40 mt-2 rounded-xl border bg-popover p-1 shadow-md"
+                  >
+                    <div className="flex items-center justify-between px-2.5 py-1.5">
+                      <span className="text-2xs text-muted-foreground">最近搜索</span>
+                      <button
+                        type="button"
+                        onClick={() => setRecentSearches(clearRecentSearches())}
+                        className="rounded px-1 text-2xs text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+                      >
+                        清除
+                      </button>
+                    </div>
+                    {recentSearches.map((term) => (
+                      <button
+                        key={term}
+                        type="button"
+                        onClick={() => {
+                          setQuery(term);
+                          inputRef.current?.focus();
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+                      >
+                        <HistoryIcon aria-hidden className="size-3.5 shrink-0" />
+                        <span className="truncate">{term}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
               </div>
 
               <div className="ml-auto flex shrink-0 items-center gap-1">
@@ -521,7 +582,11 @@ export function AppShell({
               {searching ? (
                 results.length > 0 ? (
                   <div className="animate-in duration-200 fade-in-0">
-                    <SearchResults items={results} hueByLabel={hueByLabel} />
+                    <SearchResults
+                      items={results}
+                      hueByLabel={hueByLabel}
+                      onOpen={() => setRecentSearches(rememberSearch(query))}
+                    />
                   </div>
                 ) : (
                   <div className="rounded-xl border border-dashed px-6 py-16 text-center">
