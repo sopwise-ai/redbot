@@ -67,18 +67,6 @@ export function AppSidebar({
   const { isMobile, setOpenMobile } = useSidebar();
   const { entries } = useHistory();
 
-  // 最近访问的主题：足迹里现在带了 topic slug，不再需要 id→topic 的全量映射
-  const recentTopics: TopicSummary[] = [];
-  const seenRecent = new Set<string>();
-  for (const entry of entries) {
-    if (!entry.topic || seenRecent.has(entry.topic)) continue;
-    const topic = topics.find((item) => item.slug === entry.topic);
-    if (!topic) continue;
-    seenRecent.add(entry.topic);
-    recentTopics.push(topic);
-    if (recentTopics.length === 3) break;
-  }
-
   function closeOnMobile() {
     if (isMobile) setOpenMobile(false);
   }
@@ -197,26 +185,6 @@ export function AppSidebar({
             </nav>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        {recentTopics.length > 0 ? (
-          // 移动端抽屉里主题列表本来就短，最近访问会和下面的列表重复出现，只在桌面显示
-          <SidebarGroup className="hidden py-0 md:flex">
-            <SidebarGroupLabel className="text-xs">最近访问</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {recentTopics.map((topic) => (
-                  <TopicMenuItem
-                    key={topic.slug}
-                    topic={topic}
-                    active={active}
-                    onSelect={select}
-                    onPrefetch={() => router.prefetch(`/topics/${topic.slug}/`)}
-                  />
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ) : null}
 
         <SidebarGroup className="py-0">
           <SidebarGroupLabel className="sticky top-0 z-10 bg-sidebar text-xs">
