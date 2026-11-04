@@ -264,7 +264,7 @@ export function AppShell({
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button
               size="sm"
-              className="rounded-full"
+              className="rounded-lg"
               onClick={() => {
                 exitSearch();
                 inputRef.current?.focus();
@@ -272,10 +272,10 @@ export function AppShell({
             >
               清除搜索
             </Button>
-            <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Button asChild variant="outline" size="sm" className="rounded-lg">
               <Link href="/topics/">按主题浏览</Link>
             </Button>
-            <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Button asChild variant="outline" size="sm" className="rounded-lg">
               <a
                 href={`${site.repo}/issues/new?${new URLSearchParams({
                   labels: "link-suggestion",
@@ -307,7 +307,7 @@ export function AppShell({
           <EmptyDescription>输入关键词开始搜索，名称、别名和推荐理由都会被检索。</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button asChild size="sm" className="rounded-full">
+          <Button asChild size="sm" className="rounded-lg">
             <Link href="/topics/">按主题浏览</Link>
           </Button>
         </EmptyContent>
@@ -375,7 +375,7 @@ export function AppShell({
                     setSearchFocused(false);
                   }}
                 >
-                  <InputGroup className="h-10 rounded-full border-transparent bg-muted/60 shadow-none focus-within:bg-background has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/20">
+                  <InputGroup className="h-10 rounded-lg border-transparent bg-muted/60 shadow-none focus-within:bg-background has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/20">
                     <InputGroupAddon>
                       <SearchIcon aria-hidden />
                     </InputGroupAddon>
@@ -532,7 +532,7 @@ export function AppShell({
                     asChild
                     variant="outline"
                     size="sm"
-                    className="hidden rounded-full md:inline-flex"
+                    className="hidden rounded-lg md:inline-flex"
                   >
                     <a href={site.repo} target="_blank" rel="noopener noreferrer">
                       GitHub
@@ -557,7 +557,7 @@ export function AppShell({
                         主题索引里还有完整的分类说明与书签导出。
                       </p>
                     </div>
-                    <Button asChild variant="outline" className="rounded-full">
+                    <Button asChild variant="outline" className="rounded-lg">
                       <Link href="/topics/">
                         浏览全部主题
                         <ArrowRightIcon data-icon="inline-end" />

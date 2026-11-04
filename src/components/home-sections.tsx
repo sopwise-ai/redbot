@@ -35,10 +35,7 @@ export function HomeSections({
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h2
-                  id={`topic-${topic.slug}`}
-                  className="font-serif text-xl font-normal tracking-[0.01em]"
-                >
+                <h2 id={`topic-${topic.slug}`} className="text-lg font-semibold tracking-[-0.01em]">
                   {topic.name}
                 </h2>
                 <Badge variant="secondary" className="h-5 px-1.5 text-xs tabular-nums">
@@ -51,7 +48,7 @@ export function HomeSections({
               asChild
               variant="ghost"
               size="sm"
-              className="shrink-0 rounded-full text-muted-foreground hover:text-foreground"
+              className="shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
             >
               <Link href={`/topics/${topic.slug}/`}>
                 查看全部

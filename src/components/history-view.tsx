@@ -124,7 +124,7 @@ export function HistoryView({
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button
               size="sm"
-              className="rounded-full"
+              className="rounded-lg"
               onClick={() => {
                 const pick = pickRandom(allItems);
                 if (!pick) return;
@@ -135,7 +135,7 @@ export function HistoryView({
               <ShuffleIcon data-icon="inline-start" />
               随机一个
             </Button>
-            <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Button asChild variant="outline" size="sm" className="rounded-lg">
               <Link href="/topics/">按主题浏览</Link>
             </Button>
           </div>
@@ -156,7 +156,7 @@ export function HistoryView({
               <Button
                 variant="ghost"
                 size="sm"
-                className="rounded-full"
+                className="rounded-lg"
                 onClick={() =>
                   setSelected(
                     selected.size === items.length ? new Set() : new Set(items.map((i) => i.id)),
@@ -168,7 +168,7 @@ export function HistoryView({
               <Button
                 variant="ghost"
                 size="sm"
-                className="rounded-full text-destructive hover:text-destructive"
+                className="rounded-lg text-destructive hover:text-destructive"
                 disabled={selected.size === 0}
                 onClick={() => {
                   removeVisits([...selected]);
@@ -182,7 +182,7 @@ export function HistoryView({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="rounded-full text-destructive hover:text-destructive"
+                    className="rounded-lg text-destructive hover:text-destructive"
                   >
                     <Trash2Icon data-icon="inline-start" />
                     清空
@@ -208,7 +208,7 @@ export function HistoryView({
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <Button variant="outline" size="sm" className="rounded-full" onClick={exitManaging}>
+              <Button variant="outline" size="sm" className="rounded-lg" onClick={exitManaging}>
                 完成
               </Button>
             </>
@@ -216,7 +216,7 @@ export function HistoryView({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full"
+              className="rounded-lg"
               onClick={() => setManaging(true)}
             >
               管理

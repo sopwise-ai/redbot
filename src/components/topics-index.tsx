@@ -14,7 +14,7 @@ export function TopicsIndex({ topics }: { topics: TopicSummary[] }) {
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {topics.map((item, index) => (
           <li key={item.slug} className="min-w-0">
-            <Card className="group relative h-full gap-0 overflow-hidden py-0 shadow-xs transition-[border-color,box-shadow] duration-150 hover:border-ring/30 hover:shadow-md has-[a:focus-visible]:ring-[3px] has-[a:focus-visible]:ring-ring/50">
+            <Card className="group relative h-full gap-0 overflow-hidden py-0 transition-colors duration-150 hover:border-ring/30 has-[a:focus-visible]:ring-[3px] has-[a:focus-visible]:ring-ring/50">
               <div className="flex items-start gap-3 p-4">
                 <span
                   aria-hidden

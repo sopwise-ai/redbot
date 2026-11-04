@@ -46,13 +46,7 @@ export function BookmarkExport({ total }: { total: number }) {
           ? "导出失败：没能加载信息源清单，刷新页面再试一次。"
           : `把 ${total} 个信息源按主题导出，可导入 Chrome / Safari / Edge 的书签栏。`}
       </p>
-      <Button
-        variant="outline"
-        size="sm"
-        className="rounded-full"
-        onClick={download}
-        disabled={busy}
-      >
+      <Button variant="outline" size="sm" className="rounded-lg" onClick={download} disabled={busy}>
         {busy ? <Spinner data-icon="inline-start" /> : <DownloadIcon data-icon="inline-start" />}
         {busy ? "准备中…" : "导出书签"}
       </Button>

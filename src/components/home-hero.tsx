@@ -26,7 +26,13 @@ export function HomeHero({
   randomPool: RandomPick[];
 }) {
   return (
-    <section aria-labelledby="hero-title" className="pt-12 sm:pt-16">
+    <section aria-labelledby="hero-title" className="relative isolate pt-14 sm:pt-20">
+      {/* Linear 式的低亮红晕：只在标题后方，不参与布局；深色下更强一点 */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 -top-32 -z-10 h-[460px] bg-[radial-gradient(55%_60%_at_28%_10%,oklch(0.62_0.2_27/0.06),transparent_72%)] dark:bg-[radial-gradient(55%_60%_at_28%_10%,oklch(0.62_0.2_27/0.16),transparent_72%)]"
+      />
+
       {/* 刊头行：左边是栏目说明，右边是刷新日期 —— 两端对齐，首屏才有基准线 */}
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground">
@@ -37,7 +43,7 @@ export function HomeHero({
 
       <h1
         id="hero-title"
-        className="mt-5 font-serif text-4xl leading-[1.06] font-normal tracking-[0.01em] text-balance sm:text-6xl lg:text-7xl"
+        className="mt-5 text-4xl leading-[1.04] font-semibold tracking-[-0.02em] text-balance sm:text-6xl lg:text-7xl"
       >
         {site.tagline}
       </h1>
@@ -47,11 +53,11 @@ export function HomeHero({
         点一下直达榜单、快讯与列表页，不用在站内再找。
       </p>
 
-      <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
+      <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-3">
         <Button
           type="button"
           size="lg"
-          className="h-11 rounded-full px-6"
+          className="h-10 rounded-lg px-5"
           onClick={() => {
             const pick = pickRandom(randomPool);
             if (!pick) return;
@@ -66,7 +72,7 @@ export function HomeHero({
           asChild
           variant="ghost"
           size="lg"
-          className="group h-11 rounded-full px-4 text-muted-foreground hover:text-foreground"
+          className="group h-10 rounded-lg px-4 text-muted-foreground hover:text-foreground"
         >
           <Link href="/topics/">
             按主题浏览

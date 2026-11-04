@@ -65,7 +65,7 @@ export function SiteFooter({
               variant="ghost"
               size="sm"
               onClick={backToTop}
-              className="gap-1 rounded-full text-xs text-muted-foreground"
+              className="gap-1 rounded-lg text-xs text-muted-foreground"
             >
               回到顶部
               <ArrowUpIcon data-icon="inline-end" />

@@ -59,9 +59,7 @@ export function ShellHeader({
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <h1 className="font-serif text-2xl font-normal tracking-[0.01em] sm:text-3xl">
-              {meta.title}
-            </h1>
+            <h1 className="text-2xl font-semibold tracking-[-0.01em] sm:text-3xl">{meta.title}</h1>
             {count > 0 ? (
               <Badge variant="secondary" className="tabular-nums">
                 {count}
@@ -103,7 +101,7 @@ export function ShellHeader({
             asChild
             variant="ghost"
             size="sm"
-            className="hidden rounded-full text-muted-foreground md:inline-flex"
+            className="hidden rounded-lg text-muted-foreground md:inline-flex"
           >
             <Link href="/topics/">全部主题</Link>
           </Button>

@@ -16,7 +16,7 @@
 - Next.js 16（App Router）+ React 19 + TypeScript 5；Node 26（`.nvmrc` 锁定，CI 用 `node-version-file` 读同一个值）
 - Tailwind CSS v4（CSS-first，token 在 `src/app/globals.css` 的 `@theme inline`）
 - shadcn/ui（registry 组件，源码在 `src/components/ui/`；新增控件见下文约定 2）
-- fuse.js（客户端搜索）、next-themes（浅色 / 深色 / 跟随系统三态，切换器是 `src/components/theme-toggle.tsx`）、zod（数据契约）
+- fuse.js（客户端搜索）、next-themes（浅色 / 深色 / 跟随系统三态，**默认深色**，切换器是 `src/components/theme-toggle.tsx`）、zod（数据契约）
 - ESLint 10 + `eslint-config-next` 16（`eslint.config.mjs`，原生 flat config：core-web-vitals 入口 + TypeScript 规则入口，不再用 FlatCompat）
 - **`output: "export"` 纯静态**：构建期产出 `out/`，没有服务端运行时、没有 API 路由
 
@@ -134,31 +134,30 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 
 - `tagline` 是**名词短语**，不是句子。改成「一个按钮直达…」这类句子会让品类消失，回到「看不出这是什么站」。
 - 分类页 H1 用分类名、副行用 `desc`；品牌三层**只在首页**出现（`isHome`）。
-- 首页 H1 是 8 个字，移动端 `text-4xl`（36px）、平板 `text-6xl`（60px）、桌面 `text-7xl`（72px，衬线）；再加长要先量 390px。
-  hero 是**编辑部刊头**：无卡片、无渐变、无产品截图，靠字号对比（72px 标题 / 12px 眉标）建立层级。
+- 首页 H1 是 8 个字，移动端 `text-4xl`（36px）、平板 `text-6xl`（60px）、桌面 `text-7xl`（72px，**无衬线 600**）；再加长要先量 390px。
+  hero 是 **Linear 式排印**：无卡片、无产品截图，靠字号对比（72px 标题 / 12px 眉标）+ 标题后方一层极淡红晕建立层级。
 - 条目 `desc` 写使用时机（「查公司股权和诉讼，先看这里」），不写公司简介。
 
 ## 设计 token（改样式前先读）
 
-- **颜色**：浅色是**暖白纸色画布**（`oklch(0.985 0.004 80)`）+ 纯白卡片，左侧栏比画布再深一档；
-  靠纸色与卡片的明度差 + 1px 暖灰线分区。**不要退回冷灰或纯白**：纸色是「质感」的来源。
-  深色同样偏暖（`0.172 0.005 70`），侧栏比主内容略亮一档。
+- **颜色**：**深色优先**（默认 `dark`）：近黑画布 `oklch(0.145 0.004 264)` + 略亮一档的面板
+  （card `0.185` / sidebar `0.165`），靠 8% 白线分层。浅色是冷白 `0.985` + 纯白卡片。
+  **不要引入暖黄/米色**：那会把站点拉回「纸上杂志」，和 Linear 那一路相冲。
   `--border` 只用于必须的边界。
-  **红色只出现在「当前分类」和 hover 强调上**，不要用它装饰计数、徽章。
+  **红色只出现在「当前分类」、hover 与主 CTA 上**，不要用它装饰计数、徽章。
   **焦点环用中性灰**（`--ring`），不是品牌红：红色焦点环在图标按钮上会被误读成「错误」。
 - **字号**：直接用 Tailwind 默认阶梯（`text-xs 12 / sm 14 / base 16 / lg 18 / xl 20 / 2xl 24 / 3xl 30`）。
   13px 那一档已经删掉，**不要再写 `text-[13px]`、`text-2xs`、`text-md`**。
-- **字体**：全站只有两套栈（`--font-sans` / `--font-serif`），不要临时引入第三种。
-  `font-synthesis: none` —— 宋体没有 600 时宁可落回 Regular，也不要浏览器合成的假粗。
-  `--font-serif` 中文优先，**不要改回 `ui-serif`**（Windows 会落到 Times）。
-- **标题**：页面 H1 与首页主题标题用 `font-serif`（`Songti SC` 优先），**weight 400 + `tracking-[0.01em]`**；
-  正文与控件保持无衬线。衬线只出现在标题层（H1 + 首页主题 h2），不要扩散到卡片标题/正文。
-- **阴影**：`shadow-xs`（静止）、`shadow-sm`（悬停）、`shadow-md`（hero / 对话框）。
-- **圆角**：`--radius` 12px；卡片与链接行用 `rounded-xl`，对话框/hero 用 `rounded-2xl` / `rounded-3xl`，
-  `rounded-full` 只用于筛选 chip、主 CTA 与搜索框。
+- **字体**：全站**只有无衬线**（`--font-sans`）+ 等宽（`--font-mono`，只给代码/Kbd）。
+  标题也用 sans：weight 600、`tracking-[-0.02em]`，不要引入衬线，也不要第三套字体。
+  `font-synthesis: none` —— 没有的权重宁可落回最近的真实字重，也不要浏览器合成的假粗。
+- **标题**：H1 36 / 60 / 72（weight 600）；首页主题 h2 18（weight 600）；卡片标题 14；元信息 12。
+- **阴影**：默认**不用阴影**，靠 1px 线与底色差分层；只有 Popover / Dialog 用 `shadow-lg`。
+- **圆角**：`--radius` **8px**；卡片与按钮用 `rounded-lg` / `rounded-xl`（同为 8px），
+  `rounded-full` 只保留给筛选 chip、状态点与 skip link。
 - **主题色块**：主题 emoji 坐在 `oklch(0.965 0.022 <hue>)` 的淡色方块里（深色 `0.27 0.02`），
   色相来自 `hueFor(主题在 topics.json 里的下标)`；卡片内的色点用 `oklch(0.62 0.12 <hue>)`（深色 `0.72 0.10`），
-  保证「一个主题一种颜色」。彩度不要加回去：纸色底上高饱和会重新变成模板站。
+  保证「一个主题一种颜色」。彩度不要加回去：近黑底上高饱和会变成玩具感。
 
 ## 界面结构（改样式前先读）
 
@@ -172,7 +171,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
   **不要退回到 `inline-flex h-9 rounded-md border px-3` 这类手写变体。**
 - **按钮墙**是 `grid gap-2 sm:grid-cols-2 xl:grid-cols-3` 的等宽网格，不再是可变宽度的 flex-wrap：
   三列在 1160px 容器里刚好 373px 一列，中文名不会截断，右缘自然齐边。
-  行高 48px（含说明 62px），hover 只换底色/边框并升到 `shadow-sm`，**不做位移**。
+  行高 48px（含说明 62px），hover 只换底色 / 边框，**不加阴影、不做位移**。
 - **每张卡内部是 `justify-between` 的两端结构**：色点与文字贴左、箭头钉在右缘，不要改回居中。
 - **侧栏**：品牌行 + 折叠按钮 → 「随机一个」→ 首页 / 足迹 / 全部主题 → 吸顶「主题」→ 页脚。
   **不要加「最近访问」分组**：17 个主题一屏能看完，重复出现同一批名字只会让人以为列表坏了。
@@ -181,7 +180,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
   主题顺序即 `data/topics.json` 的顺序，**调整顺序会改变全站配色**，这不是 bug。
 - **顶部栏**：`h-16` 吸顶、半透明毛玻璃、底部 1px 分隔线；桌面是「搜索 + 主题/ GitHub」，
   移动端是「菜单 + 品牌点 + 搜索 + 主题切换」，`<sm` 时只留品牌红点，把宽度让给搜索框。
-- **报头**：淡色 emoji 方块（44/48px，色相跟随主题）+ H1（衬线）+ 计数 `Badge` + 副标题；
+- **报头**：淡色 emoji 方块（44/48px，色相跟随主题）+ H1（无衬线 600）+ 计数 `Badge` + 副标题；
   右侧只放「分享 / 在 GitHub 编辑」。**不要重复写「N 个主题 / 更新于」**——hero 刊头行（左总条数、右日期）与页脚各一处。
 - **主题页底部**有「上一个 / 下一个主题」两个等宽按钮卡，顺序即 `data/topics.json`；
   关于页在 `xl` 以上有 sticky 目录，两者都是为了让长页面有出口，不要删。

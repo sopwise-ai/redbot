@@ -55,83 +55,78 @@
     "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --font-mono:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  /* 中文标题走系统衬线：中文优先，Latin 兜底 Georgia。
-     不用 ui-serif —— 它在 Windows 会解析成 Times、在 macOS 是 New York，
-     和宋体混排时中英文骨架对不上，是「字体不一致」观感的主要来源。 */
-  --font-serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", Georgia, serif;
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
-  /* 暖白纸色画布 + 纯白卡片：靠纸色与卡片的明度差区分，不靠重边框。
-     不是「把画布压灰」——纸色带一点黄，冷灰会把页面压成原型图。 */
-  --background: oklch(0.985 0.004 80);
-  --foreground: oklch(0.225 0.01 70);
+  /* 冷白画布 + 纯白卡片：Linear 那一路的克制，靠 1px 线与明度差分层 */
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.18 0.005 264);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.225 0.01 70);
+  --card-foreground: oklch(0.18 0.005 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.225 0.01 70);
+  --popover-foreground: oklch(0.18 0.005 264);
 
   /* 品牌红：比纯正红更沉一点，白字对比度 > 5:1 */
   --primary: oklch(0.545 0.19 27);
   --primary-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.962 0.005 80);
-  --secondary-foreground: oklch(0.27 0.01 70);
-  --muted: oklch(0.96 0.005 80);
-  --muted-foreground: oklch(0.49 0.012 70);
-  --accent: oklch(0.955 0.006 80);
-  --accent-foreground: oklch(0.27 0.01 70);
+  --secondary: oklch(0.965 0.003 264);
+  --secondary-foreground: oklch(0.22 0.005 264);
+  --muted: oklch(0.965 0.003 264);
+  --muted-foreground: oklch(0.5 0.01 264);
+  --accent: oklch(0.955 0.004 264);
+  --accent-foreground: oklch(0.22 0.005 264);
   --destructive: oklch(0.577 0.245 27.3);
-  --border: oklch(0.9 0.007 80);
-  --input: oklch(0.925 0.007 80);
-  --ring: oklch(0.52 0.015 70);
+  --border: oklch(0.91 0.004 264);
+  --input: oklch(0.93 0.004 264);
+  --ring: oklch(0.55 0.01 264);
 
-  /* 阴影走暖灰，避免在纸色上发脏 */
-  --shadow-color: 35 14% 30%;
+  /* 阴影走冷灰，和近黑/冷白的画布一致 */
+  --shadow-color: 220 10% 20%;
 
-  --sidebar: oklch(0.972 0.005 80);
-  --sidebar-foreground: oklch(0.225 0.01 70);
+  --sidebar: oklch(0.975 0 0);
+  --sidebar-foreground: oklch(0.18 0.005 264);
   --sidebar-primary: oklch(0.545 0.19 27);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.94 0.006 80);
-  --sidebar-accent-foreground: oklch(0.27 0.01 70);
-  --sidebar-border: oklch(0.9 0.007 80);
-  --sidebar-ring: oklch(0.52 0.015 70);
+  --sidebar-accent: oklch(0.945 0.004 264);
+  --sidebar-accent-foreground: oklch(0.22 0.005 264);
+  --sidebar-border: oklch(0.91 0.004 264);
+  --sidebar-ring: oklch(0.55 0.01 264);
 }
 
 .dark {
-  /* 深色同样偏暖：侧栏略亮一点，靠明度差而不是分割线 */
-  --background: oklch(0.172 0.005 70);
-  --foreground: oklch(0.955 0.004 80);
-  --card: oklch(0.21 0.005 70);
-  --card-foreground: oklch(0.955 0.004 80);
-  --popover: oklch(0.23 0.005 70);
-  --popover-foreground: oklch(0.955 0.004 80);
+  /* Linear 式深色：近黑底 + 略亮一档的面板，靠 8% 白线分层 */
+  --background: oklch(0.145 0.004 264);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.185 0.004 264);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.205 0.004 264);
+  --popover-foreground: oklch(0.97 0 0);
 
   --primary: oklch(0.665 0.19 27);
-  --primary-foreground: oklch(0.16 0.004 70);
+  --primary-foreground: oklch(0.16 0.004 264);
 
-  --secondary: oklch(0.268 0.006 70);
-  --secondary-foreground: oklch(0.955 0.004 80);
-  --muted: oklch(0.268 0.006 70);
-  --muted-foreground: oklch(0.725 0.008 75);
-  --accent: oklch(0.278 0.006 70);
-  --accent-foreground: oklch(0.955 0.004 80);
+  --secondary: oklch(0.235 0.004 264);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.235 0.004 264);
+  --muted-foreground: oklch(0.68 0.008 264);
+  --accent: oklch(0.245 0.004 264);
+  --accent-foreground: oklch(0.97 0 0);
   --destructive: oklch(0.704 0.191 22.2);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.72 0.02 70);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.7 0.01 264);
 
-  --sidebar: oklch(0.182 0.005 70);
-  --sidebar-foreground: oklch(0.955 0.004 80);
+  --sidebar: oklch(0.165 0.004 264);
+  --sidebar-foreground: oklch(0.97 0 0);
   --sidebar-primary: oklch(0.665 0.19 27);
-  --sidebar-primary-foreground: oklch(0.16 0.004 70);
-  --sidebar-accent: oklch(0.255 0.006 70);
-  --sidebar-accent-foreground: oklch(0.955 0.004 80);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.72 0.02 264);
+  --sidebar-primary-foreground: oklch(0.16 0.004 264);
+  --sidebar-accent: oklch(0.225 0.004 264);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.7 0.01 264);
 }
 
 @layer base {

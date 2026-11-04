@@ -18,9 +18,9 @@ import { cn } from "@/lib/utils";
 
 /** 卡片外壳：链接行与可选中的管理行共用，避免两套变体各自漂移。 */
 const shell = cn(
-  "group/link h-full flex-nowrap gap-3 rounded-xl border-border/80 bg-card px-3 py-3 shadow-xs",
-  "transition-[background-color,border-color,box-shadow] duration-150",
-  "hover:border-ring/25 hover:bg-accent/60 hover:shadow-sm",
+  "group/link h-full flex-nowrap gap-3 rounded-xl border-border/80 bg-card px-3 py-3",
+  "transition-[background-color,border-color] duration-150",
+  "hover:border-ring/30 hover:bg-accent/60",
 );
 
 /**
