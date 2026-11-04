@@ -67,13 +67,6 @@ import { useHistory } from "@/lib/use-history";
 
 export type ShellView = "wall" | "topics" | "search" | "history" | "about";
 
-/**
- * 静态导出没有服务端读 cookie 的机会（shadcn 的 SidebarProvider 只在 server component
- * 里读 sidebar_state）。这里用 layout effect 在**绘制前**补一次恢复：用 useEffect 会先
- * 画一帧展开态再收起，肉眼能看到闪动。
- */
-const useIsoLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
-
 export function AppShell({
   topics,
   activeTopic,
@@ -124,11 +117,12 @@ export function AppShell({
 
   // 侧边栏开合：cookie 由 SidebarProvider 负责写，这里负责读回来。
   // 不恢复的话每次刷新都会弹回展开态，用户折叠了等于白折。
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  useIsoLayoutEffect(() => {
-    const saved = /(?:^|;\s*)sidebar_state=(true|false)/.exec(document.cookie)?.[1];
-    if (saved === "false") setSidebarOpen(false);
-  }, []);
+  // 首帧就按 cookie 决定：layout.tsx 的 body 末尾脚本已经把侧栏 DOM 改成折叠态，
+  // 这里读同一个 cookie，React 首帧与 DOM 一致，既不 mismatch 也不会先画成展开
+  const [sidebarOpen, setSidebarOpen] = React.useState(() => {
+    if (typeof document === "undefined") return true;
+    return !/(?:^|;\s*)sidebar_state=false/.test(document.cookie);
+  });
 
   // 侧栏已经按真实状态画完一帧，撤掉首屏防闪标记（layout.tsx 里打的）
   React.useEffect(() => {
