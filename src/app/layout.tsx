@@ -71,6 +71,14 @@ const sidebarInitScript =
 const sidebarDomScript =
   '(function(){try{if(!/(?:^|;\\s*)sidebar_state=false/.test(document.cookie))return;var sb=document.querySelector(\'[data-slot="sidebar"]\');if(sb){sb.setAttribute("data-state","collapsed");sb.setAttribute("data-collapsible","icon")}}catch(e){}})()';
 
+/**
+ * 分组筛选同理：`?group=` 只有客户端知道，但静态 HTML 永远是「全部组」。
+ * 在绘制前把不匹配的 section 加上 hidden —— React 首帧渲染用的是同一个判断，
+ * 结构一致，所以不会 hydrate mismatch，也不会先铺满再缩水。
+ */
+const groupDomScript =
+  '(function(){try{var q=new URLSearchParams(location.search).get("group");if(!q)return;var ns=document.querySelectorAll("section[data-group-slug]");for(var i=0;i<ns.length;i++){var g=ns[i].getAttribute("data-group-slug");if(g!==q)ns[i].classList.add("hidden")}}catch(e){}})()';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
@@ -91,6 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
         </ThemeProvider>
         <script dangerouslySetInnerHTML={{ __html: sidebarDomScript }} />
+        <script dangerouslySetInnerHTML={{ __html: groupDomScript }} />
       </body>
     </html>
   );

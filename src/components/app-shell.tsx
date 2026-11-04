@@ -94,7 +94,16 @@ export function AppShell({
   const [skipReady, setSkipReady] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [query, setQuery] = React.useState("");
-  const [groupFilter, setGroupFilter] = React.useState("");
+  // 首帧就读 ?group=：放在 effect 里会先渲染全部、再筛成一组，内容会明显缩一下
+  const [groupFilter, setGroupFilter] = React.useState(() => {
+    if (typeof document === "undefined") return "";
+    const requested = new URLSearchParams(window.location.search).get("group") ?? "";
+    if (!requested) return "";
+    const available = activeTopic?.groups ?? [];
+    const valid =
+      requested === UNGROUPED_GROUP || available.some((group) => group.slug === requested);
+    return valid ? requested : "";
+  });
   const [recentSearches, setRecentSearches] = React.useState<string[]>([]);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
@@ -498,6 +507,10 @@ export function AppShell({
 
   const hasGroups = (activeGroup?.groups.length ?? 0) > 0;
 
+  // 分组筛选不再「少渲染几组」，而是全部渲染、把不匹配的组标记成 hidden。
+  // 原因：静态导出的 HTML 只能是「全部」；若客户端首帧渲染的组更少，
+  // 浏览器先画出的还是全部，于是 ?group= 会看到内容缩一下。
+  // 结构保持一致之后，layout.tsx 里那段同步脚本可以在绘制前就把多余的组藏好。
   const wallGroups: PillGroup[] = React.useMemo(() => {
     if (!activeGroup || searching) return [];
     if (activeGroup.groups.length === 0) return [activeGroup];
@@ -507,39 +520,41 @@ export function AppShell({
         slug === UNGROUPED_GROUP ? !item.group : item.group?.slug === slug,
       );
 
-    if (groupFilter) {
-      const match = activeGroup.groups.find((group) => group.slug === groupFilter);
-      return [
-        {
-          slug: `${activeGroup.slug}-${groupFilter}`,
-          name: match?.name ?? "未分组",
-          items: itemsOf(groupFilter),
-        },
-      ];
-    }
-
     const list: PillGroup[] = activeGroup.groups.map((group) => ({
       slug: `${activeGroup.slug}-${group.slug}`,
+      groupSlug: group.slug,
       name: group.name,
       items: itemsOf(group.slug),
+      hidden: Boolean(groupFilter) && groupFilter !== group.slug,
     }));
     const ungrouped = itemsOf(UNGROUPED_GROUP);
     if (ungrouped.length > 0) {
       list.push({
         slug: `${activeGroup.slug}-${UNGROUPED_GROUP}`,
+        groupSlug: UNGROUPED_GROUP,
         name: "未分组",
         items: ungrouped,
+        hidden: Boolean(groupFilter) && groupFilter !== UNGROUPED_GROUP,
       });
     }
     return list;
   }, [activeGroup, searching, groupFilter]);
+
+  // 计数只算没被隐藏的组
+  const shownItems = React.useMemo(
+    () =>
+      wallGroups
+        .filter((group) => !group.hidden)
+        .reduce((sum, group) => sum + group.items.length, 0),
+    [wallGroups],
+  );
 
   const visibleCount = searching
     ? results.length
     : view === "history"
       ? historyEntries.length
       : activeGroup
-        ? wallGroups.reduce((sum, group) => sum + group.items.length, 0)
+        ? shownItems
         : total;
 
   // 首页＝按钮墙 + 无分类 + 非搜索：只有这里展示品牌标语与信任行

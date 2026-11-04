@@ -20,6 +20,10 @@ export interface PillGroup {
   slug: string;
   name: string;
   items: LinkItem[];
+  /** 分组自身的 slug（不含主题前缀），供首屏脚本按 ?group= 匹配 */
+  groupSlug?: string;
+  /** 首帧就藏起来（分组筛选的未选中项）：保持 DOM 结构不变，只切显示 */
+  hidden?: boolean;
 }
 
 /** 每一组包一层带 `data-cat` 的容器，方便按主题/分组定位与样式钩子。 */
@@ -39,7 +43,12 @@ export function PillWall({
   return (
     <div className="flex flex-col gap-8">
       {groups.map((group) => (
-        <section key={group.slug} data-cat={group.slug} className="flex flex-col gap-3">
+        <section
+          key={group.slug}
+          data-cat={group.slug}
+          data-group-slug={group.groupSlug}
+          className={cn("flex flex-col gap-3", group.hidden && "hidden")}
+        >
           {showHeading ? (
             <div className="flex items-baseline gap-2">
               <h2 className="text-sm font-medium">{group.name}</h2>
