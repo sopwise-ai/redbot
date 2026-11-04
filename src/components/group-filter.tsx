@@ -94,18 +94,27 @@ export function GroupFilter({
         aria-label="按分组筛选"
         className="w-max gap-1.5 px-1 py-1"
       >
-        <ToggleGroupItem value={ALL_GROUPS} className={chipClass}>
+        <ToggleGroupItem value={ALL_GROUPS} data-group-slug={ALL_GROUPS} className={chipClass}>
           全部
           <span className="tabular-nums">{items.length}</span>
         </ToggleGroupItem>
         {groups.map((group) => (
-          <ToggleGroupItem key={group.slug} value={group.slug} className={chipClass}>
+          <ToggleGroupItem
+            key={group.slug}
+            value={group.slug}
+            data-group-slug={group.slug}
+            className={chipClass}
+          >
             {group.name}
             <span className="tabular-nums">{countOf(group.slug)}</span>
           </ToggleGroupItem>
         ))}
         {ungrouped > 0 ? (
-          <ToggleGroupItem value={UNGROUPED_GROUP} className={chipClass}>
+          <ToggleGroupItem
+            value={UNGROUPED_GROUP}
+            data-group-slug={UNGROUPED_GROUP}
+            className={chipClass}
+          >
             未分组
             <span className="tabular-nums">{ungrouped}</span>
           </ToggleGroupItem>

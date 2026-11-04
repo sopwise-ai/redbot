@@ -77,7 +77,19 @@ const sidebarDomScript =
  * 结构一致，所以不会 hydrate mismatch，也不会先铺满再缩水。
  */
 const groupDomScript =
-  '(function(){try{var q=new URLSearchParams(location.search).get("group");if(!q)return;var ns=document.querySelectorAll("section[data-group-slug]");for(var i=0;i<ns.length;i++){var g=ns[i].getAttribute("data-group-slug");if(g!==q)ns[i].classList.add("hidden")}}catch(e){}})()';
+  '(function(){try{var q=new URLSearchParams(location.search).get("group");if(!q)return;' +
+  'var chips=document.querySelectorAll("[role=radio][data-group-slug]"),hit=false,i;' +
+  // 先确认这个 slug 真的存在；无效值交给 React 兜底（它会退回「全部」）
+  'for(i=0;i<chips.length;i++){if(chips[i].getAttribute("data-group-slug")===q)hit=true}' +
+  "if(!hit)return;" +
+  // 选中态也要在绘制前改对，否则会看到「全部」跳成目标分组
+  'for(i=0;i<chips.length;i++){var on=chips[i].getAttribute("data-group-slug")===q;' +
+  'chips[i].setAttribute("data-state",on?"on":"off");' +
+  'chips[i].setAttribute("aria-checked",on?"true":"false");' +
+  'chips[i].setAttribute("tabindex",on?"0":"-1")}' +
+  'var ns=document.querySelectorAll("section[data-group-slug]");' +
+  'for(i=0;i<ns.length;i++){if(ns[i].getAttribute("data-group-slug")!==q)ns[i].classList.add("hidden")}' +
+  "}catch(e){}})()";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
