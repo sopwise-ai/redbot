@@ -26,7 +26,7 @@ export function HomeHero({
   randomPool: RandomPick[];
 }) {
   return (
-    <section aria-labelledby="hero-title" className="pt-10 sm:pt-14">
+    <section aria-labelledby="hero-title" className="pt-12 sm:pt-16">
       {/* 刊头行：左边是栏目说明，右边是刷新日期 —— 两端对齐，首屏才有基准线 */}
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground">
@@ -37,7 +37,7 @@ export function HomeHero({
 
       <h1
         id="hero-title"
-        className="mt-4 font-serif text-4xl leading-[1.08] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+        className="mt-5 font-serif text-4xl leading-[1.06] font-normal tracking-[0.01em] text-balance sm:text-6xl lg:text-7xl"
       >
         {site.tagline}
       </h1>

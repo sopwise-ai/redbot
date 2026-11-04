@@ -18,7 +18,7 @@ export function HomeSections({
   hueByLabel: Map<string, number>;
 }) {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-12">
       {sections.map(({ topic, items }, index) => (
         <section
           key={topic.slug}
@@ -29,13 +29,16 @@ export function HomeSections({
             <span
               aria-hidden
               style={{ ["--tile-hue" as string]: hueFor(index) }}
-              className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.96_0.035_var(--tile-hue))] text-base ring-1 ring-black/[0.03] ring-inset dark:bg-[oklch(0.28_0.03_var(--tile-hue))] dark:ring-white/[0.05]"
+              className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.965_0.022_var(--tile-hue))] text-base ring-1 ring-border/60 ring-inset dark:bg-[oklch(0.27_0.02_var(--tile-hue))] dark:ring-white/[0.05]"
             >
               {topic.emoji}
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h2 id={`topic-${topic.slug}`} className="text-base font-semibold tracking-tight">
+                <h2
+                  id={`topic-${topic.slug}`}
+                  className="font-serif text-xl font-normal tracking-[0.01em]"
+                >
                   {topic.name}
                 </h2>
                 <Badge variant="secondary" className="h-5 px-1.5 text-xs tabular-nums">

@@ -52,14 +52,14 @@ export function ShellHeader({
           className={cn(
             "flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border/80 bg-card text-2xl leading-none shadow-xs sm:size-12",
             hue !== undefined &&
-              "bg-[oklch(0.96_0.035_var(--tile-hue))] dark:bg-[oklch(0.28_0.03_var(--tile-hue))]",
+              "bg-[oklch(0.965_0.022_var(--tile-hue))] dark:bg-[oklch(0.27_0.02_var(--tile-hue))]",
           )}
         >
           {meta.emoji}
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <h1 className="font-serif text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h1 className="font-serif text-2xl font-normal tracking-[0.01em] sm:text-3xl">
               {meta.title}
             </h1>
             {count > 0 ? (

@@ -19,7 +19,7 @@ export function TopicsIndex({ topics }: { topics: TopicSummary[] }) {
                 <span
                   aria-hidden
                   style={{ ["--tile-hue" as string]: hueFor(index) }}
-                  className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.96_0.035_var(--tile-hue))] text-base leading-none dark:bg-[oklch(0.28_0.03_var(--tile-hue))]"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.965_0.022_var(--tile-hue))] text-base leading-none dark:bg-[oklch(0.27_0.02_var(--tile-hue))]"
                 >
                   {item.emoji}
                 </span>

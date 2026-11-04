@@ -157,7 +157,7 @@ function HueDot({ hue }: { hue: number }) {
     <span
       aria-hidden
       style={{ ["--dot-hue" as string]: hue }}
-      className="size-2 shrink-0 rounded-full bg-[oklch(0.62_0.15_var(--dot-hue))] ring-3 ring-[oklch(0.62_0.15_var(--dot-hue)/0.14)] dark:bg-[oklch(0.74_0.13_var(--dot-hue))] dark:ring-[oklch(0.74_0.13_var(--dot-hue)/0.18)]"
+      className="size-2 shrink-0 rounded-full bg-[oklch(0.62_0.12_var(--dot-hue))] ring-3 ring-[oklch(0.62_0.12_var(--dot-hue)/0.14)] dark:bg-[oklch(0.72_0.1_var(--dot-hue))] dark:ring-[oklch(0.72_0.1_var(--dot-hue)/0.18)]"
     />
   );
 }

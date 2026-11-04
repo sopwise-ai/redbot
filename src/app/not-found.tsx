@@ -27,7 +27,7 @@ export default function NotFound() {
 
       <div className="max-w-md">
         <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground">404</p>
-        <h1 className="mt-3 font-serif text-2xl font-semibold tracking-tight">这个页面不存在</h1>
+        <h1 className="mt-3 font-serif text-2xl font-normal tracking-[0.01em]">这个页面不存在</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           链接可能已经失效，或者地址里有拼写错误。
         </p>

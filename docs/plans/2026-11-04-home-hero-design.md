@@ -19,10 +19,12 @@
 
 ## 决策：编辑部刊头（A′）
 
-保留白画布与红点品牌资产，**只做减法 + 放大排印**：
+保留红点品牌资产，**暖白纸色 + 放大排印 + 抬高标题层**：
 
 - 删除：卡片外壳、径向渐变、徽章、「189/17/日期」大数字块、五个对勾。
-- 标题：衬线 60px（lg）/ 36px（mobile），8 个字一行。
+- 标题：衬线 72px（lg）/ 60px（sm）/ 36px（mobile），weight 400，8 个字一行。
+- 纸色：主画布 `oklch(0.985 0.004 80)`、卡片纯白、边框暖灰；深色同样偏暖。
+- 标题层：H1 与首页主题 h2 都用衬线（weight 400 + 0.01em 字距），形成双声部，而不是只有 H1 一个例外。
 - 眉标：`人工挑选 · 189 个信息源`，12px、字距 0.14em。
 - 副标：`上网，一站就够了。` 18–20px + 14px 行为说明。
 - 刊头行：左侧眉标、右侧更新日期，两端对齐。
@@ -33,15 +35,15 @@
 
 ## 规格
 
-| 元素     | 规格                                                                         |
-| -------- | ---------------------------------------------------------------------------- |
-| 容器     | 1160px（沿用），无卡片、无阴影                                               |
-| H1       | `font-serif`，`text-4xl sm:text-5xl lg:text-6xl`，`leading-[1.08]`           |
-| 眉标     | `text-xs tracking-[0.14em] text-muted-foreground`                            |
-| 副标     | `text-lg sm:text-xl`，下方解释句 `text-sm`                                   |
-| 主按钮   | `size="lg"` + `h-11 rounded-full`，`bg-primary`                              |
-| 次动作   | ghost + `ArrowRight`，hover 时箭头右移 2px（`motion-reduce:transform-none`） |
-| 纵向节奏 | hero 顶部 `pt-10 sm:pt-14`，信任行后 `gap-12` 直接进第一个主题区块           |
+| 元素     | 规格                                                                           |
+| -------- | ------------------------------------------------------------------------------ |
+| 容器     | 1160px（沿用），无卡片、无阴影                                                 |
+| H1       | `font-serif`，`text-4xl sm:text-6xl lg:text-7xl`，weight 400，`leading-[1.06]` |
+| 眉标     | `text-xs tracking-[0.14em] text-muted-foreground`                              |
+| 副标     | `text-lg sm:text-xl`，下方解释句 `text-sm`                                     |
+| 主按钮   | `size="lg"` + `h-11 rounded-full`，`bg-primary`                                |
+| 次动作   | ghost + `ArrowRight`，hover 时箭头右移 2px（`motion-reduce:transform-none`）   |
+| 纵向节奏 | hero 顶部 `pt-10 sm:pt-14`，信任行后 `gap-12` 直接进第一个主题区块             |
 
 ## 非目标
 
