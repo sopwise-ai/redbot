@@ -63,6 +63,14 @@ export const viewport: Viewport = {
 const sidebarInitScript =
   '(function(){try{if(/(?:^|;\\s*)sidebar_state=false/.test(document.cookie)){document.documentElement.setAttribute("data-sidebar","collapsed")}}catch(e){}})()';
 
+/**
+ * body 末尾的同步脚本：侧栏 DOM 已经解析出来、但还没绘制，直接把展开态改成折叠态。
+ * 配合 AppShell 里 useState 的惰性初始化（同样读 cookie），React 首帧就按折叠渲染，
+ * 与改过的 DOM 一致，既不会 hydrate mismatch，也不会出现「空白栏 -> 图标浮现」。
+ */
+const sidebarDomScript =
+  '(function(){try{if(!/(?:^|;\\s*)sidebar_state=false/.test(document.cookie))return;var sb=document.querySelector(\'[data-slot="sidebar"]\');if(sb){sb.setAttribute("data-state","collapsed");sb.setAttribute("data-collapsible","icon")}}catch(e){}})()';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
@@ -82,6 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
         </ThemeProvider>
+        <script dangerouslySetInnerHTML={{ __html: sidebarDomScript }} />
       </body>
     </html>
   );
