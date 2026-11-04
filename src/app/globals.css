@@ -175,3 +175,23 @@
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * 侧栏首屏防闪。
+ *
+ * 折叠状态存在 cookie 里，但静态导出的 HTML 是构建期生成的，只能是展开态。
+ * 不处理的话刷新会「先画成展开、水合后再收起」，视觉上就是整页抖一下。
+ *
+ * layout.tsx 的 head 里有一行内联脚本，在水合前读到 cookie 就给 <html> 打标记；
+ * 这里把侧栏先按图标轨的宽度画出来、内容留空，等 React 接管后抹掉标记。
+ */
+/* 宽度变量是 inline style（--sidebar-width: 16rem），只能用 !important 盖 */
+html[data-sidebar="collapsed"] [data-slot="sidebar-container"] {
+  width: 3rem !important;
+  /* 首帧不能有过渡：否则是「从 256px 滑到 48px」，正是要消掉的那一下 */
+  transition: none !important;
+}
+
+html[data-sidebar="collapsed"] [data-sidebar="sidebar"]:not([data-mobile="true"]) > * {
+  visibility: hidden;
+}

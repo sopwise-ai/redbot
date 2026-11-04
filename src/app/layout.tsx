@@ -56,9 +56,19 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/**
+ * 首屏防闪：静态导出的 HTML 只能是展开态，读到「上次是折叠」就在绘制前给 <html> 打标记。
+ * 内联、阻塞、只碰 documentElement —— 与 next-themes 避免深色闪白的做法同源。
+ */
+const sidebarInitScript =
+  '(function(){try{if(/(?:^|;\\s*)sidebar_state=false/.test(document.cookie)){document.documentElement.setAttribute("data-sidebar","collapsed")}}catch(e){}})()';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: sidebarInitScript }} />
+      </head>
       <body>
         <script
           type="application/ld+json"
