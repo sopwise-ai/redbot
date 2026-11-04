@@ -75,7 +75,7 @@ export function HomeHero({
           <ul className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2">
             {trustItems.map((item) => (
               <li key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <CheckIcon aria-hidden className="size-3.5 text-primary/70" />
+                <CheckIcon aria-hidden className="size-3.5 text-muted-foreground" />
                 {item}
               </li>
             ))}

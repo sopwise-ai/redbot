@@ -1,6 +1,5 @@
+import type { ShellView } from "@/lib/route-state";
 import type { CategoryGroup } from "@/lib/schema";
-
-import type { ShellView } from "@/components/app-shell";
 
 /**
  * 报头文案的唯一事实源：视图 ×（搜索中）→ emoji / 标题 / 副标题。

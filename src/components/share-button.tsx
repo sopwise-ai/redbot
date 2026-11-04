@@ -45,7 +45,7 @@ export function ShareButton({ title, url }: { title: string; url: string }) {
       size="icon-sm"
       onClick={onShare}
       aria-label={copied ? "链接已复制" : "分享本主题"}
-      className="relative text-muted-foreground after:absolute after:-inset-1.5 after:content-['']"
+      className="relative text-muted-foreground after:absolute after:-inset-1 after:content-['']"
     >
       {copied ? <CheckIcon aria-hidden /> : <Share2Icon aria-hidden />}
       {copied ? (

@@ -46,8 +46,9 @@ data/topics/<slug>.json  一个主题的全部内容：name / emoji / desc / upd
 data/topics.schema.jsonc 数据规范（字段、上限、跨文件约束）—— 改规则先改这里
 src/app/              layout / page / globals.css / manifest / not-found / icon
                       + topics/（索引与 [slug]）/ search/ / history/ / about/
-src/components/       app-shell（状态与布局）、home-hero / home-sections（首页）、app-sidebar、
-                      pill-wall（按钮墙）、history-view（足迹）、topics-index、site-footer
+src/components/       app-shell（状态与布局）、link-card（链接卡，按钮墙 / 搜索 / 足迹共用）、
+                      home-hero / home-sections（首页）、app-sidebar、pill-wall（按钮墙）、
+                      history-view（足迹）、topics-index、site-footer
 src/components/ui/    shadcn 生成物，改样式前先看这里有没有现成变体
 src/generated/topics.ts  由脚本生成的主题静态入口（勿手改）
 src/lib/schema.ts     zod 契约 + LIMITS（配额、副标签白名单）—— 规范的可执行镜像
@@ -55,6 +56,8 @@ src/lib/merge-topics.ts  主题文件 → 运行时模型（纯函数，有单�
 src/lib/catalog.ts    取数与切片（topics 摘要 / getTopic / homeSections / randomPool）
 src/lib/corpus.ts     按需拉取 public/search-corpus.json（搜索、足迹、导出共用）
 src/lib/history.ts    足迹读写（localStorage: redbot:history）；use-history.ts 是其 React 封装
+src/lib/group-filter.ts  分组筛选（URL 解析 / 分组切片，纯函数）
+src/lib/use-*.ts      外壳的 React hooks：搜索 / 分组 / 焦点交接 / 侧栏开合 / 快捷键提示
 src/lib/search.ts     fuse 索引；src/lib/site.ts 站点元信息（域名、仓库、作者）
 scripts/              generate-topics.ts / generate-corpus.ts / validate.ts / generate-readme.ts
 scripts/lib/load-topics.ts 读取 data/topics.json + data/topics/*.json（校验与 README 共用）
@@ -105,7 +108,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
    缺组件就 `npx shadcn@latest add <name>`，不要手搓 `inline-flex h-9 rounded-md border` 这类变体等价物。
 3. **不引入运行时外部请求**。没有第三方脚本、没有外部字体、没有统计代码；字体走系统栈。
 4. **足迹只存本地**。`/history/` 记录用户点过的链接（`localStorage` 的 `redbot:history`，含时间与次数），
-   **不引入后端、不上传**；点击由 `LinkPill` 的 onClick 调用 `recordVisit`。管理（单条删除 / 批量 / 清空）都在页面内完成，
+   **不引入后端、不上传**；点击由 `LinkCard` 的 onClick 调用 `recordVisit`。管理（单条删除 / 批量 / 清空）都在页面内完成，
    清空走 `AlertDialog` 二次确认，避免误触。
 5. **数据按路由切片，任何一页都不拿全量**。首页只带每个主题前 6 条（`homeSections`）；
    主题页只带当前主题（`getTopic`）；`/topics/`、`/search/`、`/history/` 只带 20 来个摘要；

@@ -3,10 +3,8 @@
 import * as React from "react";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ALL_GROUPS, UNGROUPED_GROUP, itemsInGroup } from "@/lib/group-filter";
 import type { GroupMeta, LinkItem } from "@/lib/schema";
-
-const ALL_GROUPS = "all";
-export const UNGROUPED_GROUP = "ungrouped";
 
 /** 两端渐隐宽度（px）：提示这行还能横滑 */
 const EDGE = 12;
@@ -44,7 +42,12 @@ export function GroupFilter({
 
   React.useEffect(() => {
     const el = scroller.current;
-    if (el) syncEdges(el);
+    if (!el) return;
+    syncEdges(el);
+    // 窗口缩放 / 手机横竖屏不会触发 scroll，两端渐隐要跟着重算
+    const observer = new ResizeObserver(() => syncEdges(el));
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [syncEdges, groups.length]);
 
   // 选中项滚进视野。block: nearest 是必须的，否则会把整页一起顶上去
@@ -66,9 +69,7 @@ export function GroupFilter({
 
   if (groups.length === 0) return null;
 
-  const countOf = (slug: string) =>
-    items.filter((item) => (slug === UNGROUPED_GROUP ? !item.group : item.group?.slug === slug))
-      .length;
+  const countOf = (slug: string) => itemsInGroup(items, slug).length;
   const ungrouped = countOf(UNGROUPED_GROUP);
 
   const mask =

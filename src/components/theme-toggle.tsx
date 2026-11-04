@@ -36,7 +36,7 @@ export function ThemeToggle() {
           variant="ghost"
           size="icon-sm"
           aria-label={`切换主题（当前：${mounted ? current.label : "跟随系统"}）`}
-          className="relative text-muted-foreground after:absolute after:-inset-1.5 after:content-[''] focus-visible:ring-2 focus-visible:ring-ring/30"
+          className="relative text-muted-foreground after:absolute after:-inset-1 after:content-[''] focus-visible:ring-2 focus-visible:ring-ring/30"
         >
           <CurrentIcon aria-hidden />
         </Button>

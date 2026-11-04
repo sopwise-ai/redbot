@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { headCount, headMeta } from "@/lib/head-meta";
-import type { ShellView } from "@/components/app-shell";
+import type { ShellView } from "@/lib/route-state";
 import type { CategoryGroup } from "@/lib/schema";
 
 const activeGroup = {

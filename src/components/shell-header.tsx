@@ -5,10 +5,10 @@ import { ShareButton } from "@/components/share-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { headCount, headMeta } from "@/lib/head-meta";
+import type { ShellView } from "@/lib/route-state";
+import type { CategoryGroup } from "@/lib/schema";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
-import type { CategoryGroup } from "@/lib/schema";
-import type { ShellView } from "@/components/app-shell";
 
 /**
  * 主区域报头：图标锚点 + 标题 + 右侧动作。

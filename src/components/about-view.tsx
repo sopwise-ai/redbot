@@ -53,7 +53,7 @@ export function AboutView() {
               "https，中文内容优先，能正常访问。",
             ].map((line) => (
               <li key={line} className="flex items-start gap-2.5 text-sm leading-6">
-                <CheckIcon aria-hidden className="mt-1 size-3.5 shrink-0 text-primary/80" />
+                <CheckIcon aria-hidden className="mt-1 size-3.5 shrink-0 text-muted-foreground" />
                 <span className="text-muted-foreground">{line}</span>
               </li>
             ))}
@@ -135,8 +135,10 @@ export function AboutView() {
         <section id="privacy" className={sectionClass}>
           <h2 className={headingClass}>隐私</h2>
           <p className={bodyClass}>
-            本站不注册、不登录，不收集姓名、邮箱等身份信息；不使用
-            Cookie、像素、指纹或任何统计脚本。
+            本站不注册、不登录，不收集姓名、邮箱等身份信息；没有像素、指纹或任何统计脚本。 唯一的
+            Cookie 是侧栏开合偏好（
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">sidebar_state</code>
+            ，7 天过期），只记录「展开 / 折叠」，不含任何身份信息。
           </p>
           <p className={bodyClass}>
             主题偏好与足迹保存在你的浏览器 localStorage：前者只记录浅色 / 深色 /

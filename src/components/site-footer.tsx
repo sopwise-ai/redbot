@@ -33,7 +33,11 @@ export function SiteFooter({
             </span>
             <div className="grid gap-0.5 leading-tight">
               <span className="text-sm font-semibold tracking-tight">{site.name}</span>
-              <span className="text-xs text-muted-foreground">{site.tagline} · © 2026</span>
+              <span className="text-xs text-muted-foreground">
+                {site.tagline} · ©{" "}
+                {/* 构建期静态导出，跨年部署时首帧可能与客户端年份不同，交给 suppressHydrationWarning */}
+                <span suppressHydrationWarning>{new Date().getFullYear()}</span>
+              </span>
             </div>
           </div>
 

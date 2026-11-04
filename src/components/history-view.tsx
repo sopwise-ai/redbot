@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { PawPrintIcon, ShuffleIcon, Trash2Icon, TriangleAlertIcon } from "lucide-react";
 
-import { LinkPill } from "@/components/pill-wall";
+import { LinkCard } from "@/components/link-card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,10 +78,13 @@ export function HistoryView({
 
   if (!ready || (!corpus && !error)) {
     return (
-      <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3" aria-hidden>
-        {Array.from({ length: 6 }).map((_, index) => (
-          <Skeleton key={index} className="h-[54px] rounded-xl" />
-        ))}
+      <div role="status" aria-label="正在读取足迹">
+        <span className="sr-only">正在读取足迹…</span>
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3" aria-hidden>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Skeleton key={index} className="h-[62px] rounded-xl" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -227,9 +230,10 @@ export function HistoryView({
           const entry = entriesById.get(item.id);
           return (
             <li key={item.id} className="min-w-0">
-              <LinkPill
+              <LinkCard
                 item={item}
                 hue={hueByLabel.get(item.tags[0]) ?? 0}
+                showDescription={false}
                 variant={managing ? "manage" : "browse"}
                 selected={managing && selected.has(item.id)}
                 onToggle={toggle}

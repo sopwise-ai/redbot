@@ -31,7 +31,7 @@ export default defineConfig({
       "coverage/**",
       ".worktrees/**",
     ],
-    // 覆盖率只看有逻辑的模块：React Hook（use-history）、常量表（site）、
+    // 覆盖率只看有逻辑的模块：React Hook（use-*）、常量表（site）、
     // 纯转发（utils）没有可测行为，纳入只会稀释指标、逼人写形式主义测试。
     // 阈值按当前真实水位（行 96%+）设 90%：留余量，跌破才拦。
     coverage: {
@@ -40,7 +40,7 @@ export default defineConfig({
       include: ["scripts/lib/**/*.ts", "src/lib/**/*.ts"],
       exclude: [
         "**/*.{test,spec}.?(c|m)[jt]s?(x)",
-        "src/lib/use-history.ts",
+        "src/lib/use-*.ts",
         "src/lib/site.ts",
         "src/lib/utils.ts",
       ],

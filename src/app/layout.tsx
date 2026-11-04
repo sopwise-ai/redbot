@@ -59,6 +59,7 @@ export const viewport: Viewport = {
 /**
  * 首屏防闪：静态导出的 HTML 只能是展开态，读到「上次是折叠」就在绘制前给 <html> 打标记。
  * 内联、阻塞、只碰 documentElement —— 与 next-themes 避免深色闪白的做法同源。
+ * 注意：本文件的三段内联脚本将来上 CSP 时需要 nonce / hash，换托管方案时别漏。
  */
 const sidebarInitScript =
   '(function(){try{if(/(?:^|;\\s*)sidebar_state=false/.test(document.cookie)){document.documentElement.setAttribute("data-sidebar","collapsed")}}catch(e){}})()';
@@ -77,7 +78,9 @@ const sidebarDomScript =
  * 结构一致，所以不会 hydrate mismatch，也不会先铺满再缩水。
  */
 const groupDomScript =
-  '(function(){try{var q=new URLSearchParams(location.search).get("group");if(!q)return;' +
+  // `all` = 不过滤（与 lib/group-filter.ts 的 resolveGroupFilter 同口径）。
+  // 不一致时会把所有 section 都藏起来，而 React 认为它们可见 → 水合后无法恢复的空白墙。
+  '(function(){try{var q=new URLSearchParams(location.search).get("group");if(!q||q==="all")return;' +
   'var chips=document.querySelectorAll("[role=radio][data-group-slug]"),hit=false,i;' +
   // 先确认这个 slug 真的存在；无效值交给 React 兜底（它会退回「全部」）
   'for(i=0;i<chips.length;i++){if(chips[i].getAttribute("data-group-slug")===q)hit=true}' +
