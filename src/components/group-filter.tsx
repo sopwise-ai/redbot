@@ -5,7 +5,7 @@ import * as React from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { GroupMeta, LinkItem } from "@/lib/schema";
 
-export const ALL_GROUPS = "all";
+const ALL_GROUPS = "all";
 export const UNGROUPED_GROUP = "ungrouped";
 
 /** 两端渐隐宽度（px）：提示这行还能横滑 */

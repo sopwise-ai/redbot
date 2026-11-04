@@ -67,6 +67,14 @@ import { useHistory } from "@/lib/use-history";
 
 export type ShellView = "wall" | "topics" | "search" | "history" | "about";
 
+/** 从地址栏读分组筛选；slug 不存在时退回「全部」。拉出来是因为要读两次（首帧 + 换主题） */
+function readGroupFilter(search: string, groups: readonly { slug: string }[]): string {
+  const requested = new URLSearchParams(search).get("group") ?? "";
+  if (!requested) return "";
+  const valid = requested === UNGROUPED_GROUP || groups.some((group) => group.slug === requested);
+  return valid ? requested : "";
+}
+
 export function AppShell({
   topics,
   activeTopic,
@@ -95,15 +103,11 @@ export function AppShell({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [query, setQuery] = React.useState("");
   // 首帧就读 ?group=：放在 effect 里会先渲染全部、再筛成一组，内容会明显缩一下
-  const [groupFilter, setGroupFilter] = React.useState(() => {
-    if (typeof document === "undefined") return "";
-    const requested = new URLSearchParams(window.location.search).get("group") ?? "";
-    if (!requested) return "";
-    const available = activeTopic?.groups ?? [];
-    const valid =
-      requested === UNGROUPED_GROUP || available.some((group) => group.slug === requested);
-    return valid ? requested : "";
-  });
+  const [groupFilter, setGroupFilter] = React.useState(() =>
+    typeof document === "undefined"
+      ? ""
+      : readGroupFilter(window.location.search, activeTopic?.groups ?? []),
+  );
   const [recentSearches, setRecentSearches] = React.useState<string[]>([]);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
@@ -148,14 +152,8 @@ export function AppShell({
 
   // 主题页的分组筛选：?group= 是状态，首帧与切换主题时读回
   React.useEffect(() => {
-    const requested = new URLSearchParams(window.location.search).get("group") ?? "";
-    const available = activeTopic?.groups ?? [];
-    const valid =
-      requested === "" ||
-      requested === UNGROUPED_GROUP ||
-      available.some((group) => group.slug === requested);
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setGroupFilter(valid ? requested : "");
+    setGroupFilter(readGroupFilter(window.location.search, activeTopic?.groups ?? []));
   }, [activeTopic]);
 
   const changeGroupFilter = React.useCallback(
