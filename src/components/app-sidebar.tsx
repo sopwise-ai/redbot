@@ -248,7 +248,12 @@ export function AppSidebar({
         </SidebarGroup>
 
         <SidebarGroup className="py-0">
-          <SidebarGroupLabel className="sticky top-0 z-10 bg-sidebar text-xs">
+          {/*
+            折叠态 shadcn 只把标题改成 opacity-0 + -mt-8，元素仍然在 DOM 里占了 32px，
+            又因为 sticky + z-10，会盖住上面「全部主题」那一行 —— 看不见却点不到。
+            标题是装饰，一律不吃点击。
+          */}
+          <SidebarGroupLabel className="pointer-events-none sticky top-0 z-10 bg-sidebar text-xs">
             主题
           </SidebarGroupLabel>
           <SidebarGroupContent>
