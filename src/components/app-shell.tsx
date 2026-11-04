@@ -7,7 +7,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ArrowUpRight,
-  HistoryIcon,
+  ChevronDownIcon,
   SearchIcon,
   SearchXIcon,
   TriangleAlertIcon,
@@ -57,15 +57,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { loadCorpus } from "@/lib/corpus";
 import { buildHueMap, hueFor } from "@/lib/groups";
 import { recordVisit } from "@/lib/history";
-import { clearRecentSearches, readRecentSearches, rememberSearch } from "@/lib/recent-searches";
+import {
+  clearRecentSearches,
+  readRecentSearches,
+  rememberSearch,
+  removeRecentSearch,
+} from "@/lib/recent-searches";
 import { ALL, parseRoute } from "@/lib/route-state";
 import type { CategoryGroup, HomeSection, LinkItem, RandomPick, TopicSummary } from "@/lib/schema";
 import { createSearchIndex, createTopicIndex } from "@/lib/search";
 import { site } from "@/lib/site";
 import { pushUrlQuietly, replaceUrlQuietly } from "@/lib/url";
 import { useHistory } from "@/lib/use-history";
+import { cn } from "@/lib/utils";
 
 export type ShellView = "wall" | "topics" | "search" | "history" | "about";
+
+/** 历史面板默认露几条，再多就折叠起来 */
+const RECENT_VISIBLE = 8;
 
 /** 从地址栏读分组筛选；slug 不存在时退回「全部」。拉出来是因为要读两次（首帧 + 换主题） */
 function readGroupFilter(search: string, groups: readonly { slug: string }[]): string {
@@ -109,6 +118,7 @@ export function AppShell({
       : readGroupFilter(window.location.search, activeTopic?.groups ?? []),
   );
   const [recentSearches, setRecentSearches] = React.useState<string[]>([]);
+  const [recentExpanded, setRecentExpanded] = React.useState(false);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
   const [corpus, setCorpus] = React.useState<LinkItem[] | null>(null);
@@ -457,13 +467,13 @@ export function AppShell({
         return;
       }
 
+      // Enter 只把焦点交给第一个结果：自动打开外链太突然，用户按 Enter 往往只是想
+      // 「确定这次输入」，并不想立刻跳到别人家的网站上
       if (event.key === "Enter" && document.activeElement === inputRef.current && searching) {
-        const first = results[0];
+        const first = document.querySelector<HTMLElement>("[data-search-results] a[href^='http']");
         if (!first) return;
         event.preventDefault();
-        recordVisit(first.id, first.topic?.slug);
-        setRecentSearches(rememberSearch(query));
-        window.open(first.url, "_blank", "noopener,noreferrer");
+        first.focus();
         return;
       }
 
@@ -805,36 +815,82 @@ export function AppShell({
                       aria-label="最近搜索"
                       // 防止点面板时输入框先失焦，点击事件丢失
                       onMouseDown={(event) => event.preventDefault()}
-                      className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border bg-popover p-1.5 shadow-lg"
+                      className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border bg-popover shadow-lg"
                     >
-                      <div className="flex items-center justify-between px-2 py-1">
+                      <div className="flex items-center justify-between px-3 pt-2 pb-1">
                         <span className="text-xs text-muted-foreground">最近搜索</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="xs"
-                          onClick={() => setRecentSearches(clearRecentSearches())}
-                          className="text-xs text-muted-foreground"
-                        >
-                          清除
-                        </Button>
+                        <div className="flex items-center gap-1">
+                          {recentSearches.length > RECENT_VISIBLE ? (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="xs"
+                              aria-expanded={recentExpanded}
+                              onClick={() => setRecentExpanded((value) => !value)}
+                              className="gap-1 text-xs text-muted-foreground"
+                            >
+                              {recentExpanded ? "收起" : `展开 ${recentSearches.length} 条`}
+                              <ChevronDownIcon
+                                aria-hidden
+                                className={cn(
+                                  "size-3 transition-transform",
+                                  recentExpanded && "rotate-180",
+                                )}
+                              />
+                            </Button>
+                          ) : null}
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="xs"
+                            onClick={() => setRecentSearches(clearRecentSearches())}
+                            className="text-xs text-muted-foreground"
+                          >
+                            清空
+                          </Button>
+                        </div>
                       </div>
-                      {recentSearches.map((term) => (
-                        <Button
-                          key={term}
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setQuery(term);
-                            inputRef.current?.focus();
-                          }}
-                          className="w-full justify-start gap-2 px-2 font-normal text-muted-foreground"
-                        >
-                          <HistoryIcon aria-hidden className="size-3.5 shrink-0" />
-                          <span className="truncate">{term}</span>
-                        </Button>
-                      ))}
+                      {/* 历史用 chip 流：一行能放三四个，比竖着排省一半高度 */}
+                      <div
+                        className={cn(
+                          "flex flex-wrap gap-1.5 px-3 pt-1 pb-3",
+                          recentExpanded && "max-h-[min(50vh,22rem)] overflow-y-auto",
+                        )}
+                      >
+                        {(recentExpanded
+                          ? recentSearches
+                          : recentSearches.slice(0, RECENT_VISIBLE)
+                        ).map((term) => (
+                          <span
+                            key={term}
+                            className="inline-flex max-w-full items-center rounded-full border border-border/70 bg-background text-xs"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setQuery(term);
+                                inputRef.current?.focus();
+                              }}
+                              title={term}
+                              className="max-w-[9rem] truncate rounded-l-full py-1 pr-1 pl-2.5 text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30"
+                            >
+                              {term}
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`删除「${term}」`}
+                              onClick={() => {
+                                const next = removeRecentSearch(term);
+                                setRecentSearches(next);
+                                if (next.length === 0) setSearchFocused(false);
+                              }}
+                              className="mr-1 rounded-full p-1 text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30"
+                            >
+                              <XIcon aria-hidden className="size-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   ) : null}
                 </div>
@@ -951,7 +1007,7 @@ export function AppShell({
               <dt>
                 <Kbd>Enter</Kbd>
               </dt>
-              <dd className="text-muted-foreground">打开当前结果</dd>
+              <dd className="text-muted-foreground">把焦点交给第一个结果</dd>
               <dt>
                 <Kbd>Esc</Kbd>
               </dt>
