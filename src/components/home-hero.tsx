@@ -27,10 +27,10 @@ export function HomeHero({
 }) {
   return (
     <section aria-labelledby="hero-title" className="relative isolate pt-14 sm:pt-20">
-      {/* Linear 式的低亮红晕：只在标题后方，不参与布局；深色下更强一点 */}
+      {/* Linear 式的低亮红晕：只给标题一层环境光，不参与布局；深色下略强，浅色几乎不可见 */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-32 -z-10 h-[460px] bg-[radial-gradient(55%_60%_at_28%_10%,oklch(0.62_0.2_27/0.06),transparent_72%)] dark:bg-[radial-gradient(55%_60%_at_28%_10%,oklch(0.62_0.2_27/0.16),transparent_72%)]"
+        className="pointer-events-none absolute inset-x-0 -top-32 -z-10 h-[460px] bg-[radial-gradient(60%_60%_at_30%_10%,oklch(0.62_0.2_27/0.04),transparent_75%)] dark:bg-[radial-gradient(60%_60%_at_30%_10%,oklch(0.62_0.2_27/0.1),transparent_75%)]"
       />
 
       {/* 刊头行：左边是栏目说明，右边是刷新日期 —— 两端对齐，首屏才有基准线 */}

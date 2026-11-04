@@ -141,20 +141,22 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 ## 设计 token（改样式前先读）
 
 - **颜色**：**深色优先**（默认 `dark`）：近黑画布 `oklch(0.145 0.004 264)` + 略亮一档的面板
-  （card `0.185` / sidebar `0.165`），靠 8% 白线分层。浅色是冷白 `0.985` + 纯白卡片。
+  （card `0.185` / sidebar `0.165`），靠 8% 白线分层。浅色是冷白 `0.98` + 纯白卡片，侧栏 `0.965`。
   **不要引入暖黄/米色**：那会把站点拉回「纸上杂志」，和 Linear 那一路相冲。
   `--border` 只用于必须的边界。
-  **红色只出现在「当前分类」、hover 与主 CTA 上**，不要用它装饰计数、徽章。
+  **红色只用于品牌标识、主 CTA、侧栏当前位置与 hover**；筛选 chip 的选中态用前景/背景黑白反转，
+  不要用红色，也不要用它装饰计数、徽章。
   **焦点环用中性灰**（`--ring`），不是品牌红：红色焦点环在图标按钮上会被误读成「错误」。
-- **字号**：直接用 Tailwind 默认阶梯（`text-xs 12 / sm 14 / base 16 / lg 18 / xl 20 / 2xl 24 / 3xl 30`）。
+- **字号**：直接用 Tailwind 默认阶梯（`text-xs 12 / sm 14 / base 16 / lg 18 / xl 20 / 2xl 24 / 3xl 30 /
+4xl 36 / 5xl 48 / 6xl 60 / 7xl 72`）。
   13px 那一档已经删掉，**不要再写 `text-[13px]`、`text-2xs`、`text-md`**。
 - **字体**：全站**只有无衬线**（`--font-sans`）+ 等宽（`--font-mono`，只给代码/Kbd）。
   标题也用 sans：weight 600、`tracking-[-0.02em]`，不要引入衬线，也不要第三套字体。
   `font-synthesis: none` —— 没有的权重宁可落回最近的真实字重，也不要浏览器合成的假粗。
 - **标题**：H1 36 / 60 / 72（weight 600）；首页主题 h2 18（weight 600）；卡片标题 14；元信息 12。
-- **阴影**：默认**不用阴影**，靠 1px 线与底色差分层；只有 Popover / Dialog 用 `shadow-lg`。
+- **阴影**：默认**不用阴影**，靠 1px 线与底色差分层；只有 Popover / Dialog / 浮层（skip link）用 `shadow-lg`。
 - **圆角**：`--radius` **8px**；卡片与按钮用 `rounded-lg` / `rounded-xl`（同为 8px），
-  `rounded-full` 只保留给筛选 chip、状态点与 skip link。
+  `rounded-full` 只保留给筛选 chip 与状态点。
 - **主题色块**：主题 emoji 坐在 `oklch(0.965 0.022 <hue>)` 的淡色方块里（深色 `0.27 0.02`），
   色相来自 `hueFor(主题在 topics.json 里的下标)`；卡片内的色点用 `oklch(0.62 0.12 <hue>)`（深色 `0.72 0.10`），
   保证「一个主题一种颜色」。彩度不要加回去：近黑底上高饱和会变成玩具感。

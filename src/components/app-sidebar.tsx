@@ -44,8 +44,7 @@ const activeBar =
 
 const itemClass = cn(
   "h-9 rounded-lg px-2 text-sm text-muted-foreground transition-colors",
-  "data-[active=true]:bg-primary/8 data-[active=true]:font-medium data-[active=true]:text-foreground",
-  "dark:data-[active=true]:bg-primary/15",
+  "data-[active=true]:bg-foreground/[0.06] data-[active=true]:font-medium data-[active=true]:text-foreground",
   activeBar,
 );
 
@@ -138,9 +137,15 @@ export function AppSidebar({
             >
               <span className="size-2 rounded-full bg-primary-foreground" />
             </Link>
-            <SidebarTrigger className="relative hidden size-8 text-muted-foreground group-hover/header:inline-flex" />
+            <SidebarTrigger
+              aria-label="折叠或展开侧栏"
+              className="relative hidden size-8 text-muted-foreground group-hover/header:inline-flex"
+            />
           </div>
-          <SidebarTrigger className="relative hidden shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden after:absolute after:-inset-1 after:content-[''] md:inline-flex" />
+          <SidebarTrigger
+            aria-label="折叠或展开侧栏"
+            className="relative hidden shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden after:absolute after:-inset-1 after:content-[''] md:inline-flex"
+          />
           {isMobile ? (
             <Button
               type="button"
@@ -281,7 +286,7 @@ export function AppSidebar({
               isActive={aboutActive}
               className={cn(
                 "text-muted-foreground",
-                aboutActive && "bg-primary/8 font-medium text-foreground dark:bg-primary/15",
+                aboutActive && "bg-foreground/[0.06] font-medium text-foreground",
               )}
             >
               <Link

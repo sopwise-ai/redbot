@@ -10,7 +10,7 @@ import type { GroupMeta, LinkItem } from "@/lib/schema";
 const EDGE = 12;
 
 const chipClass =
-  "h-8 shrink-0 gap-1.5 rounded-full border border-border/70 bg-card px-3 text-xs font-normal text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground data-[state=on]:border-transparent data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:shadow-none";
+  "h-8 shrink-0 gap-1.5 rounded-full border border-border/70 bg-card px-3 text-xs font-normal text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[state=on]:border-transparent data-[state=on]:bg-foreground data-[state=on]:text-background";
 
 /**
  * 主题页内的分组筛选；没有 groups 的主题不渲染。

@@ -91,7 +91,7 @@ export function HistoryView({
 
   if (error) {
     return (
-      <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
+      <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <TriangleAlertIcon />
@@ -110,7 +110,7 @@ export function HistoryView({
 
   if (items.length === 0) {
     return (
-      <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
+      <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <PawPrintIcon />

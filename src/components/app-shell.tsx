@@ -191,7 +191,7 @@ export function AppShell({
       );
     } else if (corpusError) {
       body = (
-        <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
+        <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <TriangleAlertIcon />
@@ -215,7 +215,7 @@ export function AppShell({
     } else {
       const issueTitle = `收录建议：${query.trim().slice(0, 60)}`;
       body = (
-        <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
+        <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <SearchXIcon />
@@ -298,7 +298,7 @@ export function AppShell({
     body = <TopicsIndex topics={topics} />;
   } else if (view === "search") {
     body = (
-      <Empty className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed">
+      <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <SearchIcon />
@@ -333,7 +333,7 @@ export function AppShell({
           id="skip-link"
           href="#content"
           onClick={dismissSkipLink}
-          className="fixed top-3 left-1/2 z-50 -translate-x-1/2 rounded-full border bg-background px-4 py-2 text-sm shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+          className="fixed top-3 left-4 z-50 rounded-lg border bg-background px-4 py-2 text-sm shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
         >
           跳到内容
         </a>
@@ -354,7 +354,7 @@ export function AppShell({
           <header className="sticky top-0 z-30 shrink-0 border-b border-border/60 bg-background/80 backdrop-blur-xl">
             <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center gap-2 sm:gap-3">
-                <SidebarTrigger className="-ml-1 md:hidden" />
+                <SidebarTrigger className="-ml-1 md:hidden" aria-label="打开导航" />
                 <Link
                   href="/"
                   className="flex items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/30 md:hidden"

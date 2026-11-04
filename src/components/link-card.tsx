@@ -119,7 +119,7 @@ export function LinkCard({
           shell,
           "w-full justify-start text-left font-normal",
           (showDescription || meta) && "items-start",
-          selected && "border-primary/50 bg-primary/5",
+          selected && "border-foreground/30 bg-foreground/[0.06]",
         )}
       >
         {body}

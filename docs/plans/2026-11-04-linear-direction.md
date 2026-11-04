@@ -11,8 +11,9 @@
 - 字体：只有 `--font-sans`（+ 代码用的 `--font-mono`）。标题也用 sans，weight 600、`tracking-[-0.02em]`。
   **删掉 `--font-serif` 与全部 `font-serif` 用法。**
 - 标题：H1 36 / 60 / 72；首页主题 h2 18（600）；卡片标题 14；元信息 12。
-- 圆角：`--radius: 0.5rem`；卡片、按钮、搜索框统一 8px；只有筛选 chip、状态点、skip link 保留 pill。
-- 阴影：默认不用；只有 Popover / Dialog 用 `shadow-lg`。
+- 圆角：`--radius: 0.5rem`；卡片、按钮、搜索框统一 8px；只有筛选 chip 与状态点保留 pill。
+- 阴影：默认不用；只有 Popover / Dialog / 浮层用 `shadow-lg`。
+- 筛选 chip：选中态用前景/背景黑白反转（dark 白底黑字 / light 黑底白字），不用品牌红。
 - 首屏：标题后方一层极淡红晕（深色 0.16 / 浅色 0.06），不加渐变网格、不加产品截图。
 - 默认主题：`dark`（仍可在三态切换里选浅色/跟随系统）。
 

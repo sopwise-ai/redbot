@@ -61,7 +61,7 @@
   --radius: 0.5rem;
 
   /* 冷白画布 + 纯白卡片：Linear 那一路的克制，靠 1px 线与明度差分层 */
-  --background: oklch(0.985 0 0);
+  --background: oklch(0.98 0 0);
   --foreground: oklch(0.18 0.005 264);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.005 264);
@@ -86,7 +86,7 @@
   /* 阴影走冷灰，和近黑/冷白的画布一致 */
   --shadow-color: 220 10% 20%;
 
-  --sidebar: oklch(0.975 0 0);
+  --sidebar: oklch(0.965 0 0);
   --sidebar-foreground: oklch(0.18 0.005 264);
   --sidebar-primary: oklch(0.545 0.19 27);
   --sidebar-primary-foreground: oklch(0.99 0 0);
