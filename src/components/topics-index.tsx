@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRightIcon } from "lucide-react";
+import { ChevronRightIcon } from "lucide-react";
 
 import { BookmarkExport } from "@/components/bookmark-export";
 import { Badge } from "@/components/ui/badge";
@@ -37,9 +37,9 @@ export function TopicsIndex({ topics }: { topics: TopicSummary[] }) {
                   </CardTitle>
                   <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{item.desc}</p>
                 </div>
-                <ArrowUpRightIcon
+                <ChevronRightIcon
                   aria-hidden
-                  className="mt-0.5 size-3.5 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-primary"
+                  className="mt-0.5 size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
                 />
               </div>
             </Card>

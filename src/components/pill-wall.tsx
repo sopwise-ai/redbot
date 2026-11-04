@@ -121,7 +121,7 @@ export function LinkPill({
       </ItemContent>
 
       {variant === "manage" ? null : (
-        <ItemActions className="text-muted-foreground/60">
+        <ItemActions className="text-muted-foreground">
           <ArrowUpRight
             aria-hidden
             className="size-3.5 transition-colors group-hover/link:text-primary"
