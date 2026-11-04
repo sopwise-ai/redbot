@@ -59,7 +59,7 @@ export function SiteFooter({
             <Button
               type="button"
               variant="ghost"
-              size="xs"
+              size="sm"
               onClick={backToTop}
               className="gap-1 rounded-full text-xs text-muted-foreground"
             >

@@ -17,8 +17,3 @@ export function loadCorpus(): Promise<LinkItem[]> {
   }
   return cached;
 }
-
-/** 空闲时预热，不影响首屏。 */
-export function prefetchCorpus() {
-  void loadCorpus().catch(() => {});
-}

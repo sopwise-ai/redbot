@@ -9,6 +9,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { loadCorpus } from "@/lib/corpus";
 import type { LinkItem } from "@/lib/schema";
 import { site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const escapeHtml = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -48,9 +49,11 @@ function buildBookmarks(items: LinkItem[]) {
 
 export function BookmarkExport({ total }: { total: number }) {
   const [busy, setBusy] = React.useState(false);
+  const [failed, setFailed] = React.useState(false);
 
   async function download() {
     setBusy(true);
+    setFailed(false);
     try {
       const items = await loadCorpus();
       const blob = new Blob([buildBookmarks(items)], { type: "text/html;charset=utf-8" });
@@ -60,6 +63,9 @@ export function BookmarkExport({ total }: { total: number }) {
       link.download = `redbot-bookmarks-${new Date().toISOString().slice(0, 10)}.html`;
       link.click();
       URL.revokeObjectURL(url);
+    } catch {
+      // 语料没拉到（离线 / 被拦截）时不能只留一个毫无反应的按钮
+      setFailed(true);
     } finally {
       setBusy(false);
     }
@@ -67,8 +73,10 @@ export function BookmarkExport({ total }: { total: number }) {
 
   return (
     <Card className="mt-8 flex-col gap-3 p-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-xs text-muted-foreground">
-        把 {total} 个信息源按主题导出，可导入 Chrome / Safari / Edge 的书签栏。
+      <p className={cn("text-xs", failed ? "text-destructive" : "text-muted-foreground")}>
+        {failed
+          ? "导出失败：没能加载信息源清单，刷新页面再试一次。"
+          : `把 ${total} 个信息源按主题导出，可导入 Chrome / Safari / Edge 的书签栏。`}
       </p>
       <Button
         variant="outline"
