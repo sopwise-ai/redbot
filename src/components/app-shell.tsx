@@ -129,6 +129,14 @@ export function AppShell({
     const saved = /(?:^|;\s*)sidebar_state=(true|false)/.exec(document.cookie)?.[1];
     if (saved === "false") setSidebarOpen(false);
   }, []);
+
+  // 侧栏已经按真实状态画完一帧，撤掉首屏防闪标记（layout.tsx 里打的）
+  React.useEffect(() => {
+    const id = requestAnimationFrame(() =>
+      document.documentElement.removeAttribute("data-sidebar"),
+    );
+    return () => cancelAnimationFrame(id);
+  }, [sidebarOpen]);
   // 本次搜索是否已经在历史里留下过一条记录（第一次进入搜索要 push，之后只 replace）
   const searchEntryPushed = React.useRef(false);
 
