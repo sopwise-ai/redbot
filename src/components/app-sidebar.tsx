@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -34,6 +35,9 @@ import { useHistory } from "@/lib/use-history";
 import type { RandomPick, TopicSummary } from "@/lib/schema";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
+
+/** 主题列表的滚动位置（sessionStorage，切页往返时恢复） */
+const SIDEBAR_SCROLL_KEY = "redbot:sidebar-scroll";
 
 /** 当前项左侧的红色竖条：全站只有「当前位置」和 hover 用品牌红。 */
 const activeBar =
@@ -74,6 +78,16 @@ export function AppSidebar({
   const { isMobile, setOpenMobile } = useSidebar();
   const { entries } = useHistory();
 
+  // 主题列表比一屏长时用户会往下滚；切主题会重挂 AppShell，
+  // 不记一下的话每次跳转都弹回顶部，等于让他重新找一遍
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const saved = Number(window.sessionStorage.getItem(SIDEBAR_SCROLL_KEY) ?? "0");
+    if (saved > 0 && el.scrollHeight > el.clientHeight) el.scrollTop = saved;
+  }, []);
+
   function closeOnMobile() {
     if (isMobile) setOpenMobile(false);
   }
@@ -88,8 +102,8 @@ export function AppSidebar({
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="px-2 pt-3 pb-1">
-        <div className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-          {/* 折叠成 48px 图标轨时藏掉品牌块：否则它和折叠按钮挤在同一行、把按钮盖住 */}
+        <div className="group/header flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
+          {/* 展开态：品牌名 + 副行 */}
           <Link
             href="/"
             onClick={closeOnMobile}
@@ -103,7 +117,19 @@ export function AppSidebar({
               <span className="truncate text-xs text-muted-foreground">{site.tagline}</span>
             </span>
           </Link>
-          <SidebarTrigger className="relative hidden shrink-0 text-muted-foreground after:absolute after:-inset-2 after:content-[''] md:inline-flex" />
+          {/* 折叠态：同一格里默认是品牌方块，鼠标移进侧栏才换成折叠按钮 */}
+          <div className="hidden size-8 shrink-0 items-center justify-center group-data-[collapsible=icon]:flex">
+            <Link
+              href="/"
+              onClick={closeOnMobile}
+              aria-label={site.name}
+              className="flex size-8 items-center justify-center rounded-[10px] bg-primary text-primary-foreground shadow-sm outline-none group-hover/header:hidden focus-visible:ring-2 focus-visible:ring-sidebar-ring/40"
+            >
+              <span className="size-2 rounded-full bg-primary-foreground" />
+            </Link>
+            <SidebarTrigger className="relative hidden size-8 text-muted-foreground group-hover/header:inline-flex" />
+          </div>
+          <SidebarTrigger className="relative hidden shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden after:absolute after:-inset-2 after:content-[''] md:inline-flex" />
           {isMobile ? (
             <Button
               type="button"
@@ -140,7 +166,13 @@ export function AppSidebar({
       </div>
 
       {/* 折叠成图标轨后 shadcn 默认 overflow-hidden，17 个主题一屏放不下，底部会够不着 */}
-      <SidebarContent className="group-data-[collapsible=icon]:overflow-y-auto!">
+      <SidebarContent
+        ref={contentRef}
+        onScroll={(event) => {
+          window.sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(event.currentTarget.scrollTop));
+        }}
+        className="group-data-[collapsible=icon]:overflow-y-auto!"
+      >
         <SidebarGroup className="py-0">
           <SidebarGroupContent>
             <nav aria-label="站点导航">
