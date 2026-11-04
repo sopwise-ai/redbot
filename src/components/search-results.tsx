@@ -75,7 +75,7 @@ export function SearchResults({
                   </div>
                 </ItemContent>
 
-                <ItemActions className="mt-1 self-start text-muted-foreground/60">
+                <ItemActions className="mt-1 self-start text-muted-foreground">
                   <ArrowUpRightIcon
                     aria-hidden
                     className="size-3.5 transition-colors group-hover/link:text-primary"

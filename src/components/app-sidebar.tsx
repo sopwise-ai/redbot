@@ -49,7 +49,9 @@ const itemClass = cn(
 export function AppSidebar({
   topics,
   total,
-  active,
+  activeSlug,
+  topicsActive,
+  isHome,
   onSelect,
   randomPool,
   historyActive = false,
@@ -57,7 +59,12 @@ export function AppSidebar({
 }: {
   topics: TopicSummary[];
   total: number;
-  active: string;
+  /** 当前主题 slug；空串表示不在任何主题页 */
+  activeSlug: string;
+  /** 是否停留在 /topics/ 主题索引 */
+  topicsActive: boolean;
+  /** 是否停留在首页（/） */
+  isHome: boolean;
   onSelect: (slug: string) => void;
   randomPool: RandomPick[];
   historyActive?: boolean;
@@ -81,16 +88,17 @@ export function AppSidebar({
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="px-2 pt-3 pb-1">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
+          {/* 折叠成 48px 图标轨时藏掉品牌块：否则它和折叠按钮挤在同一行、把按钮盖住 */}
           <Link
             href="/"
             onClick={closeOnMobile}
-            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/40"
+            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg outline-none group-data-[collapsible=icon]:hidden focus-visible:ring-2 focus-visible:ring-sidebar-ring/40"
           >
             <span className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-primary text-primary-foreground shadow-sm">
               <span className="size-2 rounded-full bg-primary-foreground" />
             </span>
-            <span className="grid min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
+            <span className="grid min-w-0 leading-tight">
               <span className="truncate text-sm font-semibold tracking-tight">{site.name}</span>
               <span className="truncate text-xs text-muted-foreground">{site.tagline}</span>
             </span>
@@ -131,18 +139,19 @@ export function AppSidebar({
         </SidebarMenu>
       </div>
 
-      <SidebarContent>
+      {/* 折叠成图标轨后 shadcn 默认 overflow-hidden，17 个主题一屏放不下，底部会够不着 */}
+      <SidebarContent className="group-data-[collapsible=icon]:overflow-y-auto!">
         <SidebarGroup className="py-0">
           <SidebarGroupContent>
             <nav aria-label="站点导航">
-              <SidebarMenu>
+              <SidebarMenu className="group-data-[collapsible=icon]:gap-0.5">
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="首页" className={itemClass}>
                     <Link
                       href="/"
                       onClick={closeOnMobile}
-                      aria-current={active === "" ? "page" : undefined}
-                      data-active={active === ""}
+                      aria-current={isHome ? "page" : undefined}
+                      data-active={isHome}
                     >
                       <HomeIcon />
                       <span className="truncate">首页</span>
@@ -172,7 +181,12 @@ export function AppSidebar({
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="全部主题" className={itemClass}>
-                    <Link href="/topics/" onClick={closeOnMobile}>
+                    <Link
+                      href="/topics/"
+                      onClick={closeOnMobile}
+                      aria-current={topicsActive ? "page" : undefined}
+                      data-active={topicsActive}
+                    >
                       <BookOpenIcon />
                       <span className="truncate">全部主题</span>
                       <SidebarMenuBadge className="text-xs tabular-nums">
@@ -191,12 +205,12 @@ export function AppSidebar({
             主题
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="group-data-[collapsible=icon]:gap-0.5">
               {topics.map((topic) => (
                 <TopicMenuItem
                   key={topic.slug}
                   topic={topic}
-                  active={active}
+                  activeSlug={activeSlug}
                   onSelect={select}
                   onPrefetch={() => router.prefetch(`/topics/${topic.slug}/`)}
                 />
@@ -209,7 +223,12 @@ export function AppSidebar({
       <SidebarFooter className="border-t border-sidebar-border/70 pt-3 pb-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="sm" className="text-muted-foreground">
+            <SidebarMenuButton
+              asChild
+              size="sm"
+              tooltip="关于与标准"
+              className="text-muted-foreground"
+            >
               <Link href="/about/" onClick={closeOnMobile}>
                 <BookOpenIcon />
                 <span>关于与标准</span>
@@ -217,7 +236,12 @@ export function AppSidebar({
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="sm" className="text-muted-foreground">
+            <SidebarMenuButton
+              asChild
+              size="sm"
+              tooltip="提交收录"
+              className="text-muted-foreground"
+            >
               <a
                 href={`${site.repo}/blob/main/CONTRIBUTING.md`}
                 target="_blank"
@@ -237,20 +261,21 @@ export function AppSidebar({
 
 function TopicMenuItem({
   topic,
-  active,
+  activeSlug,
   onSelect,
   onPrefetch,
 }: {
   topic: TopicSummary;
-  active: string;
+  activeSlug: string;
   onSelect: (slug: string) => void;
   onPrefetch: () => void;
 }) {
+  const isActive = activeSlug === topic.slug;
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        isActive={active === topic.slug}
-        aria-current={active === topic.slug ? "page" : undefined}
+        isActive={isActive}
+        aria-current={isActive ? "page" : undefined}
         onClick={() => onSelect(topic.slug)}
         onPointerEnter={onPrefetch}
         tooltip={topic.name}

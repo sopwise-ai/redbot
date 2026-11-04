@@ -697,7 +697,9 @@ export function AppShell({
         <AppSidebar
           topics={topics}
           total={total}
-          active={view === "wall" ? (activeTopic?.slug ?? "") : "__none"}
+          activeSlug={view === "wall" ? (activeTopic?.slug ?? "") : ""}
+          topicsActive={view === "topics"}
+          isHome={view === "wall" && !activeTopic && !searching}
           onSelect={goTopic}
           randomPool={randomPool}
           historyActive={view === "history"}
@@ -706,127 +708,127 @@ export function AppShell({
 
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 shrink-0 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-            <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
-              <SidebarTrigger className="-ml-1 md:hidden" />
-              <Link
-                href="/"
-                className="flex items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/30 md:hidden"
-              >
-                <span aria-hidden className="size-2 rounded-full bg-primary" />
-                <span className="hidden text-sm font-semibold tracking-tight sm:inline">
-                  {site.name}
-                </span>
-              </Link>
-
-              <div className="relative mx-auto w-full max-w-md min-w-0">
-                <InputGroup className="h-10 rounded-full border-transparent bg-muted/60 shadow-none focus-within:bg-background has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/20">
-                  <InputGroupAddon>
-                    <SearchIcon aria-hidden />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    ref={inputRef}
-                    value={query}
-                    onChange={(event) => {
-                      const next = event.target.value;
-                      if (next.trim()) {
-                        setQuery(next);
-                        requestCorpus();
-                      } else {
-                        exitSearch();
-                      }
-                    }}
-                    onFocus={() => {
-                      setSearchFocused(true);
-                      requestCorpus();
-                    }}
-                    onBlur={() => setSearchFocused(false)}
-                    aria-expanded={showRecent}
-                    aria-controls="recent-searches"
-                    placeholder="搜索全部信息源…"
-                    aria-label="搜索信息源"
-                    autoComplete="off"
-                    spellCheck={false}
-                  />
-                  <InputGroupAddon align="inline-end">
-                    {query ? (
-                      <InputGroupButton
-                        size="icon-xs"
-                        aria-label="清除搜索"
-                        onClick={() => {
-                          exitSearch();
-                          inputRef.current?.focus();
-                        }}
-                        className="text-muted-foreground"
-                      >
-                        <XIcon />
-                      </InputGroupButton>
-                    ) : (
-                      <Kbd className="hidden sm:inline-flex">⌘K</Kbd>
-                    )}
-                  </InputGroupAddon>
-                </InputGroup>
-
-                {showRecent ? (
-                  <div
-                    id="recent-searches"
-                    aria-label="最近搜索"
-                    // 防止点面板时输入框先失焦，点击事件丢失
-                    onMouseDown={(event) => event.preventDefault()}
-                    className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border bg-popover p-1.5 shadow-lg"
-                  >
-                    <div className="flex items-center justify-between px-2 py-1">
-                      <span className="text-xs text-muted-foreground">最近搜索</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="xs"
-                        onClick={() => setRecentSearches(clearRecentSearches())}
-                        className="text-xs text-muted-foreground"
-                      >
-                        清除
-                      </Button>
-                    </div>
-                    {recentSearches.map((term) => (
-                      <button
-                        key={term}
-                        type="button"
-                        onClick={() => {
-                          setQuery(term);
-                          inputRef.current?.focus();
-                        }}
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
-                      >
-                        <HistoryIcon aria-hidden className="size-3.5 shrink-0" />
-                        <span className="truncate">{term}</span>
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="ml-auto flex shrink-0 items-center gap-1">
-                <ThemeToggle />
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="hidden rounded-full md:inline-flex"
+            <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6 lg:px-8">
+              <div className="flex h-16 items-center gap-2 sm:gap-3">
+                <SidebarTrigger className="-ml-1 md:hidden" />
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/30 md:hidden"
                 >
-                  <a href={site.repo} target="_blank" rel="noopener noreferrer">
-                    GitHub
-                    <ArrowUpRight aria-hidden className="size-3.5" />
-                  </a>
-                </Button>
+                  <span aria-hidden className="size-2 rounded-full bg-primary" />
+                  <span className="hidden text-sm font-semibold tracking-tight sm:inline">
+                    {site.name}
+                  </span>
+                </Link>
+
+                <div className="relative mx-auto w-full max-w-md min-w-0">
+                  <InputGroup className="h-10 rounded-full border-transparent bg-muted/60 shadow-none focus-within:bg-background has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/20">
+                    <InputGroupAddon>
+                      <SearchIcon aria-hidden />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      ref={inputRef}
+                      value={query}
+                      onChange={(event) => {
+                        const next = event.target.value;
+                        if (next.trim()) {
+                          setQuery(next);
+                          requestCorpus();
+                        } else {
+                          exitSearch();
+                        }
+                      }}
+                      onFocus={() => {
+                        setSearchFocused(true);
+                        requestCorpus();
+                      }}
+                      onBlur={() => setSearchFocused(false)}
+                      aria-expanded={showRecent}
+                      aria-controls="recent-searches"
+                      placeholder="搜索全部信息源…"
+                      aria-label="搜索信息源"
+                      autoComplete="off"
+                      spellCheck={false}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      {query ? (
+                        <InputGroupButton
+                          size="icon-xs"
+                          aria-label="清除搜索"
+                          onClick={() => {
+                            exitSearch();
+                            inputRef.current?.focus();
+                          }}
+                          className="text-muted-foreground"
+                        >
+                          <XIcon />
+                        </InputGroupButton>
+                      ) : (
+                        <Kbd className="hidden sm:inline-flex">⌘K</Kbd>
+                      )}
+                    </InputGroupAddon>
+                  </InputGroup>
+
+                  {showRecent ? (
+                    <div
+                      id="recent-searches"
+                      aria-label="最近搜索"
+                      // 防止点面板时输入框先失焦，点击事件丢失
+                      onMouseDown={(event) => event.preventDefault()}
+                      className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border bg-popover p-1.5 shadow-lg"
+                    >
+                      <div className="flex items-center justify-between px-2 py-1">
+                        <span className="text-xs text-muted-foreground">最近搜索</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="xs"
+                          onClick={() => setRecentSearches(clearRecentSearches())}
+                          className="text-xs text-muted-foreground"
+                        >
+                          清除
+                        </Button>
+                      </div>
+                      {recentSearches.map((term) => (
+                        <Button
+                          key={term}
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setQuery(term);
+                            inputRef.current?.focus();
+                          }}
+                          className="w-full justify-start gap-2 px-2 font-normal text-muted-foreground"
+                        >
+                          <HistoryIcon aria-hidden className="size-3.5 shrink-0" />
+                          <span className="truncate">{term}</span>
+                        </Button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="ml-auto flex shrink-0 items-center gap-1">
+                  <ThemeToggle />
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="hidden rounded-full md:inline-flex"
+                  >
+                    <a href={site.repo} target="_blank" rel="noopener noreferrer">
+                      GitHub
+                      <ArrowUpRight aria-hidden className="size-3.5" />
+                    </a>
+                  </Button>
+                </div>
               </div>
             </div>
           </header>
 
-          <main
-            id="content"
-            tabIndex={-1}
-            className="flex-1 px-4 pb-16 outline-none sm:px-6 lg:px-8"
-          >
-            <div className="mx-auto w-full max-w-[1160px]">
+          <main id="content" tabIndex={-1} className="flex-1 pb-16 outline-none">
+            <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6 lg:px-8">
               {isHome ? (
                 <div className="flex flex-col gap-12 pt-6 pb-4 sm:pt-10">
                   <HomeHero
