@@ -198,6 +198,7 @@ export function HistoryView({
                   <AlertDialogFooter>
                     <AlertDialogCancel>取消</AlertDialogCancel>
                     <AlertDialogAction
+                      variant="destructive"
                       onClick={() => {
                         clearHistory();
                         exitManaging();
