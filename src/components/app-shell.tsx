@@ -67,6 +67,13 @@ import { useHistory } from "@/lib/use-history";
 
 export type ShellView = "wall" | "topics" | "search" | "history" | "about";
 
+/**
+ * 静态导出没有服务端读 cookie 的机会（shadcn 的 SidebarProvider 只在 server component
+ * 里读 sidebar_state）。这里用 layout effect 在**绘制前**补一次恢复：用 useEffect 会先
+ * 画一帧展开态再收起，肉眼能看到闪动。
+ */
+const useIsoLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
+
 export function AppShell({
   topics,
   activeTopic,
@@ -114,6 +121,14 @@ export function AppShell({
   // 首帧「URL → state」是否已同步完成。同步之前不许回写地址栏，
   // 否则直链 /search/?q=新闻 会被下面的回写 effect 改写成 /（P0-1 的根因）
   const urlSynced = React.useRef(false);
+
+  // 侧边栏开合：cookie 由 SidebarProvider 负责写，这里负责读回来。
+  // 不恢复的话每次刷新都会弹回展开态，用户折叠了等于白折。
+  const [sidebarOpen, setSidebarOpen] = React.useState(true);
+  useIsoLayoutEffect(() => {
+    const saved = /(?:^|;\s*)sidebar_state=(true|false)/.exec(document.cookie)?.[1];
+    if (saved === "false") setSidebarOpen(false);
+  }, []);
   // 本次搜索是否已经在历史里留下过一条记录（第一次进入搜索要 push，之后只 replace）
   const searchEntryPushed = React.useRef(false);
 
@@ -693,7 +708,7 @@ export function AppShell({
           跳到内容
         </a>
       ) : null}
-      <SidebarProvider>
+      <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <AppSidebar
           topics={topics}
           total={total}
