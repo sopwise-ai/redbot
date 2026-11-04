@@ -547,13 +547,8 @@ export function AppShell({
           <main id="content" tabIndex={-1} className="flex-1 pb-16 outline-none">
             <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6 lg:px-8">
               {isHome ? (
-                <div className="flex flex-col gap-12 pt-6 pb-4 sm:pt-10">
-                  <HomeHero
-                    total={total}
-                    topicCount={topics.length}
-                    updated={updated}
-                    randomPool={randomPool}
-                  />
+                <div className="flex flex-col gap-12 pb-4">
+                  <HomeHero total={total} updated={updated} randomPool={randomPool} />
                   <HomeSections sections={homeSections} hueByLabel={hueByLabel} />
                   <Card className="flex-col items-start justify-between gap-4 p-6 sm:flex-row sm:items-center">
                     <div className="flex flex-col gap-1">
