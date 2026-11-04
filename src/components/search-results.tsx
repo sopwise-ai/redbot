@@ -59,20 +59,24 @@ export function SearchResults({
                 </ItemMedia>
 
                 <ItemContent className="gap-1">
-                  <ItemTitle className="max-w-full truncate">{item.name}</ItemTitle>
-                  <ItemDescription className="line-clamp-2 text-xs leading-5">
-                    {item.desc}
-                  </ItemDescription>
-                  <div className="flex flex-wrap items-center gap-1.5">
+                  {/* 主题紧跟在站名后面：单独一行会把卡片顶成三行，一屏少看好几条 */}
+                  <div className="flex min-w-0 items-center gap-2">
+                    <ItemTitle className="min-w-0 truncate">{item.name}</ItemTitle>
                     {item.topic ? (
-                      <Badge variant="secondary" className="h-5 px-1.5 text-xs font-normal">
+                      <Badge
+                        variant="secondary"
+                        className="h-5 shrink-0 px-1.5 text-xs font-normal"
+                      >
                         {item.topic.name}
                       </Badge>
                     ) : null}
-                    {item.group ? (
-                      <span className="text-xs text-muted-foreground">{item.group.name}</span>
-                    ) : null}
                   </div>
+                  <ItemDescription className="line-clamp-2 text-xs leading-5">
+                    {item.desc}
+                    {item.group ? (
+                      <span className="text-muted-foreground"> · {item.group.name}</span>
+                    ) : null}
+                  </ItemDescription>
                 </ItemContent>
 
                 <ItemActions className="mt-1 self-start text-muted-foreground">
