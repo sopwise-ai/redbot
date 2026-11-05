@@ -4,6 +4,8 @@ import * as React from "react";
 import { CheckIcon, Share2Icon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 /** 分享当前主题：优先系统分享面板，不支持时复制链接并短暂反馈。 */
 export function ShareButton({ title, url }: { title: string; url: string }) {
@@ -31,6 +33,7 @@ export function ShareButton({ title, url }: { title: string; url: string }) {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      toast.success("链接已复制");
       if (timer.current) window.clearTimeout(timer.current);
       timer.current = window.setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -39,20 +42,25 @@ export function ShareButton({ title, url }: { title: string; url: string }) {
   }
 
   return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-sm"
-      onClick={onShare}
-      aria-label={copied ? "链接已复制" : "分享本主题"}
-      className="relative text-muted-foreground after:absolute after:-inset-1.5 after:content-['']"
-    >
-      {copied ? <CheckIcon aria-hidden /> : <Share2Icon aria-hidden />}
-      {copied ? (
-        <span role="status" className="sr-only">
-          链接已复制
-        </span>
-      ) : null}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          onClick={onShare}
+          aria-label={copied ? "链接已复制" : "分享本主题"}
+          className="text-muted-foreground"
+        >
+          {copied ? <CheckIcon aria-hidden /> : <Share2Icon aria-hidden />}
+          {copied ? (
+            <span role="status" className="sr-only">
+              链接已复制
+            </span>
+          ) : null}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{copied ? "已复制链接" : "分享本主题"}</TooltipContent>
+    </Tooltip>
   );
 }

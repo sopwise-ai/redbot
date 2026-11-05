@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { site } from "@/lib/site";
 import { serializeJsonLd, websiteJsonLd } from "@/lib/structured-data";
@@ -48,8 +49,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: "#f8f8f8" },
+    { media: "(prefers-color-scheme: dark)", color: "#090a0c" },
   ],
   colorScheme: "light dark",
   width: "device-width",
@@ -57,27 +58,15 @@ export const viewport: Viewport = {
 };
 
 /**
- * 首屏防闪：静态导出的 HTML 只能是展开态，读到「上次是折叠」就在绘制前给 <html> 打标记。
- * 内联、阻塞、只碰 documentElement —— 与 next-themes 避免深色闪白的做法同源。
- */
-const sidebarInitScript =
-  '(function(){try{if(/(?:^|;\\s*)sidebar_state=false/.test(document.cookie)){document.documentElement.setAttribute("data-sidebar","collapsed")}}catch(e){}})()';
-
-/**
- * body 末尾的同步脚本：侧栏 DOM 已经解析出来、但还没绘制，直接把展开态改成折叠态。
- * 配合 AppShell 里 useState 的惰性初始化（同样读 cookie），React 首帧就按折叠渲染，
- * 与改过的 DOM 一致，既不会 hydrate mismatch，也不会出现「空白栏 -> 图标浮现」。
- */
-const sidebarDomScript =
-  '(function(){try{if(!/(?:^|;\\s*)sidebar_state=false/.test(document.cookie))return;var sb=document.querySelector(\'[data-slot="sidebar"]\');if(sb){sb.setAttribute("data-state","collapsed");sb.setAttribute("data-collapsible","icon")}}catch(e){}})()';
-
-/**
- * 分组筛选同理：`?group=` 只有客户端知道，但静态 HTML 永远是「全部组」。
+ * 分组筛选：`?group=` 只有客户端知道，但静态 HTML 永远是「全部组」。
  * 在绘制前把不匹配的 section 加上 hidden —— React 首帧渲染用的是同一个判断，
  * 结构一致，所以不会 hydrate mismatch，也不会先铺满再缩水。
+ * 注意：这是本站唯一的内联脚本，上 CSP 时需要 nonce / hash。
  */
 const groupDomScript =
-  '(function(){try{var q=new URLSearchParams(location.search).get("group");if(!q)return;' +
+  // `all` = 不过滤（与 lib/group-filter.ts 的 resolveGroupFilter 同口径）。
+  // 不一致时会把所有 section 都藏起来，而 React 认为它们可见 → 水合后无法恢复的空白墙。
+  '(function(){try{var q=new URLSearchParams(location.search).get("group");if(!q||q==="all")return;' +
   'var chips=document.querySelectorAll("[role=radio][data-group-slug]"),hit=false,i;' +
   // 先确认这个 slug 真的存在；无效值交给 React 兜底（它会退回「全部」）
   'for(i=0;i<chips.length;i++){if(chips[i].getAttribute("data-group-slug")===q)hit=true}' +
@@ -94,9 +83,6 @@ const groupDomScript =
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: sidebarInitScript }} />
-      </head>
       <body>
         <script
           type="application/ld+json"
@@ -109,8 +95,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
         >
           <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+          <Toaster />
         </ThemeProvider>
-        <script dangerouslySetInnerHTML={{ __html: sidebarDomScript }} />
         <script dangerouslySetInnerHTML={{ __html: groupDomScript }} />
       </body>
     </html>

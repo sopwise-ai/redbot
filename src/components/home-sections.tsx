@@ -5,7 +5,6 @@ import { ArrowRightIcon } from "lucide-react";
 
 import { PillWall } from "@/components/pill-wall";
 import { hueFor } from "@/lib/groups";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { HomeSection } from "@/lib/schema";
 
@@ -18,40 +17,36 @@ export function HomeSections({
   hueByLabel: Map<string, number>;
 }) {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 sm:gap-16">
       {sections.map(({ topic, items }, index) => (
         <section
           key={topic.slug}
           aria-labelledby={`topic-${topic.slug}`}
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-4 border-t border-border/60 pt-8 first:border-t-0 first:pt-0"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <span
               aria-hidden
               style={{ ["--tile-hue" as string]: hueFor(index) }}
-              className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.96_0.035_var(--tile-hue))] text-base ring-1 ring-black/[0.03] ring-inset dark:bg-[oklch(0.28_0.03_var(--tile-hue))] dark:ring-white/[0.05]"
+              className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[oklch(0.965_0.022_var(--tile-hue))] text-base dark:bg-[oklch(0.28_0.02_var(--tile-hue))]"
             >
               {topic.emoji}
             </span>
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <h2 id={`topic-${topic.slug}`} className="text-base font-semibold tracking-tight">
-                  {topic.name}
-                </h2>
-                <Badge variant="secondary" className="h-5 px-1.5 text-xs tabular-nums">
-                  {topic.count}
-                </Badge>
-              </div>
-              <p className="truncate text-xs text-muted-foreground">{topic.desc}</p>
+              <h2
+                id={`topic-${topic.slug}`}
+                className="flex items-baseline gap-2 text-lg font-semibold"
+              >
+                {topic.name}
+                <span className="text-xs font-normal text-muted-foreground tabular-nums">
+                  {topic.count} 个
+                </span>
+              </h2>
+              <p className="truncate text-sm text-muted-foreground">{topic.desc}</p>
             </div>
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="shrink-0 rounded-full text-muted-foreground hover:text-foreground"
-            >
+            <Button asChild variant="ghost" size="sm" className="shrink-0">
               <Link href={`/topics/${topic.slug}/`}>
-                查看全部
+                全部
                 <ArrowRightIcon data-icon="inline-end" />
               </Link>
             </Button>
@@ -59,6 +54,7 @@ export function HomeSections({
           <PillWall
             groups={[{ slug: topic.slug, name: topic.name, items }]}
             hueByLabel={hueByLabel}
+            showDescription
           />
         </section>
       ))}

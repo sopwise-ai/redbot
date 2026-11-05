@@ -28,7 +28,7 @@ const toc = [
 
 export function AboutView() {
   return (
-    <div className="flex items-start gap-14">
+    <div className="flex items-start gap-12">
       <div className="flex max-w-3xl min-w-0 flex-1 flex-col gap-8">
         <section id="what" className={sectionClass}>
           <h2 className={headingClass}>这是什么</h2>
@@ -53,7 +53,7 @@ export function AboutView() {
               "https，中文内容优先，能正常访问。",
             ].map((line) => (
               <li key={line} className="flex items-start gap-2.5 text-sm leading-6">
-                <CheckIcon aria-hidden className="mt-1 size-3.5 shrink-0 text-primary/80" />
+                <CheckIcon aria-hidden className="mt-1 size-3.5 shrink-0 text-muted-foreground" />
                 <span className="text-muted-foreground">{line}</span>
               </li>
             ))}
@@ -203,7 +203,7 @@ export function AboutView() {
 
       <nav
         aria-label="本页目录"
-        className="sticky top-24 hidden w-40 shrink-0 flex-col gap-3 xl:flex"
+        className="sticky top-32 hidden w-40 shrink-0 flex-col gap-3 xl:flex"
       >
         <p className="text-xs font-medium tracking-wide text-muted-foreground">本页目录</p>
         <ul className="flex flex-col gap-1 border-l border-border">

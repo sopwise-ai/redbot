@@ -2,8 +2,14 @@ import Link from "next/link";
 import { ChevronRightIcon } from "lucide-react";
 
 import { BookmarkExport } from "@/components/bookmark-export";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardTitle } from "@/components/ui/card";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { hueFor } from "@/lib/groups";
 import type { TopicSummary } from "@/lib/schema";
 
@@ -11,38 +17,41 @@ import type { TopicSummary } from "@/lib/schema";
 export function TopicsIndex({ topics }: { topics: TopicSummary[] }) {
   return (
     <>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="flex flex-wrap justify-center gap-3">
         {topics.map((item, index) => (
-          <li key={item.slug} className="min-w-0">
-            <Card className="group relative h-full gap-0 overflow-hidden py-0 shadow-xs transition-[border-color,box-shadow] duration-150 hover:border-ring/30 hover:shadow-md has-[a:focus-visible]:ring-[3px] has-[a:focus-visible]:ring-ring/50">
-              <div className="flex items-start gap-3 p-4">
-                <span
-                  aria-hidden
-                  style={{ ["--tile-hue" as string]: hueFor(index) }}
-                  className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.96_0.035_var(--tile-hue))] text-base leading-none dark:bg-[oklch(0.28_0.03_var(--tile-hue))]"
-                >
-                  {item.emoji}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <CardTitle className="flex items-center gap-2 text-sm font-medium">
-                    <Link
-                      href={`/topics/${item.slug}/`}
-                      className="truncate outline-none after:absolute after:inset-0 after:content-['']"
-                    >
-                      {item.name}
-                    </Link>
-                    <Badge variant="secondary" className="h-5 px-1.5 text-xs tabular-nums">
-                      {item.count}
-                    </Badge>
-                  </CardTitle>
-                  <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{item.desc}</p>
-                </div>
-                <ChevronRightIcon
-                  aria-hidden
-                  className="mt-0.5 size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
-                />
-              </div>
-            </Card>
+          <li
+            key={item.slug}
+            className="w-full min-w-0 sm:w-[calc((100%-0.75rem)/2)] lg:w-[calc((100%-1.5rem)/3)]"
+          >
+            <Item
+              asChild
+              variant="outline"
+              size="sm"
+              className="group/link h-full flex-nowrap bg-card hover:border-ring/40 hover:bg-accent"
+            >
+              <Link href={`/topics/${item.slug}/`}>
+                <ItemMedia>
+                  <span
+                    aria-hidden
+                    style={{ ["--tile-hue" as string]: hueFor(index) }}
+                    className="flex size-8 items-center justify-center rounded-md bg-[oklch(0.965_0.022_var(--tile-hue))] text-sm leading-none dark:bg-[oklch(0.28_0.02_var(--tile-hue))]"
+                  >
+                    {item.emoji}
+                  </span>
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle className="min-w-0 truncate">{item.name}</ItemTitle>
+                  <ItemDescription className="line-clamp-1">{item.desc}</ItemDescription>
+                </ItemContent>
+                <ItemActions className="gap-2 text-muted-foreground">
+                  <span className="text-xs tabular-nums">{item.count}</span>
+                  <ChevronRightIcon
+                    aria-hidden
+                    className="size-3.5 transition-transform duration-150 group-hover/link:translate-x-0.5 motion-reduce:transform-none"
+                  />
+                </ItemActions>
+              </Link>
+            </Item>
           </li>
         ))}
       </ul>

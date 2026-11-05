@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   ArrowUpRight,
   BookOpenIcon,
@@ -31,7 +30,7 @@ import {
 } from "@/components/ui/sidebar";
 import { recordVisit } from "@/lib/history";
 import { pickRandom } from "@/lib/random";
-import { useHistory } from "@/lib/use-history";
+import { useHistoryCount } from "@/lib/use-history";
 import type { RandomPick, TopicSummary } from "@/lib/schema";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -45,8 +44,7 @@ const activeBar =
 
 const itemClass = cn(
   "h-9 rounded-lg px-2 text-sm text-muted-foreground transition-colors",
-  "data-[active=true]:bg-primary/8 data-[active=true]:font-medium data-[active=true]:text-foreground",
-  "dark:data-[active=true]:bg-primary/15",
+  "data-[active=true]:bg-foreground/[0.06] data-[active=true]:font-medium data-[active=true]:text-foreground",
   activeBar,
 );
 
@@ -55,11 +53,10 @@ export function AppSidebar({
   total,
   activeSlug,
   topicsActive,
+  aboutActive = false,
   isHome,
-  onSelect,
   randomPool,
   historyActive = false,
-  onOpenHistory,
 }: {
   topics: TopicSummary[];
   total: number;
@@ -67,20 +64,22 @@ export function AppSidebar({
   activeSlug: string;
   /** 是否停留在 /topics/ 主题索引 */
   topicsActive: boolean;
+  /** 是否停留在 /about/ */
+  aboutActive?: boolean;
   /** 是否停留在首页（/） */
   isHome: boolean;
-  onSelect: (slug: string) => void;
   randomPool: RandomPick[];
   historyActive?: boolean;
-  onOpenHistory?: () => void;
 }) {
-  const router = useRouter();
   const { isMobile, setOpenMobile } = useSidebar();
-  const { entries } = useHistory();
+  const historyCount = useHistoryCount();
 
   // 主题列表比一屏长时用户会往下滚；切主题会重挂 AppShell，
   // 不记一下的话每次跳转都弹回顶部，等于让他重新找一遍
   const contentRef = React.useRef<HTMLDivElement>(null);
+  const scrollFrame = React.useRef<number | null>(null);
+  const pendingScroll = React.useRef(0);
+
   React.useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
@@ -88,14 +87,25 @@ export function AppSidebar({
     if (saved > 0 && el.scrollHeight > el.clientHeight) el.scrollTop = saved;
   }, []);
 
-  function closeOnMobile() {
-    if (isMobile) setOpenMobile(false);
+  // rAF 节流：scroll 事件一秒能来几百次，没必要每次都写 storage
+  React.useEffect(
+    () => () => {
+      if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current);
+    },
+    [],
+  );
+
+  function saveScrollTop(top: number) {
+    pendingScroll.current = top;
+    if (scrollFrame.current !== null) return;
+    scrollFrame.current = requestAnimationFrame(() => {
+      scrollFrame.current = null;
+      window.sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(pendingScroll.current));
+    });
   }
 
-  // 移动端选完主题就收起抽屉，否则遮罩会挡住刚切出来的内容。
-  function select(slug: string) {
-    onSelect(slug);
-    closeOnMobile();
+  function closeOnMobile() {
+    if (isMobile) setOpenMobile(false);
   }
 
   // 主题顺序即 data/topics.json 的顺序
@@ -127,9 +137,15 @@ export function AppSidebar({
             >
               <span className="size-2 rounded-full bg-primary-foreground" />
             </Link>
-            <SidebarTrigger className="relative hidden size-8 text-muted-foreground group-hover/header:inline-flex" />
+            <SidebarTrigger
+              aria-label="折叠或展开侧栏"
+              className="relative hidden size-8 text-muted-foreground group-hover/header:inline-flex"
+            />
           </div>
-          <SidebarTrigger className="relative hidden shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden after:absolute after:-inset-2 after:content-[''] md:inline-flex" />
+          <SidebarTrigger
+            aria-label="折叠或展开侧栏"
+            className="relative hidden shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden after:absolute after:-inset-1 after:content-[''] md:inline-flex"
+          />
           {isMobile ? (
             <Button
               type="button"
@@ -137,7 +153,7 @@ export function AppSidebar({
               size="icon-sm"
               aria-label="关闭导航"
               onClick={() => setOpenMobile(false)}
-              className="relative shrink-0 text-muted-foreground after:absolute after:-inset-1.5 after:content-[''] focus-visible:ring-sidebar-ring"
+              className="relative shrink-0 text-muted-foreground after:absolute after:-inset-1 after:content-[''] focus-visible:ring-sidebar-ring"
             >
               <XIcon />
             </Button>
@@ -168,9 +184,7 @@ export function AppSidebar({
       {/* 折叠成图标轨后 shadcn 默认 overflow-hidden，17 个主题一屏放不下，底部会够不着 */}
       <SidebarContent
         ref={contentRef}
-        onScroll={(event) => {
-          window.sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(event.currentTarget.scrollTop));
-        }}
+        onScroll={(event) => saveScrollTop(event.currentTarget.scrollTop)}
         className="group-data-[collapsible=icon]:overflow-y-auto!"
       >
         <SidebarGroup className="py-0">
@@ -178,12 +192,11 @@ export function AppSidebar({
             <nav aria-label="站点导航">
               <SidebarMenu className="group-data-[collapsible=icon]:gap-0.5">
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="首页" className={itemClass}>
+                  <SidebarMenuButton asChild isActive={isHome} tooltip="首页" className={itemClass}>
                     <Link
                       href="/"
                       onClick={closeOnMobile}
                       aria-current={isHome ? "page" : undefined}
-                      data-active={isHome}
                     >
                       <HomeIcon />
                       <span className="truncate">首页</span>
@@ -192,32 +205,39 @@ export function AppSidebar({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
+                  {/* 导航一律是链接：中键/⌘ 点击开新标签、可复制地址、可被抓取 */}
                   <SidebarMenuButton
+                    asChild
                     isActive={historyActive}
-                    aria-current={historyActive ? "page" : undefined}
-                    onClick={() => {
-                      onOpenHistory?.();
-                      closeOnMobile();
-                    }}
                     tooltip="足迹"
                     className={itemClass}
                   >
-                    <PawPrintIcon />
-                    <span className="truncate">足迹</span>
-                    {entries.length > 0 ? (
-                      <SidebarMenuBadge className="text-xs tabular-nums">
-                        {entries.length}
-                      </SidebarMenuBadge>
-                    ) : null}
+                    <Link
+                      href="/history/"
+                      onClick={closeOnMobile}
+                      aria-current={historyActive ? "page" : undefined}
+                    >
+                      <PawPrintIcon />
+                      <span className="truncate">足迹</span>
+                      {historyCount > 0 ? (
+                        <SidebarMenuBadge className="text-xs tabular-nums">
+                          {historyCount}
+                        </SidebarMenuBadge>
+                      ) : null}
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="全部主题" className={itemClass}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={topicsActive}
+                    tooltip="全部主题"
+                    className={itemClass}
+                  >
                     <Link
                       href="/topics/"
                       onClick={closeOnMobile}
                       aria-current={topicsActive ? "page" : undefined}
-                      data-active={topicsActive}
                     >
                       <BookOpenIcon />
                       <span className="truncate">全部主题</span>
@@ -233,7 +253,12 @@ export function AppSidebar({
         </SidebarGroup>
 
         <SidebarGroup className="py-0">
-          <SidebarGroupLabel className="sticky top-0 z-10 bg-sidebar text-xs">
+          {/*
+            折叠态 shadcn 只把标题改成 opacity-0 + -mt-8，元素仍然在 DOM 里占了 32px，
+            又因为 sticky + z-10，会盖住上面「全部主题」那一行 —— 看不见却点不到。
+            标题是装饰，一律不吃点击。
+          */}
+          <SidebarGroupLabel className="pointer-events-none sticky top-0 z-10 bg-sidebar text-xs">
             主题
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -243,8 +268,7 @@ export function AppSidebar({
                   key={topic.slug}
                   topic={topic}
                   activeSlug={activeSlug}
-                  onSelect={select}
-                  onPrefetch={() => router.prefetch(`/topics/${topic.slug}/`)}
+                  onNavigate={closeOnMobile}
                 />
               ))}
             </SidebarMenu>
@@ -259,9 +283,17 @@ export function AppSidebar({
               asChild
               size="sm"
               tooltip="关于与标准"
-              className="text-muted-foreground"
+              isActive={aboutActive}
+              className={cn(
+                "text-muted-foreground",
+                aboutActive && "bg-foreground/[0.06] font-medium text-foreground",
+              )}
             >
-              <Link href="/about/" onClick={closeOnMobile}>
+              <Link
+                href="/about/"
+                onClick={closeOnMobile}
+                aria-current={aboutActive ? "page" : undefined}
+              >
                 <BookOpenIcon />
                 <span>关于与标准</span>
               </Link>
@@ -294,30 +326,27 @@ export function AppSidebar({
 function TopicMenuItem({
   topic,
   activeSlug,
-  onSelect,
-  onPrefetch,
+  onNavigate,
 }: {
   topic: TopicSummary;
   activeSlug: string;
-  onSelect: (slug: string) => void;
-  onPrefetch: () => void;
+  onNavigate: () => void;
 }) {
   const isActive = activeSlug === topic.slug;
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton
-        isActive={isActive}
-        aria-current={isActive ? "page" : undefined}
-        onClick={() => onSelect(topic.slug)}
-        onPointerEnter={onPrefetch}
-        tooltip={topic.name}
-        className={itemClass}
-      >
-        <span aria-hidden className="w-[18px] shrink-0 text-center text-base leading-none">
-          {topic.emoji}
-        </span>
-        <span className="truncate">{topic.name}</span>
-        <SidebarMenuBadge className="text-xs tabular-nums">{topic.count}</SidebarMenuBadge>
+      <SidebarMenuButton asChild isActive={isActive} tooltip={topic.name} className={itemClass}>
+        <Link
+          href={`/topics/${topic.slug}/`}
+          onClick={onNavigate}
+          aria-current={isActive ? "page" : undefined}
+        >
+          <span aria-hidden className="w-[18px] shrink-0 text-center text-base leading-none">
+            {topic.emoji}
+          </span>
+          <span className="truncate">{topic.name}</span>
+          <SidebarMenuBadge className="text-xs tabular-nums">{topic.count}</SidebarMenuBadge>
+        </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );

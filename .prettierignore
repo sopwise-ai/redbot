@@ -23,7 +23,6 @@ package-lock.json
 README.md
 
 # 二进制资源：prettier 没有对应 parser（遍历时会自动跳过），这里显式声明意图
-docs/screenshots/
 public/*.png
 
 # 刻意不排除 src/components/ui/：registry 原文不符合本仓库格式，

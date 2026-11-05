@@ -13,7 +13,6 @@ const config = defineConfig([
     "**/*.tsbuildinfo",
     "coverage/**",
     ".worktrees/**",
-    "docs/screenshots/**",
   ]),
   ...nextVitals,
   ...nextTs,

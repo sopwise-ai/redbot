@@ -1,6 +1,5 @@
+import type { ShellView } from "@/lib/route-state";
 import type { CategoryGroup } from "@/lib/schema";
-
-import type { ShellView } from "@/components/app-shell";
 
 /**
  * 报头文案的唯一事实源：视图 ×（搜索中）→ emoji / 标题 / 副标题。
@@ -34,7 +33,7 @@ export function headMeta(options: {
       return {
         emoji: "🗂️",
         title: "全部主题",
-        subtitle: "按主题浏览，或直接从侧栏进入",
+        subtitle: "按主题浏览，或从顶栏的「分类」直接跳",
       };
     case "search":
       return {

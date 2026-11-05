@@ -27,7 +27,7 @@ export default function NotFound() {
 
       <div className="max-w-md">
         <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground">404</p>
-        <h1 className="mt-3 font-serif text-2xl font-semibold tracking-tight">这个页面不存在</h1>
+        <h1 className="mt-3 text-2xl font-semibold tracking-[-0.01em]">这个页面不存在</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           链接可能已经失效，或者地址里有拼写错误。
         </p>
@@ -35,7 +35,7 @@ export default function NotFound() {
 
       {/* 与顶栏同一个搜索控件：胶囊外形 + 左侧图标 + 右侧动作按钮，不要退回裸 Input */}
       <form action="/search/" method="get" role="search" className="w-full max-w-sm">
-        <InputGroup className="h-11 rounded-full pr-1 shadow-sm">
+        <InputGroup className="h-11 rounded-lg pr-1 shadow-sm">
           <InputGroupAddon>
             <SearchIcon aria-hidden />
           </InputGroupAddon>
@@ -47,12 +47,7 @@ export default function NotFound() {
             spellCheck={false}
           />
           <InputGroupAddon align="inline-end" className="mr-0! pr-0 [&>button]:mr-0">
-            <InputGroupButton
-              type="submit"
-              variant="default"
-              size="sm"
-              className="rounded-full px-4"
-            >
+            <InputGroupButton type="submit" variant="default" size="sm" className="px-4">
               搜索
             </InputGroupButton>
           </InputGroupAddon>
@@ -60,10 +55,13 @@ export default function NotFound() {
       </form>
 
       <div className="flex flex-wrap items-center justify-center gap-2">
-        <Button asChild className="rounded-full">
+        <Button asChild>
           <Link href="/">回到首页</Link>
         </Button>
-        <Button asChild variant="outline" className="rounded-full">
+        <Button asChild variant="outline">
+          <Link href="/topics/">全部主题</Link>
+        </Button>
+        <Button asChild variant="ghost">
           <a href={site.repo} target="_blank" rel="noopener noreferrer">
             GitHub
             <ArrowUpRightIcon aria-hidden className="size-3.5" />

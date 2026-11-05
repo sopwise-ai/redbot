@@ -5,7 +5,6 @@
 1. 收录标准、字段规范、配额：[CONTRIBUTING.md](./CONTRIBUTING.md)
 2. 本地跑不跑得起来：按 [`.nvmrc`](./.nvmrc) 切到 Node 22 → `npm install` → `npm run verify`
    （报错输出的尾部就是我们需要的信息）
-3. 「为什么界面长这样 / 为什么没有某个功能」：[docs/DESIGN-LOG.md](./docs/DESIGN-LOG.md)
 
 自建部署只支持 `npm run build` 产出的 `out/` 静态目录（见 [README](./README.md) 的本地开发一节）；
 托管平台侧的配置问题不在支持范围。
