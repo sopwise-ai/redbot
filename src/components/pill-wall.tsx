@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { LinkCard } from "@/components/link-card";
 import type { PillGroup } from "@/lib/group-filter";
 import { cn } from "@/lib/utils";
@@ -31,14 +30,17 @@ export function PillWall({
           {showHeading ? (
             <div className="flex items-baseline gap-2">
               <h2 className="text-sm font-medium">{group.name}</h2>
-              <Badge variant="secondary" className="h-5 px-1.5 text-xs tabular-nums">
+              <span className="text-xs text-muted-foreground tabular-nums">
                 {group.items.length}
-              </Badge>
+              </span>
             </div>
           ) : null}
-          <ul aria-label={group.name} className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <ul aria-label={group.name} className="flex flex-wrap justify-center gap-3">
             {group.items.map((item) => (
-              <li key={item.id} className="min-w-0">
+              <li
+                key={item.id}
+                className="w-full min-w-0 sm:w-[calc((100%-0.75rem)/2)] xl:w-[calc((100%-1.5rem)/3)]"
+              >
                 <LinkCard
                   item={item}
                   hue={hueByLabel.get(item.tags[0]) ?? 0}

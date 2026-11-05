@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { PencilIcon } from "lucide-react";
 
 import { ShareButton } from "@/components/share-button";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { headCount, headMeta } from "@/lib/head-meta";
 import type { ShellView } from "@/lib/route-state";
 import type { CategoryGroup } from "@/lib/schema";
@@ -61,9 +60,9 @@ export function ShellHeader({
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <h1 className="text-2xl font-semibold tracking-[-0.01em] sm:text-3xl">{meta.title}</h1>
             {count > 0 ? (
-              <Badge variant="secondary" className="tabular-nums">
-                {count}
-              </Badge>
+              <span className="text-sm font-normal text-muted-foreground tabular-nums">
+                {count} 个
+              </span>
             ) : null}
           </div>
           <p className="mt-1.5 max-w-prose text-sm text-muted-foreground sm:text-base">
@@ -72,39 +71,29 @@ export function ShellHeader({
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-1">
+      <div className="-mr-1 flex shrink-0 items-center gap-0.5">
         {activeGroup ? (
           <>
             <ShareButton
               title={`${site.name} · ${activeGroup.name}`}
               url={`${site.url}/topics/${activeGroup.slug}/`}
             />
-            <Button
-              asChild
-              variant="ghost"
-              size="icon-sm"
-              className="relative text-muted-foreground after:absolute after:-inset-1.5 after:content-['']"
-            >
-              <a
-                href={`${site.repo}/edit/main/data/topics/${activeGroup.slug}.json`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`在 GitHub 编辑「${activeGroup.name}」`}
-              >
-                <PencilIcon aria-hidden />
-              </a>
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button asChild variant="ghost" size="icon-sm" className="text-muted-foreground">
+                  <a
+                    href={`${site.repo}/edit/main/data/topics/${activeGroup.slug}.json`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`在 GitHub 编辑「${activeGroup.name}」`}
+                  >
+                    <PencilIcon aria-hidden />
+                  </a>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>在 GitHub 编辑这一页</TooltipContent>
+            </Tooltip>
           </>
-        ) : null}
-        {view !== "topics" && !searching ? (
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="hidden rounded-lg text-muted-foreground md:inline-flex"
-          >
-            <Link href="/topics/">全部主题</Link>
-          </Button>
         ) : null}
       </div>
     </div>

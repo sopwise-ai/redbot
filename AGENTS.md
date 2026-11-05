@@ -15,7 +15,7 @@
 - Next.js 16（App Router）+ React 19 + TypeScript 5；Node 26（`.nvmrc` 锁定，CI 用 `node-version-file` 读同一个值）
 - Tailwind CSS v4（CSS-first，token 在 `src/app/globals.css` 的 `@theme inline`）
 - shadcn/ui（registry 组件，源码在 `src/components/ui/`；新增控件见下文约定 2）
-- fuse.js（客户端搜索）、next-themes（浅色 / 深色 / 跟随系统三态，**默认深色**，切换器是 `src/components/theme-toggle.tsx`）、zod（数据契约）
+- fuse.js（客户端搜索）、next-themes（浅色 / 深色 / 跟随系统三态，**默认跟随系统**，切换器是 `src/components/theme-toggle.tsx`）、zod（数据契约）
 - ESLint 10 + `eslint-config-next` 16（`eslint.config.mjs`，原生 flat config：core-web-vitals 入口 + TypeScript 规则入口，不再用 FlatCompat）
 - **`output: "export"` 纯静态**：构建期产出 `out/`，没有服务端运行时、没有 API 路由
 
@@ -46,7 +46,9 @@ data/topics.schema.jsonc 数据规范（字段、上限、跨文件约束）—�
 src/app/              layout / page / globals.css / manifest / not-found / icon
                       + topics/（索引与 [slug]）/ search/ / history/ / about/
 src/components/       app-shell（状态与布局）、link-card（链接卡，按钮墙 / 搜索 / 足迹共用）、
-                      home-hero / home-sections（首页）、app-sidebar、pill-wall（按钮墙）、
+                      home-hero / home-sections（首页）、main-nav（NavigationMenu 顶栏）、
+                      search-palette（⌘K 命令面板）、mobile-group-filter（抽屉筛选）、
+                      app-sidebar（移动端抽屉）、pill-wall（按钮墙）、
                       history-view（足迹）、topics-index、site-footer
 src/components/ui/    shadcn 生成物，改样式前先看这里有没有现成变体
 src/generated/topics.ts  由脚本生成的主题静态入口（勿手改）
@@ -134,17 +136,19 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 - `tagline` 是**名词短语**，不是句子。改成「一个按钮直达…」这类句子会让品类消失，回到「看不出这是什么站」。
 - 分类页 H1 用分类名、副行用 `desc`；品牌三层**只在首页**出现（`isHome`）。
 - 首页 H1 是 8 个字，移动端 `text-4xl`（36px）、平板 `text-6xl`（60px）、桌面 `text-7xl`（72px，**无衬线 600**）；再加长要先量 390px。
-  hero 是 **Linear 式排印**：无卡片、无产品截图，靠字号对比（72px 标题 / 12px 眉标）+ 标题后方一层极淡红晕建立层级。
+  hero 是**居中排印**：一行眉标（来源 · 日期）→ 72px 标题 → 副行 → 两个动作 → 信任行 → 一条 64px 细线收尾；
+  无卡片、无产品截图，靠字号对比与标题后方的极淡红晕建立层级。
 - 条目 `desc` 写使用时机（「查公司股权和诉讼，先看这里」），不写公司简介。
 
 ## 设计 token（改样式前先读）
 
-- **颜色**：**深色优先**（默认 `dark`）：近黑画布 `oklch(0.145 0.004 264)` + 略亮一档的面板
-  （card `0.185` / sidebar `0.165`），靠 8% 白线分层。浅色是冷白 `0.98` + 纯白卡片，移动端抽屉 `0.965`。
+- **颜色**：**深色优先**（`dark` 是主设计稿；默认跟随系统）：近黑画布 `oklch(0.145 0.004 264)` + 略亮一档的面板
+  （card `0.205` / sidebar `0.205`），靠 10% 白线分层 —— 这三档直接沿用 shadcn 默认暗色阶梯，不要自己压扁。
+  浅色是冷白 `0.98` + 纯白卡片，移动端抽屉 `0.965`。
   **不要引入暖黄/米色**：那会把站点拉回「纸上杂志」，和 Linear 那一路相冲。
   `--border` 只用于必须的边界。
-  **红色只用于品牌标识、主 CTA、移动端抽屉当前位置与 hover**；筛选 chip 的选中态用前景/背景黑白反转，
-  不要用红色，也不要用它装饰计数、徽章。
+  **红色只用于品牌标识、主 CTA、移动端抽屉当前位置与 hover**；筛选 chip 用 `ToggleGroup` 的 outline 变体，
+  选中态吃 `accent`，不要用红色，也不要用红色装饰计数、徽章。
   **焦点环用中性灰**（`--ring`），不是品牌红：红色焦点环在图标按钮上会被误读成「错误」。
 - **字号**：直接用 Tailwind 默认阶梯（`text-xs 12 / sm 14 / base 16 / lg 18 / xl 20 / 2xl 24 / 3xl 30 /
 4xl 36 / 5xl 48 / 6xl 60 / 7xl 72`）。
@@ -153,9 +157,11 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
   标题也用 sans：weight 600、`tracking-[-0.02em]`，不要引入衬线，也不要第三套字体。
   `font-synthesis: none` —— 没有的权重宁可落回最近的真实字重，也不要浏览器合成的假粗。
 - **标题**：H1 36 / 60 / 72（weight 600）；首页主题 h2 18（weight 600）；卡片标题 14；元信息 12。
-- **阴影**：默认**不用阴影**，靠 1px 线与底色差分层；只有 Popover / Dialog / 浮层（skip link）用 `shadow-lg`。
-- **圆角**：`--radius` **8px**；卡片与按钮用 `rounded-lg` / `rounded-xl`（同为 8px），
-  `rounded-full` 只保留给筛选 chip 与状态点。
+- **阴影**：不手写阴影。组件自带的 `shadow-xs` / `shadow-sm`（Button outline、Card、InputGroup）保留原样，
+  不要用 `shadow-none` 抹掉；只有 Popover / Dialog / 浮层（skip link）用 `shadow-lg`。
+- **圆角**：`--radius` **0.625rem（10px）**，与 shadcn 默认一致。**圆角由组件决定**：Card 是 `rounded-xl`、
+  Button / Item / Input / InputGroup 是 `rounded-md`。不要往组件上传 `rounded-lg` / `rounded-xl` 这类覆写 ——
+  之前满屏 `rounded-lg rounded-xl` 就是把系统的一致性磨掉的原因。`rounded-full` 只留给状态点与头像类元素。
 - **主题色块**：主题 emoji 坐在 `oklch(0.965 0.022 <hue>)` 的淡色方块里（深色 `0.27 0.02`），
   色相来自 `hueFor(主题在 topics.json 里的下标)`；卡片内的色点用 `oklch(0.62 0.12 <hue>)`（深色 `0.72 0.10`），
   保证「一个主题一种颜色」。彩度不要加回去：近黑底上高饱和会变成玩具感。
@@ -168,23 +174,30 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 - **能用 shadcn 就不要手写**：链接卡是 `Item asChild`（`ItemMedia` 放色点、`ItemTitle` 放名称、
   `ItemDescription` 放推荐理由 / 足迹元信息、`ItemActions` 放箭头）；搜索框是 `InputGroup`
   （`InputGroupAddon` + `InputGroupInput` + `InputGroupButton`）；空状态是 `Empty`；
-  加载占位是 `Skeleton`；清空足迹用 `AlertDialog`；FAQ 用 `Accordion`；分组筛选用 `ToggleGroup`。
+  加载占位是 `Skeleton`；清空足迹用 `AlertDialog`；FAQ 用 `Accordion`；分组筛选用 `ToggleGroup`；
+  **错误提示用 `Alert`**（不是 Empty）；**图标按钮用 `Tooltip` 补文字**；**长面板用 `ScrollArea` 限高**；
+  **命令面板用 `Command`**；**轻提示用 `Sonner` 的 `toast()`**；**移动端筛选/面板用 `Drawer`**；**桌面导航用 `NavigationMenu`**。
   **不要退回到 `inline-flex h-9 rounded-md border px-3` 这类手写变体。**
-- **按钮墙**是 `grid gap-2 sm:grid-cols-2 xl:grid-cols-3` 的等宽网格，不再是可变宽度的 flex-wrap：
+- **按钮墙**是 `grid gap-3 sm:grid-cols-2 xl:grid-cols-3` 的等宽网格，不再是可变宽度的 flex-wrap：
   三列在 1200px 容器里刚好 373px 一列，中文名不会截断，右缘自然齐边。
-  行高 48px（含说明 62px），hover 只换底色 / 边框，**不加阴影、不做位移**。
+  行高由 `Item` 的 `sm` 内边距决定（单行约 46px，带推荐理由约 70px），不要写死高度；
+  hover 只换底色（`bg-accent`），**不加阴影、不做位移**。
 - **每张卡内部是 `justify-between` 的两端结构**：色点与文字贴左、箭头钉在右缘，不要改回居中。
-- **顶部导航（桌面）**：两行吸顶，总高 108px。
-  第一行 `h-16`：品牌 + 居中搜索 + 「随机一个」（ghost，**不要再用红色**）+ 主题 / GitHub；
-  第二行 `h-11`：首页 / 足迹 / 全部主题（固定）+ 可横滑的分类条 + 右端「全部分类」面板。
-  分类条**不带计数**（17 个名字在 1200 容器里刚好排下），计数只在面板里；
-  当前项用 2px 红色下划线，不用红色底纹。**桌面不再有侧栏。**
-- **移动端**：只保留 64px 顶栏（菜单 + 品牌点 + 搜索 + 主题）+ 抽屉；抽屉里是品牌、
+- **顶部导航（桌面）**：**单行吸顶，高 64px**。品牌 + `NavigationMenu`（首页 / 足迹 / 全部主题 / 分类面板）+
+  搜索框 + 「随机一个」（ghost）+ 主题 + GitHub。
+  17 个分类**不再铺成横滑标签带**，收进 `NavigationMenu` 的「分类」面板（三列、带计数、当前项高亮）。
+  **⌘K 打开 `Command` 命令面板**（跳页面 + 搜条目 + 最近搜索），顶栏输入框保留 `/` 聚焦做边打边筛。
+  **桌面没有侧栏**，移动端才有抽屉。
+- **移动端**：只保留 64px 顶栏（菜单 + logo + RedBot 字标 + 搜索按钮 + 主题）+ 抽屉；
+  搜索按钮打开 ⌘K 命令面板（移动端不再放常驻输入框）；抽屉里是品牌、
   「随机一个」、页面入口与 17 个主题，当前项左侧 3px 红色竖条。
+  主题页的分组筛选在小屏用 `Drawer` 底部抽屉（一个「分组：X」按钮），`sm` 以上才用横滑 chip。
   主题顺序即 `data/topics.json` 的顺序，**调整顺序会改变全站配色**，这不是 bug。
-- **报头**：淡色 emoji 方块（44/48px，色相跟随主题）+ H1（无衬线 600）+ 计数 `Badge` + 副标题；
+- **报头**：淡色 emoji 方块（44/48px，色相跟随主题）+ H1（无衬线 600）+ 次级计数文字（`17 个`）+ 副标题；
   右侧只放「分享 / 在 GitHub 编辑」。**不要重复写「N 个主题 / 更新于」**——hero 刊头行（左总条数、右日期）与页脚各一处。
-- **主题页底部**有「上一个 / 下一个主题」两个等宽按钮卡，顺序即 `data/topics.json`；
+- **页脚**：品牌 + 一句定位 + 信任行，右侧「浏览 / 更多」两列入口，`Separator` 下是版权行与「回到顶部」；
+  窄屏按栏堆叠，不要再把链接塞回一行。
+- **主题页底部**有「上一个 / 下一个」的轻量翻页行（ghost 按钮，两端对齐），顺序即 `data/topics.json`；
   关于页在 `xl` 以上有 sticky 目录，两者都是为了让长页面有出口，不要删。
 
 ## 容易踩的坑

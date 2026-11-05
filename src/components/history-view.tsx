@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Empty,
   EmptyContent,
@@ -80,9 +81,9 @@ export function HistoryView({
     return (
       <div role="status" aria-label="正在读取足迹">
         <span className="sr-only">正在读取足迹…</span>
-        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3" aria-hidden>
+        <div className="flex flex-wrap justify-center gap-3" aria-hidden>
           {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="h-[62px] rounded-xl" />
+            <Skeleton key={index} className="h-[70px]" />
           ))}
         </div>
       </div>
@@ -91,7 +92,7 @@ export function HistoryView({
 
   if (error) {
     return (
-      <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
+      <Empty className="mx-auto w-full max-w-2xl">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <TriangleAlertIcon />
@@ -110,7 +111,7 @@ export function HistoryView({
 
   if (items.length === 0) {
     return (
-      <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
+      <Empty className="mx-auto w-full max-w-2xl">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <PawPrintIcon />
@@ -124,7 +125,7 @@ export function HistoryView({
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button
               size="sm"
-              className="rounded-lg"
+
               onClick={() => {
                 const pick = pickRandom(allItems);
                 if (!pick) return;
@@ -135,7 +136,7 @@ export function HistoryView({
               <ShuffleIcon data-icon="inline-start" />
               随机一个
             </Button>
-            <Button asChild variant="outline" size="sm" className="rounded-lg">
+            <Button asChild variant="outline" size="sm">
               <Link href="/topics/">按主题浏览</Link>
             </Button>
           </div>
@@ -148,7 +149,7 @@ export function HistoryView({
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground tabular-nums">
-          {items.length} 个 · 按最近使用排序
+          {managing ? `已选 ${selected.size} 个` : `${items.length} 个 · 按最近使用排序`}
         </span>
         <div className="ml-auto flex flex-wrap items-center justify-end gap-1.5">
           {managing ? (
@@ -156,7 +157,7 @@ export function HistoryView({
               <Button
                 variant="ghost"
                 size="sm"
-                className="rounded-lg"
+
                 onClick={() =>
                   setSelected(
                     selected.size === items.length ? new Set() : new Set(items.map((i) => i.id)),
@@ -168,7 +169,7 @@ export function HistoryView({
               <Button
                 variant="ghost"
                 size="sm"
-                className="rounded-lg text-destructive hover:text-destructive"
+                className="text-destructive hover:text-destructive"
                 disabled={selected.size === 0}
                 onClick={() => {
                   removeVisits([...selected]);
@@ -177,12 +178,13 @@ export function HistoryView({
               >
                 删除选中{selected.size > 0 ? `（${selected.size}）` : ""}
               </Button>
+              <Separator orientation="vertical" className="mx-1 h-5" />
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="rounded-lg text-destructive hover:text-destructive"
+                    className="text-destructive hover:text-destructive"
                   >
                     <Trash2Icon data-icon="inline-start" />
                     清空
@@ -209,7 +211,8 @@ export function HistoryView({
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <Button variant="outline" size="sm" className="rounded-lg" onClick={exitManaging}>
+              <Separator orientation="vertical" className="mx-1 h-5" />
+              <Button variant="outline" size="sm" onClick={exitManaging}>
                 完成
               </Button>
             </>
@@ -217,7 +220,7 @@ export function HistoryView({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-lg"
+
               onClick={() => setManaging(true)}
             >
               管理
@@ -226,11 +229,14 @@ export function HistoryView({
         </div>
       </div>
 
-      <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+      <ul className="flex flex-wrap justify-center gap-3">
         {items.map((item) => {
           const entry = entriesById.get(item.id);
           return (
-            <li key={item.id} className="min-w-0">
+            <li
+              key={item.id}
+              className="w-full min-w-0 sm:w-[calc((100%-0.75rem)/2)] xl:w-[calc((100%-1.5rem)/3)]"
+            >
               <LinkCard
                 item={item}
                 hue={hueByLabel.get(item.tags[0]) ?? 0}
@@ -239,9 +245,7 @@ export function HistoryView({
                 selected={managing && selected.has(item.id)}
                 onToggle={toggle}
                 meta={
-                  !managing && entry
-                    ? `点过 ${entry.count} 次 · ${formatRelativeTime(entry.at)}`
-                    : undefined
+                  entry ? `点过 ${entry.count} 次 · ${formatRelativeTime(entry.at)}` : undefined
                 }
               />
             </li>

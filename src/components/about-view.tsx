@@ -28,7 +28,7 @@ const toc = [
 
 export function AboutView() {
   return (
-    <div className="flex items-start gap-14">
+    <div className="flex items-start gap-12">
       <div className="flex max-w-3xl min-w-0 flex-1 flex-col gap-8">
         <section id="what" className={sectionClass}>
           <h2 className={headingClass}>这是什么</h2>

@@ -36,13 +36,6 @@ export function useSearchKeyboard({
       // 输入法组字中（含 Safari 的 keyCode 229）：一律不接管
       if (event.isComposing || event.keyCode === 229) return;
 
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        inputRef.current?.focus();
-        inputRef.current?.select();
-        return;
-      }
-
       if (shortcutsOpen) return;
 
       if (event.key === "/" && !isTyping(event.target) && !event.metaKey && !event.ctrlKey) {

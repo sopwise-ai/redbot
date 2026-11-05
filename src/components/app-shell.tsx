@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -24,12 +25,16 @@ import { PillWall } from "@/components/pill-wall";
 import { SearchResults } from "@/components/search-results";
 import { ShellHeader } from "@/components/shell-header";
 import { SiteFooter } from "@/components/site-footer";
-import { SiteNav } from "@/components/site-nav";
+import { MainNav } from "@/components/main-nav";
+import { MobileGroupFilter } from "@/components/mobile-group-filter";
+import { openSearchPalette, SearchPalette } from "@/components/search-palette";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { TopicsIndex } from "@/components/topics-index";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -177,6 +182,7 @@ export function AppShell({
         : total;
 
   // 首页＝按钮墙 + 无分类 + 非搜索：只有这里展示品牌标语与信任行
+  const pathname = usePathname();
   const isHome = !searching && view === "wall" && !activeGroup;
 
   let body: React.ReactNode;
@@ -186,26 +192,25 @@ export function AppShell({
       body = (
         <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3" aria-busy aria-live="polite">
           {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="h-[88px] rounded-xl" />
+            <Skeleton
+              key={index}
+              className="h-[70px] w-full sm:w-[calc((100%-0.75rem)/2)] xl:w-[calc((100%-1.5rem)/3)]"
+            />
           ))}
         </div>
       );
     } else if (corpusError) {
       body = (
-        <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <TriangleAlertIcon />
-            </EmptyMedia>
-            <EmptyTitle>搜索语料加载失败</EmptyTitle>
-            <EmptyDescription>刷新页面再试一次。</EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button size="sm" onClick={() => window.location.reload()}>
+        <Alert variant="destructive" className="mx-auto w-full max-w-2xl">
+          <TriangleAlertIcon />
+          <AlertTitle>搜索语料加载失败</AlertTitle>
+          <AlertDescription className="flex flex-wrap items-center gap-3">
+            刷新页面再试一次。
+            <Button size="sm" variant="outline" onClick={() => window.location.reload()}>
               重新加载
             </Button>
-          </EmptyContent>
-        </Empty>
+          </AlertDescription>
+        </Alert>
       );
     } else if (results.length > 0) {
       body = (
@@ -216,7 +221,7 @@ export function AppShell({
     } else {
       const issueTitle = `收录建议：${query.trim().slice(0, 60)}`;
       body = (
-        <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
+        <Empty className="mx-auto w-full max-w-2xl">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <SearchXIcon />
@@ -265,7 +270,6 @@ export function AppShell({
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button
               size="sm"
-              className="rounded-lg"
               onClick={() => {
                 exitSearch();
                 inputRef.current?.focus();
@@ -273,10 +277,10 @@ export function AppShell({
             >
               清除搜索
             </Button>
-            <Button asChild variant="outline" size="sm" className="rounded-lg">
+            <Button asChild variant="outline" size="sm">
               <Link href="/topics/">按主题浏览</Link>
             </Button>
-            <Button asChild variant="outline" size="sm" className="rounded-lg">
+            <Button asChild variant="outline" size="sm">
               <a
                 href={`${site.repo}/issues/new?${new URLSearchParams({
                   labels: "link-suggestion",
@@ -299,7 +303,7 @@ export function AppShell({
     body = <TopicsIndex topics={topics} />;
   } else if (view === "search") {
     body = (
-      <Empty className="mx-auto w-full max-w-2xl rounded-xl border border-solid border-border/80">
+      <Empty className="mx-auto w-full max-w-2xl">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <SearchIcon />
@@ -308,7 +312,7 @@ export function AppShell({
           <EmptyDescription>输入关键词开始搜索，名称、别名和推荐理由都会被检索。</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button asChild size="sm" className="rounded-lg">
+          <Button asChild size="sm">
             <Link href="/topics/">按主题浏览</Link>
           </Button>
         </EmptyContent>
@@ -328,7 +332,7 @@ export function AppShell({
   }
 
   return (
-    <>
+    <TooltipProvider delayDuration={300}>
       {skipReady ? (
         <a
           id="skip-link"
@@ -356,16 +360,19 @@ export function AppShell({
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 shrink-0 border-b border-border/60 bg-background/80 backdrop-blur-xl">
             <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
-              <div className="flex h-16 items-center gap-2 sm:gap-3 md:grid md:grid-cols-[1fr_minmax(0,28rem)_1fr]">
+              <div className="flex h-16 items-center gap-2 sm:gap-3">
                 <SidebarTrigger className="-ml-1 md:hidden" aria-label="打开导航" />
                 <Link
                   href="/"
                   className="flex items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/30 md:hidden"
                 >
-                  <span aria-hidden className="size-2 rounded-full bg-primary" />
-                  <span className="hidden text-sm font-semibold tracking-tight sm:inline">
-                    {site.name}
+                  <span
+                    aria-hidden
+                    className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary"
+                  >
+                    <span className="size-1.5 rounded-full bg-primary-foreground" />
                   </span>
+                  <span className="text-sm font-semibold tracking-tight">{site.name}</span>
                 </Link>
 
                 {/* 桌面品牌：移动端用上面的红点，桌面用完整字标 + 副行 */}
@@ -384,9 +391,15 @@ export function AppShell({
                   </span>
                 </Link>
 
+                <MainNav
+                  topics={topics}
+                  view={view}
+                  activeSlug={view === "wall" ? (activeTopic?.slug ?? "") : ""}
+                />
+
                 {/* 搜索区：面板与输入框同属一个 wrapper，blur 时只有焦点真的离开才收起 */}
                 <div
-                  className="relative mx-auto w-full max-w-md min-w-0"
+                  className="relative mx-auto hidden w-full max-w-md min-w-0 md:block"
                   onBlur={(event) => {
                     // Tab 到面板里的「展开 / 清空 / 删除」不能把面板关掉，
                     // 否则键盘用户永远够不到这些按钮（焦点会随卸载落到 body）
@@ -394,7 +407,7 @@ export function AppShell({
                     setSearchFocused(false);
                   }}
                 >
-                  <InputGroup className="h-10 rounded-lg border-transparent bg-muted/60 shadow-none focus-within:bg-background has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/20">
+                  <InputGroup>
                     <InputGroupAddon>
                       <SearchIcon aria-hidden />
                     </InputGroupAddon>
@@ -461,7 +474,7 @@ export function AppShell({
                         inputRef.current?.focus();
                         setSearchFocused(false);
                       }}
-                      className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border bg-popover shadow-lg"
+                      className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-xl border bg-popover shadow-lg"
                     >
                       <div className="flex items-center justify-between px-3 pt-2 pb-1">
                         <span className="text-xs text-muted-foreground">最近搜索</span>
@@ -545,13 +558,23 @@ export function AppShell({
                   ) : null}
                 </div>
 
-                <div className="ml-auto flex shrink-0 items-center gap-2">
+                <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="搜索"
+                    className="text-muted-foreground md:hidden"
+                    onClick={openSearchPalette}
+                  >
+                    <SearchIcon aria-hidden />
+                  </Button>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     aria-label="随机一个"
-                    className="hidden h-9 rounded-lg text-muted-foreground hover:text-foreground md:inline-flex"
+                    className="hidden text-muted-foreground hover:text-foreground md:inline-flex"
                     onClick={() => {
                       const pick = pickRandom(randomPool);
                       if (!pick) return;
@@ -562,13 +585,9 @@ export function AppShell({
                     <ShuffleIcon data-icon="inline-start" />
                     <span className="hidden lg:inline">随机一个</span>
                   </Button>
+                  <SearchPalette />
                   <ThemeToggle />
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    className="hidden rounded-lg lg:inline-flex"
-                  >
+                  <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
                     <a href={site.repo} target="_blank" rel="noopener noreferrer">
                       GitHub
                       <ArrowUpRight aria-hidden className="size-3.5" />
@@ -577,35 +596,32 @@ export function AppShell({
                 </div>
               </div>
             </div>
-
-            <div className="hidden border-t border-border/60 md:block">
-              <SiteNav
-                topics={topics}
-                view={view}
-                activeSlug={view === "wall" ? (activeTopic?.slug ?? "") : ""}
-              />
-            </div>
           </header>
 
           <main id="content" tabIndex={-1} className="flex-1 pb-16 outline-none">
-            <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+            <div
+              key={pathname}
+              className="mx-auto w-full max-w-[1200px] animate-in px-4 duration-200 fade-in-0 sm:px-6 lg:px-8"
+            >
               {isHome ? (
-                <div className="flex flex-col gap-12 pb-4">
+                <div className="flex flex-col gap-10 pb-8 sm:gap-16">
                   <HomeHero total={total} updated={updated} randomPool={randomPool} />
                   <HomeSections sections={homeSections} hueByLabel={hueByLabel} />
-                  <Card className="flex-col items-start justify-between gap-4 p-6 sm:flex-row sm:items-center">
-                    <div className="flex flex-col gap-1">
-                      <p className="text-base font-medium">{topics.length} 个主题，按需切换</p>
-                      <p className="text-sm text-muted-foreground">
-                        主题索引里还有完整的分类说明与书签导出。
-                      </p>
-                    </div>
-                    <Button asChild variant="outline" className="rounded-lg">
-                      <Link href="/topics/">
-                        浏览全部主题
-                        <ArrowRightIcon data-icon="inline-end" />
-                      </Link>
-                    </Button>
+                  <Card>
+                    <CardContent className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                      <div className="flex flex-col gap-1">
+                        <p className="text-base font-medium">{topics.length} 个主题，按需切换</p>
+                        <p className="text-sm text-muted-foreground">
+                          主题索引里还有完整的分类说明与书签导出。
+                        </p>
+                      </div>
+                      <Button asChild variant="outline">
+                        <Link href="/topics/">
+                          浏览全部主题
+                          <ArrowRightIcon data-icon="inline-end" />
+                        </Link>
+                      </Button>
+                    </CardContent>
                   </Card>
                 </div>
               ) : (
@@ -625,12 +641,24 @@ export function AppShell({
                   />
 
                   {activeGroup && !searching && hasGroups ? (
-                    <GroupFilter
-                      groups={activeGroup.groups}
-                      items={activeGroup.items}
-                      value={groupFilter}
-                      onChange={changeGroupFilter}
-                    />
+                    <>
+                      <div className="hidden sm:block">
+                        <GroupFilter
+                          groups={activeGroup.groups}
+                          items={activeGroup.items}
+                          value={groupFilter}
+                          onChange={changeGroupFilter}
+                        />
+                      </div>
+                      <div className="mb-6 sm:hidden">
+                        <MobileGroupFilter
+                          groups={activeGroup.groups}
+                          items={activeGroup.items}
+                          value={groupFilter}
+                          onChange={changeGroupFilter}
+                        />
+                      </div>
+                    </>
                   ) : null}
 
                   <p className="sr-only" aria-live="polite">
@@ -689,7 +717,7 @@ export function AppShell({
           </DialogContent>
         </Dialog>
       </SidebarProvider>
-    </>
+    </TooltipProvider>
   );
 }
 
@@ -704,42 +732,24 @@ function TopicPager({ topics, slug }: { topics: TopicSummary[]; slug: string }) 
   return (
     <nav
       aria-label="切换主题"
-      className="mt-10 grid gap-3 border-t border-border/70 pt-6 sm:grid-cols-2"
+      className="mt-12 flex flex-col gap-1 border-t border-border/60 pt-6 sm:flex-row sm:items-center sm:justify-between"
     >
-      <Button
-        asChild
-        variant="outline"
-        className="h-auto w-full justify-start gap-3 rounded-xl px-4 py-3"
-      >
+      <Button asChild variant="ghost" size="sm" className="justify-start">
         <Link href={`/topics/${prev.slug}/`}>
           <ArrowLeftIcon data-icon="inline-start" className="text-muted-foreground" />
-          <span className="flex min-w-0 flex-col items-start leading-tight">
-            <span className="text-xs font-normal text-muted-foreground">上一个主题</span>
-            <span className="max-w-full truncate text-sm font-medium">
-              <span aria-hidden className="mr-1.5">
-                {prev.emoji}
-              </span>
-              {prev.name}
-            </span>
+          <span className="text-muted-foreground">上一个</span>
+          <span className="max-w-[10rem] truncate font-medium">
+            {prev.emoji} {prev.name}
           </span>
         </Link>
       </Button>
 
-      <Button
-        asChild
-        variant="outline"
-        className="h-auto w-full justify-end gap-3 rounded-xl px-4 py-3"
-      >
+      <Button asChild variant="ghost" size="sm" className="justify-end">
         <Link href={`/topics/${next.slug}/`}>
-          <span className="flex min-w-0 flex-col items-end leading-tight">
-            <span className="text-xs font-normal text-muted-foreground">下一个主题</span>
-            <span className="max-w-full truncate text-sm font-medium">
-              {next.name}
-              <span aria-hidden className="ml-1.5">
-                {next.emoji}
-              </span>
-            </span>
+          <span className="max-w-[10rem] truncate font-medium">
+            {next.name} {next.emoji}
           </span>
+          <span className="text-muted-foreground">下一个</span>
           <ArrowRightIcon data-icon="inline-end" className="text-muted-foreground" />
         </Link>
       </Button>

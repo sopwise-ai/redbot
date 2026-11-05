@@ -33,7 +33,7 @@ export function headMeta(options: {
       return {
         emoji: "🗂️",
         title: "全部主题",
-        subtitle: "按主题浏览，或直接从侧栏进入",
+        subtitle: "按主题浏览，或从顶栏的「分类」直接跳",
       };
     case "search":
       return {

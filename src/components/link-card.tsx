@@ -3,7 +3,6 @@
 import * as React from "react";
 import { ArrowUpRight, CheckIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Item,
   ItemActions,
@@ -16,18 +15,11 @@ import { recordVisit } from "@/lib/history";
 import type { LinkItem } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 
-/** 卡片外壳：链接行与可选中的管理行共用，避免两套变体各自漂移。 */
-const shell = cn(
-  "group/link h-full flex-nowrap gap-3 rounded-xl border-border/80 bg-card px-3 py-3",
-  "transition-[background-color,border-color] duration-150",
-  "hover:border-ring/30 hover:bg-accent/60",
-);
-
 /**
  * 一个信息源：按钮墙、搜索结果、足迹三处共用。
  *
- * - `browse`：整行是外链，点击时记一次足迹；
- * - `manage`：足迹管理模式，整行变成带选中态的按钮（勾选由外部维护）。
+ * 视觉全部交给 Item 的 `outline` + `sm` 变体：圆角、内边距、边框、hover 都来自组件本身，
+ * 这里只留布局（等高、单行不换行）与 `browse` / `manage` 的行为差异。
  */
 export function LinkCard({
   item,
@@ -61,20 +53,19 @@ export function LinkCard({
   /** 打开链接后的回调（搜索结果用来记录最近搜索） */
   onOpen?: () => void;
 }) {
-  const twoLine = descLines === 2;
   const text = meta ?? description ?? item.desc;
 
   const body = (
     <>
-      <ItemMedia className={cn(twoLine ? "mt-1.5 self-start" : "self-center")}>
+      <ItemMedia>
         {variant === "manage" ? (
           <span
             aria-hidden
             className={cn(
-              "flex size-4 items-center justify-center rounded-[6px] border transition-colors",
+              "flex size-4 items-center justify-center rounded-[4px] border transition-colors",
               selected
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-background",
+                : "border-input bg-background",
             )}
           >
             {selected ? <CheckIcon className="size-3" /> : null}
@@ -84,25 +75,23 @@ export function LinkCard({
         )}
       </ItemMedia>
 
-      <ItemContent className={cn(twoLine ? "gap-1" : "gap-0.5")}>
+      <ItemContent>
         <div className="flex min-w-0 items-center gap-2">
-          <ItemTitle className="max-w-full min-w-0 truncate">{item.name}</ItemTitle>
+          <ItemTitle className="min-w-0 truncate">{item.name}</ItemTitle>
           {badge}
         </div>
         {meta || showDescription ? (
-          <ItemDescription
-            className={cn("text-xs", twoLine ? "line-clamp-2 leading-5" : "line-clamp-1")}
-          >
+          <ItemDescription className={descLines === 2 ? undefined : "line-clamp-1"}>
             {text}
           </ItemDescription>
         ) : null}
       </ItemContent>
 
       {variant === "manage" ? null : (
-        <ItemActions className={cn("text-muted-foreground", twoLine && "mt-1 self-start")}>
+        <ItemActions className="text-muted-foreground">
           <ArrowUpRight
             aria-hidden
-            className="size-3.5 transition-colors group-hover/link:text-primary"
+            className="size-3.5 transition-transform duration-150 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 group-hover/link:text-primary motion-reduce:transform-none"
           />
         </ItemActions>
       )}
@@ -111,19 +100,19 @@ export function LinkCard({
 
   if (variant === "manage") {
     return (
-      <Button
+      <Item
+        asChild
         variant="outline"
-        onClick={() => onToggle?.(item.id)}
-        aria-pressed={selected}
+        size="sm"
         className={cn(
-          shell,
-          "w-full justify-start text-left font-normal",
-          (showDescription || meta) && "items-start",
-          selected && "border-foreground/30 bg-foreground/[0.06]",
+          "group/link h-full w-full flex-nowrap bg-card text-left hover:border-ring/40 hover:bg-accent",
+          selected && "bg-accent ring-1 ring-ring",
         )}
       >
-        {body}
-      </Button>
+        <button type="button" onClick={() => onToggle?.(item.id)} aria-pressed={selected}>
+          {body}
+        </button>
+      </Item>
     );
   }
 
@@ -132,7 +121,7 @@ export function LinkCard({
       asChild
       variant="outline"
       size="sm"
-      className={cn(shell, (showDescription || meta) && "items-start")}
+      className="group/link h-full flex-nowrap bg-card hover:border-ring/40 hover:bg-accent"
     >
       <a
         href={item.url}
@@ -157,7 +146,7 @@ function HueDot({ hue }: { hue: number }) {
     <span
       aria-hidden
       style={{ ["--dot-hue" as string]: hue }}
-      className="size-2 shrink-0 rounded-full bg-[oklch(0.62_0.12_var(--dot-hue))] ring-3 ring-[oklch(0.62_0.12_var(--dot-hue)/0.14)] dark:bg-[oklch(0.72_0.1_var(--dot-hue))] dark:ring-[oklch(0.72_0.1_var(--dot-hue)/0.18)]"
+      className="size-2 shrink-0 rounded-full bg-[oklch(0.62_0.12_var(--dot-hue))] dark:bg-[oklch(0.72_0.1_var(--dot-hue))]"
     />
   );
 }
