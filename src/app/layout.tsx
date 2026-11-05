@@ -57,25 +57,10 @@ export const viewport: Viewport = {
 };
 
 /**
- * 首屏防闪：静态导出的 HTML 只能是展开态，读到「上次是折叠」就在绘制前给 <html> 打标记。
- * 内联、阻塞、只碰 documentElement —— 与 next-themes 避免深色闪白的做法同源。
- * 注意：本文件的三段内联脚本将来上 CSP 时需要 nonce / hash，换托管方案时别漏。
- */
-const sidebarInitScript =
-  '(function(){try{if(/(?:^|;\\s*)sidebar_state=false/.test(document.cookie)){document.documentElement.setAttribute("data-sidebar","collapsed")}}catch(e){}})()';
-
-/**
- * body 末尾的同步脚本：侧栏 DOM 已经解析出来、但还没绘制，直接把展开态改成折叠态。
- * 配合 AppShell 里 useState 的惰性初始化（同样读 cookie），React 首帧就按折叠渲染，
- * 与改过的 DOM 一致，既不会 hydrate mismatch，也不会出现「空白栏 -> 图标浮现」。
- */
-const sidebarDomScript =
-  '(function(){try{if(!/(?:^|;\\s*)sidebar_state=false/.test(document.cookie))return;var sb=document.querySelector(\'[data-slot="sidebar"]\');if(sb){sb.setAttribute("data-state","collapsed");sb.setAttribute("data-collapsible","icon")}}catch(e){}})()';
-
-/**
- * 分组筛选同理：`?group=` 只有客户端知道，但静态 HTML 永远是「全部组」。
+ * 分组筛选：`?group=` 只有客户端知道，但静态 HTML 永远是「全部组」。
  * 在绘制前把不匹配的 section 加上 hidden —— React 首帧渲染用的是同一个判断，
  * 结构一致，所以不会 hydrate mismatch，也不会先铺满再缩水。
+ * 注意：这是本站唯一的内联脚本，上 CSP 时需要 nonce / hash。
  */
 const groupDomScript =
   // `all` = 不过滤（与 lib/group-filter.ts 的 resolveGroupFilter 同口径）。
@@ -97,9 +82,6 @@ const groupDomScript =
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: sidebarInitScript }} />
-      </head>
       <body>
         <script
           type="application/ld+json"
@@ -108,7 +90,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
         </ThemeProvider>
-        <script dangerouslySetInnerHTML={{ __html: sidebarDomScript }} />
         <script dangerouslySetInnerHTML={{ __html: groupDomScript }} />
       </body>
     </html>

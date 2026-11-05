@@ -9,6 +9,7 @@ import {
   ChevronDownIcon,
   SearchIcon,
   SearchXIcon,
+  ShuffleIcon,
   TriangleAlertIcon,
   XIcon,
 } from "lucide-react";
@@ -23,6 +24,7 @@ import { PillWall } from "@/components/pill-wall";
 import { SearchResults } from "@/components/search-results";
 import { ShellHeader } from "@/components/shell-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteNav } from "@/components/site-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TopicsIndex } from "@/components/topics-index";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +58,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { buildWallGroups } from "@/lib/group-filter";
 import { buildHueMap, hueFor } from "@/lib/groups";
 import { recordVisit } from "@/lib/history";
+import { pickRandom } from "@/lib/random";
 import { clearRecentSearches, removeRecentSearch } from "@/lib/recent-searches";
 import { parseRoute, type ShellView } from "@/lib/route-state";
 import type { CategoryGroup, HomeSection, RandomPick, TopicSummary } from "@/lib/schema";
@@ -66,7 +69,6 @@ import { useHistoryCount } from "@/lib/use-history";
 import { useSearchKeyboard } from "@/lib/use-search-keyboard";
 import { useShellSearch } from "@/lib/use-search";
 import { useShortcutLabel } from "@/lib/use-shortcut-label";
-import { useSidebarOpen } from "@/lib/use-sidebar-open";
 import { cn } from "@/lib/utils";
 
 /** 历史面板默认露几条，再多就折叠起来 */
@@ -94,7 +96,6 @@ export function AppShell({
   /** 主区域默认展示什么：按钮墙 / 主题索引 / 搜索 */
   view?: ShellView;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useSidebarOpen();
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
   const shortcutLabel = useShortcutLabel();
   const historyCount = useHistoryCount();
@@ -338,22 +339,24 @@ export function AppShell({
           跳到内容
         </a>
       ) : null}
-      <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <AppSidebar
-          topics={topics}
-          total={total}
-          activeSlug={view === "wall" ? (activeTopic?.slug ?? "") : ""}
-          topicsActive={view === "topics"}
-          aboutActive={view === "about"}
-          isHome={view === "wall" && !activeTopic && !searching}
-          randomPool={randomPool}
-          historyActive={view === "history"}
-        />
+      <SidebarProvider>
+        <div className="md:hidden">
+          <AppSidebar
+            topics={topics}
+            total={total}
+            activeSlug={view === "wall" ? (activeTopic?.slug ?? "") : ""}
+            topicsActive={view === "topics"}
+            aboutActive={view === "about"}
+            isHome={view === "wall" && !activeTopic && !searching}
+            randomPool={randomPool}
+            historyActive={view === "history"}
+          />
+        </div>
 
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 shrink-0 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-            <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6 lg:px-8">
-              <div className="flex h-16 items-center gap-2 sm:gap-3">
+            <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+              <div className="flex h-16 items-center gap-2 sm:gap-3 md:grid md:grid-cols-[1fr_minmax(0,28rem)_1fr]">
                 <SidebarTrigger className="-ml-1 md:hidden" aria-label="打开导航" />
                 <Link
                   href="/"
@@ -362,6 +365,22 @@ export function AppShell({
                   <span aria-hidden className="size-2 rounded-full bg-primary" />
                   <span className="hidden text-sm font-semibold tracking-tight sm:inline">
                     {site.name}
+                  </span>
+                </Link>
+
+                {/* 桌面品牌：移动端用上面的红点，桌面用完整字标 + 副行 */}
+                <Link
+                  href="/"
+                  className="hidden shrink-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/30 md:flex"
+                >
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-primary text-primary-foreground">
+                    <span className="size-2 rounded-full bg-primary-foreground" />
+                  </span>
+                  <span className="grid leading-tight">
+                    <span className="text-sm font-semibold tracking-tight">{site.name}</span>
+                    <span className="hidden text-xs text-muted-foreground xl:block">
+                      {site.tagline}
+                    </span>
                   </span>
                 </Link>
 
@@ -527,12 +546,28 @@ export function AppShell({
                 </div>
 
                 <div className="ml-auto flex shrink-0 items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    aria-label="随机一个"
+                    className="hidden h-9 rounded-lg text-muted-foreground hover:text-foreground md:inline-flex"
+                    onClick={() => {
+                      const pick = pickRandom(randomPool);
+                      if (!pick) return;
+                      recordVisit(pick.id, pick.topicSlug);
+                      window.open(pick.url, "_blank", "noopener,noreferrer");
+                    }}
+                  >
+                    <ShuffleIcon data-icon="inline-start" />
+                    <span className="hidden lg:inline">随机一个</span>
+                  </Button>
                   <ThemeToggle />
                   <Button
                     asChild
                     variant="outline"
                     size="sm"
-                    className="hidden rounded-lg md:inline-flex"
+                    className="hidden rounded-lg lg:inline-flex"
                   >
                     <a href={site.repo} target="_blank" rel="noopener noreferrer">
                       GitHub
@@ -542,10 +577,18 @@ export function AppShell({
                 </div>
               </div>
             </div>
+
+            <div className="hidden border-t border-border/60 md:block">
+              <SiteNav
+                topics={topics}
+                view={view}
+                activeSlug={view === "wall" ? (activeTopic?.slug ?? "") : ""}
+              />
+            </div>
           </header>
 
           <main id="content" tabIndex={-1} className="flex-1 pb-16 outline-none">
-            <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
               {isHome ? (
                 <div className="flex flex-col gap-12 pb-4">
                   <HomeHero total={total} updated={updated} randomPool={randomPool} />

@@ -57,7 +57,7 @@ src/lib/catalog.ts    取数与切片（topics 摘要 / getTopic / homeSections 
 src/lib/corpus.ts     按需拉取 public/search-corpus.json（搜索、足迹、导出共用）
 src/lib/history.ts    足迹读写（localStorage: redbot:history）；use-history.ts 是其 React 封装
 src/lib/group-filter.ts  分组筛选（URL 解析 / 分组切片，纯函数）
-src/lib/use-*.ts      外壳的 React hooks：搜索 / 分组 / 焦点交接 / 侧栏开合 / 快捷键提示
+src/lib/use-*.ts      外壳的 React hooks：搜索 / 分组 / 焦点交接 / 快捷键提示
 src/lib/search.ts     fuse 索引；src/lib/site.ts 站点元信息（域名、仓库、作者）
 scripts/              generate-topics.ts / generate-corpus.ts / validate.ts / generate-readme.ts
 scripts/lib/load-topics.ts 读取 data/topics.json + data/topics/*.json（校验与 README 共用）
@@ -77,7 +77,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 主题文件：
 
 - `name`：主题名，≤6 字；**同时是该主题下所有链接的主分类**，全局唯一
-- `emoji`：单个 emoji，侧栏与主题索引用
+- `emoji`：单个 emoji，移动端抽屉与主题索引用
 - `desc`：≤24 字，主题卡片与主题页副标题
 - `updated`：`YYYY-MM-DD`，改这个文件时改成当天；全站「更新于」取所有主题的最大值，**没有全局日期字段**
 - `groups`：可选的主题内分组（`slug` / `name` / 可选 `desc`），数组顺序即展示顺序；不分组就省略或写 `[]`
@@ -128,7 +128,7 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 
 | 字段       | 内容                                     | 用在哪                                    |
 | ---------- | ---------------------------------------- | ----------------------------------------- |
-| `tagline`  | 中文网站精选清单                         | 首页 H1、浏览器标题、manifest、侧栏、页脚 |
+| `tagline`  | 中文网站精选清单                         | 首页 H1、浏览器标题、manifest、顶栏、页脚 |
 | `subtitle` | 上网，一站就够了                         | 首页副行、README 引用行                   |
 | `trust`    | 免费 · 开源 · 无广告 · 无追踪 · 不用注册 | 首页副行下的信任行、README、分享文案      |
 
@@ -141,10 +141,10 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 ## 设计 token（改样式前先读）
 
 - **颜色**：**深色优先**（默认 `dark`）：近黑画布 `oklch(0.145 0.004 264)` + 略亮一档的面板
-  （card `0.185` / sidebar `0.165`），靠 8% 白线分层。浅色是冷白 `0.98` + 纯白卡片，侧栏 `0.965`。
+  （card `0.185` / sidebar `0.165`），靠 8% 白线分层。浅色是冷白 `0.98` + 纯白卡片，移动端抽屉 `0.965`。
   **不要引入暖黄/米色**：那会把站点拉回「纸上杂志」，和 Linear 那一路相冲。
   `--border` 只用于必须的边界。
-  **红色只用于品牌标识、主 CTA、侧栏当前位置与 hover**；筛选 chip 的选中态用前景/背景黑白反转，
+  **红色只用于品牌标识、主 CTA、移动端抽屉当前位置与 hover**；筛选 chip 的选中态用前景/背景黑白反转，
   不要用红色，也不要用它装饰计数、徽章。
   **焦点环用中性灰**（`--ring`），不是品牌红：红色焦点环在图标按钮上会被误读成「错误」。
 - **字号**：直接用 Tailwind 默认阶梯（`text-xs 12 / sm 14 / base 16 / lg 18 / xl 20 / 2xl 24 / 3xl 30 /
@@ -172,16 +172,17 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
   加载占位是 `Skeleton`；清空足迹用 `AlertDialog`；FAQ 用 `Accordion`；分组筛选用 `ToggleGroup`。
   **不要退回到 `inline-flex h-9 rounded-md border px-3` 这类手写变体。**
 - **按钮墙**是 `grid gap-2 sm:grid-cols-2 xl:grid-cols-3` 的等宽网格，不再是可变宽度的 flex-wrap：
-  三列在 1160px 容器里刚好 373px 一列，中文名不会截断，右缘自然齐边。
+  三列在 1200px 容器里刚好 373px 一列，中文名不会截断，右缘自然齐边。
   行高 48px（含说明 62px），hover 只换底色 / 边框，**不加阴影、不做位移**。
 - **每张卡内部是 `justify-between` 的两端结构**：色点与文字贴左、箭头钉在右缘，不要改回居中。
-- **侧栏**：品牌行 + 折叠按钮 → 「随机一个」→ 首页 / 足迹 / 全部主题 → 吸顶「主题」→ 页脚。
-  **不要加「最近访问」分组**：17 个主题一屏能看完，重复出现同一批名字只会让人以为列表坏了。
-  计数用 `SidebarMenuBadge`，当前项左侧有 3px 红色竖条（`before:` 伪元素），
-  这是全站唯一用红色标记位置的元素。桌面可折叠成图标轨（`collapsible="icon"`）。
+- **顶部导航（桌面）**：两行吸顶，总高 108px。
+  第一行 `h-16`：品牌 + 居中搜索 + 「随机一个」（ghost，**不要再用红色**）+ 主题 / GitHub；
+  第二行 `h-11`：首页 / 足迹 / 全部主题（固定）+ 可横滑的分类条 + 右端「全部分类」面板。
+  分类条**不带计数**（17 个名字在 1200 容器里刚好排下），计数只在面板里；
+  当前项用 2px 红色下划线，不用红色底纹。**桌面不再有侧栏。**
+- **移动端**：只保留 64px 顶栏（菜单 + 品牌点 + 搜索 + 主题）+ 抽屉；抽屉里是品牌、
+  「随机一个」、页面入口与 17 个主题，当前项左侧 3px 红色竖条。
   主题顺序即 `data/topics.json` 的顺序，**调整顺序会改变全站配色**，这不是 bug。
-- **顶部栏**：`h-16` 吸顶、半透明毛玻璃、底部 1px 分隔线；桌面是「搜索 + 主题/ GitHub」，
-  移动端是「菜单 + 品牌点 + 搜索 + 主题切换」，`<sm` 时只留品牌红点，把宽度让给搜索框。
 - **报头**：淡色 emoji 方块（44/48px，色相跟随主题）+ H1（无衬线 600）+ 计数 `Badge` + 副标题；
   右侧只放「分享 / 在 GitHub 编辑」。**不要重复写「N 个主题 / 更新于」**——hero 刊头行（左总条数、右日期）与页脚各一处。
 - **主题页底部**有「上一个 / 下一个主题」两个等宽按钮卡，顺序即 `data/topics.json`；

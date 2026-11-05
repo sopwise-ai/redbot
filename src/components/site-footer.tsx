@@ -22,7 +22,7 @@ export function SiteFooter({
 
   return (
     <footer className="mt-auto border-t border-border/60">
-      <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
             <span
@@ -52,6 +52,14 @@ export function SiteFooter({
             >
               关于
             </Link>
+            <a
+              href={`${site.repo}/blob/main/CONTRIBUTING.md`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-sm underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+            >
+              提交收录
+            </a>
             <a
               href={site.repo}
               target="_blank"

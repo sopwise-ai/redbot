@@ -136,9 +136,16 @@
 
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 5rem;
+    /* 移动端只有 64px 顶栏；桌面是 64 + 44 的双行导航 */
+    scroll-padding-top: 4rem;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      scroll-padding-top: 7rem;
+    }
   }
 
   body {
@@ -174,20 +181,4 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/*
- * 侧栏首屏防闪。
- *
- * 折叠状态存在 cookie 里，但静态导出的 HTML 是构建期生成的，只能是展开态。
- * 不处理的话刷新会「先画成展开、水合后再收起」，视觉上就是整页抖一下。
- *
- * layout.tsx 的 head 脚本读 cookie 给 <html> 打标记、body 末尾的脚本直接把侧栏
- * DOM 改成折叠态；这里只负责把宽度钉成图标轨，作为标记存在期间的兜底。
- */
-/* 宽度变量是 inline style（--sidebar-width: 16rem），只能用 !important 盖 */
-html[data-sidebar="collapsed"] [data-slot="sidebar-container"] {
-  width: 3rem !important;
-  /* 首帧不能有过渡：否则是「从 256px 滑到 48px」，正是要消掉的那一下 */
-  transition: none !important;
 }

@@ -135,10 +135,8 @@ export function AboutView() {
         <section id="privacy" className={sectionClass}>
           <h2 className={headingClass}>隐私</h2>
           <p className={bodyClass}>
-            本站不注册、不登录，不收集姓名、邮箱等身份信息；没有像素、指纹或任何统计脚本。 唯一的
-            Cookie 是侧栏开合偏好（
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">sidebar_state</code>
-            ，7 天过期），只记录「展开 / 折叠」，不含任何身份信息。
+            本站不注册、不登录，不收集姓名、邮箱等身份信息；不使用
+            Cookie、像素、指纹或任何统计脚本。
           </p>
           <p className={bodyClass}>
             主题偏好与足迹保存在你的浏览器 localStorage：前者只记录浅色 / 深色 /
@@ -205,7 +203,7 @@ export function AboutView() {
 
       <nav
         aria-label="本页目录"
-        className="sticky top-24 hidden w-40 shrink-0 flex-col gap-3 xl:flex"
+        className="sticky top-32 hidden w-40 shrink-0 flex-col gap-3 xl:flex"
       >
         <p className="text-xs font-medium tracking-wide text-muted-foreground">本页目录</p>
         <ul className="flex flex-col gap-1 border-l border-border">
