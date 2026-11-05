@@ -8,7 +8,6 @@
 中文互联网优质信息源的**极简快捷入口**。一页按钮，点一下直达目标站的榜单 / 列表页。
 不做内容聚合、不做阅读器、不做账号、不做推荐算法 —— 这几条是定位红线，不是「暂未实现」。
 
-设计取舍与实测数据见 [docs/DESIGN-LOG.md](./docs/DESIGN-LOG.md)；待人工核验的链接见 [docs/VERIFY.md](./docs/VERIFY.md)。
 **本文件只写可执行的约束，理由和过程不在这里展开。**
 
 ## 技术栈
@@ -198,7 +197,6 @@ data/topics/ai.json        { name, emoji, desc, updated, links: […] }   一个
 - **README 目录锚点会被 GitHub 转小写**（`### AI` → `#ai`），生成器里已 `toLowerCase()`，别改回去。
 - **`src/components/ui/` 里的文件格式化后与 registry 原文不同**，再 `shadcn add` 覆盖同名文件会回到未格式化版本，
   跑一次 `npm run format` 即可。
-- **`docs/screenshots/` 是二进制资源**，已在 `.prettierignore` 里排除。
 
 ## 验证方式
 
